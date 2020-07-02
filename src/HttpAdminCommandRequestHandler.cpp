@@ -133,7 +133,7 @@ void HttpAdminCommandRequestHandler :: handleReboot (AsyncWebServerRequest * req
 	jsonRsp.prettyPrintTo(*response);
 	request->send(response);
 	
-	I(EnergySaver).requestReboot ();
+	I(LoopScheduler).requestReboot ();
 }
 
 //========================================================================================================================
@@ -221,7 +221,7 @@ void HttpAdminCommandRequestHandler :: handleWifi (AsyncWebServerRequest * reque
 	jsonRsp.prettyPrintTo(*response);
 	request->send(response);
 
-	I(EnergySaver).requestReboot ();
+	I(LoopScheduler).requestReboot ();
 }
 
 //========================================================================================================================

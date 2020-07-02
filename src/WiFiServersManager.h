@@ -10,7 +10,7 @@
 
 #include <ESP8266WiFi.h>							// https://github.com/esp8266/Arduino
 
-#include <Looper.h>
+#include <PowerMngt/Looper.h>
 #include <Tools/Delegate.h>
 
 
