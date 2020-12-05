@@ -92,7 +92,7 @@ void MqttDomoticzLogPublisher :: setup (AsyncMqttClient * asyncMqttClient) {
 
 	_asyncMqttClient = asyncMqttClient;
 
-	I(Logger).notifyRequestLineToPrint += std::bind (&MqttDomoticzLogPublisher::publishStringLine, this, _1);
+//	I(Logger).notifyRequestLineToPrint += std::bind (&MqttDomoticzLogPublisher::publishStringLine, this, _1);
 }
 
 
