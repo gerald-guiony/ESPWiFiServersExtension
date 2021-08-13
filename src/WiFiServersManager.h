@@ -25,7 +25,9 @@ class WiFiServersManager : public Looper
 protected:
 
 	bool _isWifiManagerEnabled									= true;				// By default ...
+	bool _accessPointIfNoWifi									= false;
 	bool _forceAccessPoint										= false;
+
 
 public:
 
@@ -54,7 +56,7 @@ protected:
 
 public:
 
-	void setWifiManagerEnabled									(bool enabled);
+	void setWifiManagerEnabled									(bool enabled, bool accessPointIfNoWifi = false);
 	
 	virtual void setup											(bool forceAccessPoint = false);
 	virtual void loop											() override;

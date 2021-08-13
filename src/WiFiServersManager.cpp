@@ -47,8 +47,9 @@ volatile bool wifiManagerForcedByUser = false;
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: setWifiManagerEnabled (bool enabled) {
+void WiFiServersManager :: setWifiManagerEnabled (bool enabled, bool accessPointIfNoWifi /* = false */) {
 	_isWifiManagerEnabled = enabled;
+	_accessPointIfNoWifi = accessPointIfNoWifi;
 }
 
 //========================================================================================================================
@@ -91,8 +92,13 @@ bool WiFiServersManager :: startWiFiManager () {
 	}
 	else {
 		Logln(F("Failed to connect and hit timeout"));
-		WiFiHelper::startWiFiAccessPoint ();			// Avoid run in mixed mode (WIFI_AP_STA) because it causes strange behavior..
-														// L'alternance entre mode AP et STA provoque des deconnexions en mode AP 
+		if (_accessPointIfNoWifi) {
+			WiFiHelper::startWiFiAccessPoint ();		// Avoid run in mixed mode (WIFI_AP_STA) because it causes strange behavior..
+														// L'alternance entre mode AP et STA provoque des deconnexions en mode AP
+		}
+		else {
+			reboot ();
+		}
 	}
 	return result;
 }
