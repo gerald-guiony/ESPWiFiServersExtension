@@ -62,15 +62,15 @@ void HttpAdminCommandRequestHandler :: handleHelp (AsyncWebServerRequest * reque
 void HttpAdminCommandRequestHandler :: handleInfo (AsyncWebServerRequest * request)
 {
 	Logln (F("=> info"));
-	
+
 	// -----------------------------
 	// ArduinoJson Advanced Response
 	// https://github.com/me-no-dev/ESPAsyncWebServer#arduinojson-advanced-response
-	// This response can handle really large Json objects (tested to 40KB) There isn't any noticeable speed decrease for small results 
+	// This response can handle really large Json objects (tested to 40KB) There isn't any noticeable speed decrease for small results
 //	AsyncJsonResponse * response = new AsyncJsonResponse();
 	PrettyAsyncJsonResponse * response = new PrettyAsyncJsonResponse();
 	JsonObject& jsonRsp = response->getRoot();
-	
+
 	jsonRsp["deviceName"]		= getChipName ();
 	jsonRsp["chipId"]			= ESP.getChipId ();
 	jsonRsp["timeSinceBoot"]	= timeElapsedSinceBoot ();
@@ -92,7 +92,7 @@ void HttpAdminCommandRequestHandler :: handleInfo (AsyncWebServerRequest * reque
 	jsonRsp["SSID"]				= WiFi.SSID();
 	jsonRsp["BSSID"]			= WiFi.BSSIDstr();
 	jsonRsp["RSSI"]				= WiFi.RSSI();
-	
+
 	response->setLength();
 	request->send(response);
 }
@@ -109,7 +109,7 @@ void HttpAdminCommandRequestHandler :: handleReboot (AsyncWebServerRequest * req
 	// https://github.com/me-no-dev/ESPAsyncWebServer#arduinojson-basic-response
 	// This way of sending Json is great for when the result is below 4KB
 	AsyncResponseStream *response = request->beginResponseStream(F("application/json"));
-	
+
 	// Memory pool for JSON object tree.
 	// Inside the brackets, 200 is the size of the pool in bytes.
 	// Don't forget to change this value to match your JSON document.
@@ -119,20 +119,20 @@ void HttpAdminCommandRequestHandler :: handleReboot (AsyncWebServerRequest * req
 	// StaticJsonBuffer allocates memory on the stack, it can be
 	// replaced by DynamicJsonBuffer which allocates in the heap.
 	DynamicJsonBuffer jsonBuffer;
-	
+
 	// Create the root of the object tree.
 	// It's a reference to the JsonObject, the actual bytes are inside the
 	// JsonBuffer with all the other nodes of the object tree.
 	// Memory is freed when jsonBuffer goes out of scope.
 	JsonObject& jsonRsp = jsonBuffer.createObject();
-	
+
 	jsonRsp["command"] = "reboot";
 	jsonRsp["status"] = true;
 	jsonRsp["message"] = "The device is rebooting..";
-	
+
 	jsonRsp.prettyPrintTo(*response);
 	request->send(response);
-	
+
 	I(LoopScheduler).requestReboot ();
 }
 
@@ -142,17 +142,17 @@ void HttpAdminCommandRequestHandler :: handleReboot (AsyncWebServerRequest * req
 void HttpAdminCommandRequestHandler :: handleListAllFiles (AsyncWebServerRequest * request)
 {
 	Logln (F("=> List all files"));
-	
+
 	// This way of sending Json is great for when the result is below 4KB
 	AsyncResponseStream *response = request->beginResponseStream(F("application/json"));
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonRsp = jsonBuffer.createObject();
-	
+
 	String listFiles = FileStorage::spiffsListFiles ();
-	
+
 	jsonRsp["command"] = "listallfiles";
 	jsonRsp["response"] = (listFiles.length () > 0) ? listFiles : "No file found";
-	
+
 	jsonRsp.prettyPrintTo(*response);
 	request->send(response);
 }
@@ -163,14 +163,14 @@ void HttpAdminCommandRequestHandler :: handleListAllFiles (AsyncWebServerRequest
 void HttpAdminCommandRequestHandler :: handleDelAllFiles (AsyncWebServerRequest * request)
 {
 	Logln (F("=> delete all files"));
-	
+
 	// This way of sending Json is great for when the result is below 4KB
 	AsyncResponseStream *response = request->beginResponseStream(F("application/json"));
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonRsp = jsonBuffer.createObject();
-	
+
 	FileStorage::spiffsRemoveAllFiles ();
-	
+
 	jsonRsp["command"] = "delallfiles";
 	jsonRsp["status"] = true;
 
@@ -184,40 +184,40 @@ void HttpAdminCommandRequestHandler :: handleDelAllFiles (AsyncWebServerRequest 
 void HttpAdminCommandRequestHandler :: handleWifi (AsyncWebServerRequest * request)
 {
 	Logln (F("=> set wifi ssid + pass"));
-	
+
 	if (!request->hasArg("json")) {
 		request->send(400, F("text/plain"), F("400: json argument not found"));				// The request is invalid, so send HTTP status 400
 		return;
 	}
-	
+
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonArg = jsonBuffer.parse(request->arg("json"));
-		
+
 	// Test if parsing succeeds.
 	if (!jsonArg.success()) {
 		request->send(400, F("text/plain"), F("400: Invalid json argument"));
 		return;
 	}
-	
+
 	if (!jsonArg ["ssid"].success() || !jsonArg ["pass"].success()) {
 		request->send(400, F("text/plain"), F("400: Invalid json field"));
 		return;
 	}
-	
+
 	String ssid = jsonArg ["ssid"];
 	String pass = jsonArg ["pass"];
-	
+
 	WiFi.begin (ssid.c_str(), pass.c_str());		// Serialization automatique du ssid et password
 	asyncDelayMillis (1000);
-	
+
 	// This way of sending Json is great for when the result is below 4KB
 	AsyncResponseStream *response = request->beginResponseStream(F("application/json"));
 	JsonObject& jsonRsp = jsonBuffer.createObject();
-	
+
 	jsonRsp["command"] = "wifi";
 	jsonRsp["status"] = true;
 	jsonRsp["message"] = "The device is rebooting for these changes to take effect";
-	
+
 	jsonRsp.prettyPrintTo(*response);
 	request->send(response);
 

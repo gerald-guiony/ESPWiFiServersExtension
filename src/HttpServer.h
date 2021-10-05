@@ -29,18 +29,18 @@ class HttpServer
 
 public:
 	Delegate <AsyncWebServerRequest *>			notifyRequestReceived;
-	
+
 private:
 	void handleNotFound							(AsyncWebServerRequest * request);
-	
+
 public:
 	static AsyncWebServer & getAsyncWebServer	();
-	
+
 	bool isCaptivePortal						(AsyncWebServerRequest * request);
 	void stop									();
 
 	void addRequestHandlers						(std::vector <HttpRequestHandler *> hanlders);
-	
+
 	virtual void setup							();
 	virtual void loop							();
 };

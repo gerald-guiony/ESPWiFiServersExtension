@@ -18,11 +18,11 @@ void DeviceDetectorClient :: sendDeviceDetectionCmd (int port) {
 	MemStream mem;
 	mem << PRINT_CMD(1);
 	String cmd = mem.readString();
-	
+
 	IPAddress ip = WiFiHelper::getIpAddress();
-	
+
 	Logln (F("Send command: \"") << cmd << F("\" to ") << ip << F(":") << port);
-	
+
 	sendCmd (ip, port, cmd);
 }
 

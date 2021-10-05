@@ -11,7 +11,7 @@
 using namespace std::placeholders;
 
 //------------------------------------------------------------------------------
-// 
+//
 class MqttHandler
 {
 public:

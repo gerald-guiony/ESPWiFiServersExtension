@@ -31,7 +31,7 @@ bool DeviceDetectorCommandParser :: parse (Stream & stream, Print & printer) {
 
 	Logln (LN);
 	printer << LN;
-	
+
 	do {
 
 		int commandId = getCmdId (stream);
@@ -49,15 +49,15 @@ bool DeviceDetectorCommandParser :: parse (Stream & stream, Print & printer) {
 
 		case 1:
 			Logln(F("=> NAME, CATEGORY, IP AND MAC ADDRESS"));
-			
+
 			printer << PRINT_RESP (commandId,
 				getChipName()														<< F(MSG_SEPARATOR_PARAM) <<
-				F("IOT Remote Control")												<< F(MSG_SEPARATOR_PARAM) << 
-				WiFi.localIP()														<< F(MSG_SEPARATOR_PARAM) << 
+				F("IOT Remote Control")												<< F(MSG_SEPARATOR_PARAM) <<
+				WiFi.localIP()														<< F(MSG_SEPARATOR_PARAM) <<
 				WiFi.macAddress()
 				) << LN;
 			break;
-			
+
 		default:
 			printer << F("Command not available") << LN;
 			printer << PRINT_NACK (commandId) << LN;

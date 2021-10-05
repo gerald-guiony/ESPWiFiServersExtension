@@ -24,15 +24,15 @@ public:
 	Delegate <AsyncMqttClientDisconnectReason>		notifyDisconnected;
 	Delegate <uint16_t, uint8_t> 					notifySubscribed;
 	Delegate <uint16_t> 							notifyUnsubscribed;
-	Delegate <char*, char*, 
-				AsyncMqttClientMessageProperties, 
+	Delegate <char*, char*,
+				AsyncMqttClientMessageProperties,
 				size_t, size_t, size_t> 			notifyMessageReceived;
 	Delegate <uint16_t>								notifyPublishSent;
-	
+
 protected:
 
 	void connectToMqttServer 						();
-	
+
 public:
 
 	void addHandlers								(std::vector <MqttHandler *> handlers);

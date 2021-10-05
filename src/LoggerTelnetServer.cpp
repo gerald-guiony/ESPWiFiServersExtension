@@ -35,7 +35,7 @@ void LoggerTelnetServer :: stop () {
 	for (auto pair : loggerTelnetDataByClientMap) {
 		I(Logger).notifyRequestLineToPrint -= pair.second.fnId;
 	}
-	
+
 	loggerTelnetDataByClientMap.clear ();
 
 	TelnetServer :: stop ();
@@ -47,7 +47,7 @@ void LoggerTelnetServer :: stop () {
 void LoggerTelnetServer :: addClient (AsyncClient * client) {
 
 	LoggerTelnetData & loggerTelnetData = loggerTelnetDataByClientMap [client];
-	
+
 	loggerTelnetData.parser = std::make_shared <LoggerCommandParser> ();
 	loggerTelnetData.parser->notifyCloseCurrentSessionResquested	+= [client] ()	{ client->stop (); };
 	loggerTelnetData.parser->notifyCloseAllSessionResquested		+= [this] ()	{ stop (); };
@@ -56,7 +56,7 @@ void LoggerTelnetServer :: addClient (AsyncClient * client) {
 
 	loggerTelnetData.fnId = I(Logger).notifyRequestLineToPrint += [client] (const String & msg) {
 		if (loggerTelnetDataByClientMap.find (client) == loggerTelnetDataByClientMap.end()) return;
-		loggerTelnetDataByClientMap [client].printer->print (msg); 
+		loggerTelnetDataByClientMap [client].printer->print (msg);
 	};
 }
 
@@ -83,22 +83,22 @@ void LoggerTelnetServer :: onClientDataReceived (AsyncClient* client, void *data
 
 	*loggerTelnetData.printer << F("Data received from client: ") << client->remoteIP() << LN;
 
-	char * byteBuffer = (char *) data; 
+	char * byteBuffer = (char *) data;
 	for (int i=0; i<len; i++) {
 		loggerTelnetData.parser->parse (byteBuffer [i], *loggerTelnetData.printer);
 	}
 }
 
 //========================================================================================================================
-// 
+//
 //========================================================================================================================
 void LoggerTelnetServer :: onClientDisconnected (AsyncClient* client) {
-	
+
 	if (loggerTelnetDataByClientMap.find (client) == loggerTelnetDataByClientMap.end()) return;
 	LoggerTelnetData & loggerTelnetData = loggerTelnetDataByClientMap [client];
 
 	*loggerTelnetData.printer << F("Client disconnected !") << LN;
-	
+
 	deleteClient (client);
 }
 

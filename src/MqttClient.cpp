@@ -31,8 +31,8 @@ void MqttClient :: stop () {
 //
 //========================================================================================================================
 void MqttClient :: connectToMqttServer () {
-	
-	Logln(F("Connecting to MQTT..."));	
+
+	Logln(F("Connecting to MQTT..."));
 	asyncMqttClient.connect();
 }
 
@@ -50,7 +50,7 @@ void MqttClient :: addHandlers	(std::vector <MqttHandler *> handlers) {
 //
 //========================================================================================================================
 void MqttClient :: setup (const char * ip, int port) {
-	
+
 	Logln(F("Starting MQTT.."));
 
 	asyncMqttClient.onConnect (
@@ -91,7 +91,7 @@ void MqttClient :: setup (const char * ip, int port) {
 			//	Logln(F("Publish acknowledged : ") << F("PacketId=") << packetId);
 			notifyPublishSent (packetId);
 		});
-	
+
 	asyncMqttClient.setServer (ip, port);
 }
 
@@ -99,13 +99,13 @@ void MqttClient :: setup (const char * ip, int port) {
 //
 //========================================================================================================================
 void MqttClient :: loop () {
-	
+
 	static unsigned long _lastConnectionTry = 0;
 
 	if (!asyncMqttClient.connected()) {
 		if (WiFiHelper::isWifiAvailable ()) {
 			if (millis() - _lastConnectionTry > MQTT_CONNECTION_DELAY_MS) {
-			
+
 				connectToMqttServer ();
 				_lastConnectionTry = millis();
 			}

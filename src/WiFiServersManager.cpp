@@ -58,7 +58,7 @@ void WiFiServersManager :: setWifiManagerEnabled (bool enabled, bool accessPoint
 void configModeCallback (WiFiManager * wiFiManager) {
 
 	Logln(
-	F("Entered config mode: ")			<< 
+	F("Entered config mode: ")			<<
 	WiFi.softAPIP() 					<< F(", ") <<
 	wiFiManager->getConfigPortalSSID()	<< LN);			// If you used auto generated SSID, print it
 }
@@ -81,11 +81,11 @@ bool WiFiServersManager :: startWiFiManager () {
 //	wifiManager.setConnectTimeout(30);					// sets timeout for which to attempt connecting, usefull if you get a lot of failed connects
 	wifiManager.setTimeout(120);						// Sets timeout until configuration portal gets turned off useful to make it all retry or go to sleep in seconds
 	wifiManager.setAPCallback(configModeCallback);		// Set callback that gets called when connecting to previous WiFi fails, and enters Access Point mode
-	
+
 	// Fetches ssid and pass and tries to connect
 	// If it does not connect it starts an access point with the specified name And goes into a blocking loop awaiting configuration
 	bool result = wifiManager.autoConnect();
-	
+
 	if (result) {
 		Logln(F("Wifi credential ok => Restart the chip"));
 		reboot ();
@@ -107,9 +107,9 @@ bool WiFiServersManager :: startWiFiManager () {
 //
 //========================================================================================================================
 void WiFiServersManager :: startOTA () {
-	
+
 	Logln(F("Starting OTA.."));
-	
+
 	// Port defaults to 8266
 	// ArduinoOTA.setPort(8266);
 	// Hostname defaults to esp8266-[ChipID]
@@ -145,9 +145,9 @@ void WiFiServersManager :: startOTA () {
 //
 //========================================================================================================================
 void WiFiServersManager :: startAllServers () {
-		
+
 	Logln(F("Starting Wifi servers.."));
-	
+
 	// Multicast DNS
 	// http://onlineshouter.com/assign-web-address-esp8266-using-multicast-dns/
 	// Set up mDNS responder:
@@ -167,25 +167,25 @@ void WiFiServersManager :: startAllServers () {
 //	}
 
 #ifdef DEBUG
-	
+
 	startOTA ();
-	
+
 	I(LoggerTelnetServer).setup ();
-	
+
 #endif
 
 	if (!WiFiHelper::isAccessPointMode()) {
 		// Only when the device is connected to Wifi in station mode
 		I(DeviceDetectorServer).setup ();
 	}
-	
+
 	// Start other servers here ...
 	startCustomServers ();
-	
+
 	// Lastly (after servers started), use the MDNS built-in object to call the method Add service
 	// Add service to MDNS-SD
-	// This requires three parameters. These parameters describe the type of service that we want to broadcast over 
-	// the network. In this case, we will use HTTP over TCP on 80. 
+	// This requires three parameters. These parameters describe the type of service that we want to broadcast over
+	// the network. In this case, we will use HTTP over TCP on 80.
 //	MDNS.addService("http", "tcp", 80);
 
 	// start dns server
@@ -206,7 +206,7 @@ void WiFiServersManager :: stopAllServers () {
 #endif
 
 	I(DeviceDetectorServer).stop();
-	
+
 	// Stop other servers...
 	stopCustomServers();
 }
@@ -237,11 +237,11 @@ void WiFiServersManager :: startWifi () {
 //
 //========================================================================================================================
 void WiFiServersManager :: startWifiAndServers () {
-		
+
 	BLINKLED_ON();									// Led on
-	
+
 	startWifi ();
-	
+
 	if (WiFiHelper::isWifiAvailable ()) {
 		Logln (F("Chip IP Address: ") << WiFiHelper :: getIpAddress ());
 		startAllServers ();
@@ -250,7 +250,7 @@ void WiFiServersManager :: startWifiAndServers () {
 		Logln (F("No Wifi available !"));
 		//	enter in deepsleep or reboot ?
 	}
-	
+
 	BLINKLED_OFF();									// Led off
 }
 
@@ -265,7 +265,7 @@ void _ISR_user_btn ()
 {
 //	Logln("User button state:" << digitalRead(USER_BTN));
 
-	// Si le device ne peut pas se reconnecter au wifi, l'utilisateur peut autoriser le wifiManager a se lancer en appuyant 
+	// Si le device ne peut pas se reconnecter au wifi, l'utilisateur peut autoriser le wifiManager a se lancer en appuyant
 	// sur le boutton USER_BTN (notament lors d'un reboot après un deep sleep)
 	wifiManagerForcedByUser = true;
 
@@ -276,10 +276,10 @@ void _ISR_user_btn ()
 //
 //========================================================================================================================
 void WiFiServersManager :: setup (bool forceAccessPoint /*= false */) {
-	
+
 	_forceAccessPoint = forceAccessPoint;
-	
-#ifdef ARDUINO_ESP8266_WIO_NODE	
+
+#ifdef ARDUINO_ESP8266_WIO_NODE
 	WiFiHelper::resetWiFiHardware ();
 #endif
 
@@ -287,13 +287,13 @@ void WiFiServersManager :: setup (bool forceAccessPoint /*= false */) {
 	// Hostname defaults to esp8266-[FIN DE LA MAC ADDRESS]
 	Logln (F("Chip Hostname: ") << getChipName());
 	WiFi.hostname (getChipName().c_str());
-	
+
 	// Register event handlers.
 	// Callback functions will be called as long as these handler objects exist.
 	wifiConnectedHandler 		= WiFi.onStationModeGotIP (
-		[this] (const WiFiEventStationModeGotIP& event) { 
+		[this] (const WiFiEventStationModeGotIP& event) {
 			Logln (F("Wifi connected: ") << event.ip);
-			notifyWifiConnected (event); 
+			notifyWifiConnected (event);
 		});
 	wifiDisconnectedHandler 	= WiFi.onStationModeDisconnected (
 		[this] (const WiFiEventStationModeDisconnected& event) {
@@ -303,23 +303,23 @@ void WiFiServersManager :: setup (bool forceAccessPoint /*= false */) {
 	stationConnectedHandler		= WiFi.onSoftAPModeStationConnected	(
 		[this] (const WiFiEventSoftAPModeStationConnected& event) {
 			const unsigned char* mac = event.mac;
-			Logln (F("Station connected: ")	<< mac[0] << F(":") << mac[1] << F(":") << mac[2] << F(":") 
+			Logln (F("Station connected: ")	<< mac[0] << F(":") << mac[1] << F(":") << mac[2] << F(":")
 													<< mac[3] << F(":") << mac[4] << F(":") << mac[5]);
 			notifyStationConnected (event);
 		});
 	stationDisconnectedHandler	= WiFi.onSoftAPModeStationDisconnected (
 		[this] (const WiFiEventSoftAPModeStationDisconnected& event) {
-			const unsigned char* mac = event.mac;			
-			Logln (F("Station disconnected: ")	<< mac[0] << F(":") << mac[1] << F(":") << mac[2] << F(":") 
+			const unsigned char* mac = event.mac;
+			Logln (F("Station disconnected: ")	<< mac[0] << F(":") << mac[1] << F(":") << mac[2] << F(":")
 													<< mac[3] << F(":") << mac[4] << F(":") << mac[5]);
 			notifyStationDisconnected (event);
 		});
-	
+
 	if (!_isWifiManagerEnabled) {
 		pinMode(USER_BTN, INPUT);
 		attachInterrupt(digitalPinToInterrupt(USER_BTN), _ISR_user_btn, CHANGE);
 	}
-	
+
 	startWifiAndServers ();
 }
 
@@ -327,10 +327,10 @@ void WiFiServersManager :: setup (bool forceAccessPoint /*= false */) {
 //
 //========================================================================================================================
 void WiFiServersManager :: loop () {
-	
-	
+
+
 	if (WiFiHelper::isWifiAvailable()) {
-		
+
 		dnsSrv.processNextRequest();
 
 #ifdef DEBUG
@@ -340,7 +340,7 @@ void WiFiServersManager :: loop () {
 		ArduinoOTA.handle();
 
 #endif
-		
+
 		if (!WiFiHelper::isAccessPointMode()) {
 			I(DeviceDetectorServer).loop();
 		}

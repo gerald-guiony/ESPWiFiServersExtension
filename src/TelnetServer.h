@@ -25,19 +25,19 @@ protected:
 
 	uint16_t 									_port;
 	AsyncServer * 								_server = NULL;
-	
+
 public:
 	Delegate <AsyncClient *>					notifyClientConnected;
 	Delegate <AsyncClient *>					notifyClientDisconnected;
 	Delegate <AsyncClient *, void *, size_t>	notifyClientDataReceived;
 	Delegate <AsyncClient *, int8_t>			notifyClientError;
 	Delegate <AsyncClient *, uint32_t>			notifyClientTimeout;
-	
+
 protected:
 
 	virtual void onNewClient					(void * arg, AsyncClient * client);
 
-public:		
+public:
 
 	TelnetServer								();
 	virtual ~TelnetServer 						();

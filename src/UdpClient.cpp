@@ -16,7 +16,7 @@ void UdpClient :: setup (uint16_t thePort) {
 
 	// Start the client
 	_wiFiUdp.begin(thePort);
-	
+
 	Logln(F("Udp client is up"));
 }
 
@@ -24,7 +24,7 @@ void UdpClient :: setup (uint16_t thePort) {
 //
 //========================================================================================================================
 void UdpClient :: sendCmd (IPAddress & ip, int port, String & cmd) {
-	
+
 	_wiFiUdp.beginPacket(ip, port);
 	_wiFiUdp << cmd;
 	_wiFiUdp.endPacket();

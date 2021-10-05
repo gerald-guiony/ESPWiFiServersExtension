@@ -15,7 +15,7 @@ SINGLETON_IMPL (DeviceDetectorResponseParser)
 //
 //========================================================================================================================
 bool DeviceDetectorResponseParser :: parse (Stream & stream, Print & printer) {
-	
+
 	while (stream.available()) {
 		if (checkRespBegin (stream)) break;
 	}
@@ -39,12 +39,12 @@ bool DeviceDetectorResponseParser :: parse (Stream & stream, Print & printer) {
 	case 1:
 		{
 			Logln(F("=> NAME, CATEGORY, IP AND MAC ADDRESS"));
-			
+
 			if (!checkSeparatorRespParam (stream)) {
 				Logln(F("Separator response param invalid !"));
 				return false;
 			}
-			
+
 			Logln(F("Params received:"));
 			String param;
 			do {
@@ -53,14 +53,14 @@ bool DeviceDetectorResponseParser :: parse (Stream & stream, Print & printer) {
 				Logln(param);
 			}
 			while (checkSeparatorParam (stream));
-			
+
 //			if (!checkRespEnd (stream)) {
 //				Logln(F("Response end not found !"));
 //				return false;
 //			}
 		}
 		break;
-		
+
 	default:
 		Logln(F("Invalid response id"));
 		return false;

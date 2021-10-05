@@ -41,23 +41,23 @@ public:
 	Delegate <const WiFiEventSoftAPModeStationDisconnected&>	notifyStationDisconnected;
 
 protected:
-	
+
 	void startWifi 												();
 	void startWifiAndServers									();
-	
+
 	bool startWiFiManager										();
 	void startOTA												();
-	
+
 	void startAllServers										();
 	void stopAllServers											();
-	
+
 	virtual void startCustomServers								() = 0;
 	virtual void stopCustomServers								() = 0;
 
 public:
 
 	void setWifiManagerEnabled									(bool enabled, bool accessPointIfNoWifi = false);
-	
+
 	virtual void setup											(bool forceAccessPoint = false);
 	virtual void loop											() override;
 };

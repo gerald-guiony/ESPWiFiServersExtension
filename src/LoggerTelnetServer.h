@@ -21,7 +21,7 @@
 class LoggerTelnetServer : public TelnetServer
 {
 	SINGLETON_CLASS(LoggerTelnetServer)
-	
+
 protected:
 
 	void addClient					(AsyncClient * client);
@@ -29,7 +29,7 @@ protected:
 
 	void onClientDataReceived		(AsyncClient * client, void *data, size_t len);
 	void onClientDisconnected		(AsyncClient * client);
-	
+
 	virtual void onNewClient		(void * arg, AsyncClient * client) override;
 
 public:

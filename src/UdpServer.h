@@ -24,11 +24,11 @@ protected:
 
 public:
 	Delegate <> 						notifyPacketReceived;
-	
+
 public:
 
 	void stop							();
-	
+
 	void setup							(uint16_t thePort = DEFAULT_UDP_PORT);
 	void loop							();
 

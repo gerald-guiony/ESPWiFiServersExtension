@@ -20,13 +20,13 @@ class UdpClient
 {
 protected:
 	WiFiUDP								_wiFiUdp;
-	
+
 	virtual StreamParser & getRespParser () = 0;
-	
+
 public:
 
 	void setup							(uint16_t thePort = DEFAULT_UDP_PORT);
-	
+
 	void sendCmd 						(IPAddress & ip, int port, String & cmd);
 
 	bool isResponseAvailable 			();

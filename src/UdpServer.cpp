@@ -27,7 +27,7 @@ void UdpServer :: setup (uint16_t thePort) {
 
 	// Start the server
 	_wiFiUdp.begin (thePort);
-	
+
 	Logln(F("Udp server is up"));
 	Logln(F("Now listening at IP ") << WiFiHelper::getIpAddress() << F(", UDP port ") << thePort);
 }
@@ -45,7 +45,7 @@ void UdpServer :: loop () {
 
 		MemStream memStreamPrinter;
 		getCmdParser().parse (_wiFiUdp, memStreamPrinter);
-		
+
 		// send back the reply, to the IP address and port we got the packet from
 		_wiFiUdp.beginPacket (_wiFiUdp.remoteIP(), _wiFiUdp.remotePort());
 		//_server.write (replyPacket);

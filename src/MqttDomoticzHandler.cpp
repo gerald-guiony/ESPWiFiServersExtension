@@ -20,7 +20,7 @@ SINGLETON_IMPL (MqttDomoticzLogPublisher)
 //
 //========================================================================================================================
 size_t MqttDomoticzPublisher :: publishJsonObj (const JsonObject& jsonObj, size_t len) {
-	
+
 	// Print the resulting JSON to a String
 	String output;
 	jsonObj.printTo(output);
@@ -46,7 +46,7 @@ void MqttDomoticzPublisher :: setup (AsyncMqttClient * asyncMqttClient) {
 
 
 //========================================================================================================================
-// 
+//
 //========================================================================================================================
 void MqttDomoticzLogPublisher :: publishStringLine (const String & logMsg) {
 
@@ -67,7 +67,7 @@ void MqttDomoticzLogPublisher :: publishStringLine (const String & logMsg) {
 //
 //========================================================================================================================
 size_t MqttDomoticzLogPublisher :: publishMessage (const String & logMsg) {
-	
+
 	// publish : "{\"command\" : \"addlogmessage\", \"message\" : \"%s\"}"
 
 	static String str;
@@ -105,7 +105,7 @@ void MqttDomoticzLogPublisher :: setup (AsyncMqttClient * asyncMqttClient) {
 void MqttDomoticzSubscriber :: onMqttConnected (bool sessionPresent) {
 
 	uint16_t packetIdSub = _asyncMqttClient->subscribe (DOMOTICS_TOPIC_OUT, 2);
-	
+
 	Logln(F("Subscribing at QoS 2, packetId: ") << packetIdSub);
 }
 
@@ -128,19 +128,19 @@ void MqttDomoticzSubscriber :: onMqttMessageReceived (char* topic, char* payload
 		// "switchType" : "On/Off",
 		// "unit" : 1
 	// }
-	
+
 	// décode le message - decode payload message
 
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonArg = jsonBuffer.parse(payload);
-	
+
 	// Test if parsing succeeds.
 	if (jsonArg.success()) {
-		
+
 		// Print the resulting JSON to a String (reformat the payload on a single line)
 		String output;
 		jsonArg.printTo(output);
-		
+
 		Logln(
 			F("Publish received : ") << LN
 			<< F(" -topic   =") << topic << LN
@@ -156,7 +156,7 @@ void MqttDomoticzSubscriber :: onMqttMessageReceived (char* topic, char* payload
 //========================================================================================================================
 void MqttDomoticzSubscriber :: setup (AsyncMqttClient * asyncMqttClient) {
 
-	_asyncMqttClient = asyncMqttClient; 
+	_asyncMqttClient = asyncMqttClient;
 
 	I(MqttClient).notifyConnected 		+= std::bind (&MqttDomoticzSubscriber::onMqttConnected, this, _1);
 	I(MqttClient).notifyMessageReceived += std::bind (&MqttDomoticzSubscriber::onMqttMessageReceived, this, _1, _2, _3, _4, _5, _6);

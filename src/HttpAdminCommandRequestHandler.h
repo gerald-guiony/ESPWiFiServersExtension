@@ -24,7 +24,7 @@ private:
 	void handleListAllFiles							(AsyncWebServerRequest * request);
 	void handleDelAllFiles							(AsyncWebServerRequest * request);
 	void handleWifi									(AsyncWebServerRequest * request);
-	
+
 public:
 	virtual void setup								(AsyncWebServer & asyncWebServer) override;
 };

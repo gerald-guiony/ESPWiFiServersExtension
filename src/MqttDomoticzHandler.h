@@ -40,13 +40,13 @@ class MqttDomoticzPublisher : public MqttHandler
 public:
 	MqttDomoticzPublisher				() {};
 
-	size_t publishJsonObj 				(const JsonObject& jsonObj, size_t len);	
+	size_t publishJsonObj 				(const JsonObject& jsonObj, size_t len);
 	virtual size_t publishMessage		(const String & msg) = 0;
 
 	virtual void setup 					(AsyncMqttClient * asyncMqttClient) override;
 
 protected:
-	AsyncMqttClient * _asyncMqttClient	= nullptr;	
+	AsyncMqttClient * _asyncMqttClient	= nullptr;
 };
 
 //------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ protected:
 class MqttDomoticzLogPublisher : public MqttDomoticzPublisher
 {
 	SINGLETON_CLASS(MqttDomoticzLogPublisher)
-	
+
 public:
 	void publishStringLine				(const String & msg);
 	virtual size_t publishMessage		(const String & msg) override;
@@ -63,17 +63,17 @@ public:
 };
 
 //------------------------------------------------------------------------------
-// 
+//
 class MqttDomoticzSubscriber : public MqttHandler
 {
 public:
 	MqttDomoticzSubscriber				() {};
-	
+
 	void onMqttConnected				(bool sessionPresent);
 	void onMqttMessageReceived			(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
 
 	virtual void parseJsonObj			(const JsonObject& jsonObj) = 0;
-	
+
 	virtual void setup 					(AsyncMqttClient * asyncMqttClient) override;
 
 protected:
