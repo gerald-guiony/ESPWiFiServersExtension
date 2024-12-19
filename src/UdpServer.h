@@ -10,7 +10,7 @@
 #include <WiFiUdp.h>					// https://github.com/esp8266/Arduino
 
 #include <Stream/StreamParser.h>
-#include <Tools/Delegate.h>
+#include <Tools/Signal.h>
 
 #define DEFAULT_UDP_PORT				555
 
@@ -23,7 +23,7 @@ protected:
 	WiFiUDP								_wiFiUdp;
 
 public:
-	Delegate <> 						notifyPacketReceived;
+	Signal <> 						notifyPacketReceived;
 
 public:
 

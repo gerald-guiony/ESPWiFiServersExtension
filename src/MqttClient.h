@@ -20,14 +20,14 @@ class MqttClient
 
 public:
 
-	Delegate <bool> 								notifyConnected;
-	Delegate <AsyncMqttClientDisconnectReason>		notifyDisconnected;
-	Delegate <uint16_t, uint8_t> 					notifySubscribed;
-	Delegate <uint16_t> 							notifyUnsubscribed;
-	Delegate <char*, char*,
+	Signal <bool> 									notifyConnected;
+	Signal <AsyncMqttClientDisconnectReason>		notifyDisconnected;
+	Signal <uint16_t, uint8_t> 						notifySubscribed;
+	Signal <uint16_t> 								notifyUnsubscribed;
+	Signal <char*, char*,
 				AsyncMqttClientMessageProperties,
 				size_t, size_t, size_t> 			notifyMessageReceived;
-	Delegate <uint16_t>								notifyPublishSent;
+	Signal <uint16_t>								notifyPublishSent;
 
 protected:
 

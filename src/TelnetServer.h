@@ -11,7 +11,7 @@
 #include <ESPAsyncTCP.h>							// https://github.com/me-no-dev/ESPAsyncTCP
 
 
-#include <Tools/Delegate.h>
+#include <Tools/Signal.h>
 
 
 #define DEFAULT_TELNET_PORT					23
@@ -27,11 +27,11 @@ protected:
 	AsyncServer * 								_server = NULL;
 
 public:
-	Delegate <AsyncClient *>					notifyClientConnected;
-	Delegate <AsyncClient *>					notifyClientDisconnected;
-	Delegate <AsyncClient *, void *, size_t>	notifyClientDataReceived;
-	Delegate <AsyncClient *, int8_t>			notifyClientError;
-	Delegate <AsyncClient *, uint32_t>			notifyClientTimeout;
+	Signal <AsyncClient *>						notifyClientConnected;
+	Signal <AsyncClient *>						notifyClientDisconnected;
+	Signal <AsyncClient *, void *, size_t>		notifyClientDataReceived;
+	Signal <AsyncClient *, int8_t>				notifyClientError;
+	Signal <AsyncClient *, uint32_t>			notifyClientTimeout;
 
 protected:
 

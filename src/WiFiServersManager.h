@@ -11,7 +11,7 @@
 #include <ESP8266WiFi.h>							// https://github.com/esp8266/Arduino
 
 #include <PowerMngt/Looper.h>
-#include <Tools/Delegate.h>
+#include <Tools/Signal.h>
 
 
 #define WIFI_RECONNECT_DELAY				2000
@@ -31,14 +31,14 @@ protected:
 
 public:
 
-	Delegate <>													notifyArduinoOTAStart;
-	Delegate <unsigned int, unsigned int>						notifyArduinoOTAProgress;
-	Delegate <>													notifyArduinoOTAEnd;
+	Signal <>													notifyArduinoOTAStart;
+	Signal <unsigned int, unsigned int>							notifyArduinoOTAProgress;
+	Signal <>													notifyArduinoOTAEnd;
 
-	Delegate <const WiFiEventStationModeGotIP&>					notifyWifiConnected;
-	Delegate <const WiFiEventStationModeDisconnected&>			notifyWifiDisconnected;
-	Delegate <const WiFiEventSoftAPModeStationConnected&>		notifyStationConnected;
-	Delegate <const WiFiEventSoftAPModeStationDisconnected&>	notifyStationDisconnected;
+	Signal <const WiFiEventStationModeGotIP&>					notifyWifiConnected;
+	Signal <const WiFiEventStationModeDisconnected&>			notifyWifiDisconnected;
+	Signal <const WiFiEventSoftAPModeStationConnected&>			notifyStationConnected;
+	Signal <const WiFiEventSoftAPModeStationDisconnected&>		notifyStationDisconnected;
 
 protected:
 

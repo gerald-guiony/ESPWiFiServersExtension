@@ -28,7 +28,7 @@ class HttpServer
 	SINGLETON_CLASS(HttpServer)
 
 public:
-	Delegate <AsyncWebServerRequest *>			notifyRequestReceived;
+	Signal <AsyncWebServerRequest *>			notifyRequestReceived;
 
 private:
 	void handleNotFound							(AsyncWebServerRequest * request);
