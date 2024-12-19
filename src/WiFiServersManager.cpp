@@ -258,7 +258,7 @@ void WiFiServersManager :: startWifiAndServers () {
 // Interrupt Service Routines (ISR) handler has to be marked with ICACHE_RAM_ATTR
 //========================================================================================================================
 #ifdef ESP8266
-void ICACHE_RAM_ATTR _ISR_user_btn ()
+void IRAM_ATTR _ISR_user_btn ()
 #else
 void _ISR_user_btn ()
 #endif
