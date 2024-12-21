@@ -4,7 +4,11 @@
 // Author Gerald Guiony
 //************************************************************************************************************************
 
-#include <ESP8266WiFi.h>					// WiFi.localIP()
+#ifdef ESP8266
+#	include <ESP8266WiFi.h>					// WiFi.localIP()
+#elif defined(ESP32)
+#	include <WiFi.h>
+#endif
 
 #include "DeviceDetectorCommandParser.h"
 

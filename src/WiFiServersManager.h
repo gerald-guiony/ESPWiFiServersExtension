@@ -8,9 +8,13 @@
 
 #include <IPAddress.h>
 
-#include <ESP8266WiFi.h>							// https://github.com/esp8266/Arduino
+#ifdef ESP8266
+#	include <ESP8266WiFi.h>							// https://github.com/esp8266/Arduino
+#elif defined(ESP32)
+#	include <WiFi.h>
+#endif
 
-#include <PowerMngt/Looper.h>
+#include <Module/Module.h>
 #include <Tools/Signal.h>
 
 
@@ -20,7 +24,7 @@
 
 //------------------------------------------------------------------------------
 // WARNING : SINGLETON !!!!
-class WiFiServersManager : public Looper
+class WiFiServersManager : public Module
 {
 protected:
 
@@ -35,10 +39,10 @@ public:
 	Signal <unsigned int, unsigned int>							notifyArduinoOTAProgress;
 	Signal <>													notifyArduinoOTAEnd;
 
-	Signal <const WiFiEventStationModeGotIP&>					notifyWifiConnected;
-	Signal <const WiFiEventStationModeDisconnected&>			notifyWifiDisconnected;
-	Signal <const WiFiEventSoftAPModeStationConnected&>			notifyStationConnected;
-	Signal <const WiFiEventSoftAPModeStationDisconnected&>		notifyStationDisconnected;
+	Signal <const IPAddress &>									notifyConnectedToWiFi;
+	Signal <>													notifyDisconnectedFromWiFi;
+	Signal <>													notifyClientConnected;
+	Signal <>													notifyClientDisconnected;
 
 protected:
 

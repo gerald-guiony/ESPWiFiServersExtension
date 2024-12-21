@@ -4,7 +4,12 @@
 // Author Gerald Guiony
 //************************************************************************************************************************
 
-#include <ESP8266mDNS.h>					// MDNS
+
+#ifdef ESP8266
+#	include <ESP8266mDNS.h>					// MDNS
+#elif defined(ESP32)
+#	include <ESPmDNS.h>
+#endif
 
 #include <Common.h>
 

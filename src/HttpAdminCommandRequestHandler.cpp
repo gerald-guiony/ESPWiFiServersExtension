@@ -72,10 +72,15 @@ void HttpAdminCommandRequestHandler :: handleInfo (AsyncWebServerRequest * reque
 	JsonObject& jsonRsp = response->getRoot();
 
 	jsonRsp["deviceName"]		= getChipName ();
-	jsonRsp["chipId"]			= ESP.getChipId ();
+	jsonRsp["chipId"]			= getChipId ();
 	jsonRsp["timeSinceBoot"]	= timeElapsedSinceBoot ();
 	jsonRsp["heap"]				= ESP.getFreeHeap ();
+#ifdef ESP8266
 	jsonRsp["lastResetReason"]	= ESP.getResetReason ();
+#elif defined (ESP32)
+	jsonRsp["resetReason cpu0"]	= get_reset_reason (0);
+	jsonRsp["resetReason cpu1"]	= get_reset_reason (1);
+#endif
 	jsonRsp["coreVersion"]		= ESP.getCoreVersion ();
 	jsonRsp["sdkVersion"]		= ESP.getSdkVersion ();
 	jsonRsp["cpuFreq"]			= ESP.getCpuFreqMHz ();
@@ -88,7 +93,11 @@ void HttpAdminCommandRequestHandler :: handleInfo (AsyncWebServerRequest * reque
 	jsonRsp["subnetMask"]		= WiFi.subnetMask().toString();
 	jsonRsp["gatewayIP"]		= WiFi.gatewayIP().toString();
 	jsonRsp["dnsIP"]			= WiFi.dnsIP().toString();
+#ifdef ESP826
 	jsonRsp["hostname"]			= WiFi.hostname();
+#elif defined (ESP32)
+	jsonRsp["hostname"]			= WiFi.getHostname();
+#endif
 	jsonRsp["SSID"]				= WiFi.SSID();
 	jsonRsp["BSSID"]			= WiFi.BSSIDstr();
 	jsonRsp["RSSI"]				= WiFi.RSSI();
@@ -133,7 +142,7 @@ void HttpAdminCommandRequestHandler :: handleReboot (AsyncWebServerRequest * req
 	jsonRsp.prettyPrintTo(*response);
 	request->send(response);
 
-	I(LoopScheduler).requestReboot ();
+	I(ModuleSequencer).requestReboot ();
 }
 
 //========================================================================================================================
@@ -221,7 +230,7 @@ void HttpAdminCommandRequestHandler :: handleWifi (AsyncWebServerRequest * reque
 	jsonRsp.prettyPrintTo(*response);
 	request->send(response);
 
-	I(LoopScheduler).requestReboot ();
+	I(ModuleSequencer).requestReboot ();
 }
 
 //========================================================================================================================

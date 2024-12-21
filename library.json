@@ -1,7 +1,7 @@
 {
   "name": "ESPWiFiServersExtension",
-  "keywords": "wifi, json, rest, tcp, http, mqtt, web, telnet, async, esp8266",
-  "description": "Library of various async wiFi servers for ESP8266",
+  "keywords": "wifi, json, rest, tcp, http, mqtt, web, telnet, async, esp8266, esp32",
+  "description": "A C++ library of asynchronous HTTP Server and Mqtt client Library for ESP8266 and ESP32",
   "authors":
   {
     "name": "Gérald GUIONY",
@@ -11,39 +11,34 @@
         "type": "git",
         "url": "https://github.com/gerald-guiony/ESPWiFiServersExtension.git"
   },
-  "version": "3.2",
+  "version": "4.0",
   "frameworks": "arduino",
-  "platforms": "espressif8266",
+  "platforms": ["espressif8266", "espressif32"],
   "dependencies": [
     {
       "name": "ESPCoreExtension",
-      "version": "3.2",
-      "platforms": "espressif8266"
+      "version": "4.0",
+      "platforms": ["espressif8266", "espressif32"],
     },
     {
       "name": "ArduinoJson",
       "version": "5.13.4",
-      "platforms": "espressif8266"
+      "platforms": "*"
     },
     {
       "name": "WiFiManager",
-      "version": "0.15",
-      "platforms": "espressif8266"
-    },
-    {
-      "name": "ESPAsyncTCP",
-      "version": "1.2.2",
-      "platforms": "espressif8266"
+      "version": "2.0.17",
+      "platforms": ["espressif8266", "espressif32"],
     },
     {
       "name": "ESP Async WebServer",
-      "version": "1.2.3",
-      "platforms": "espressif8266"
+      "version": "1.2.4",
+      "platforms": ["espressif8266", "espressif32"],
     },
     {
       "name": "AsyncMqttClient",
-      "version": "0.8.2",
-      "platforms": "espressif8266"
+      "version": "0.9.0",
+      "platforms": ["espressif8266", "espressif32"],
     }
   ]
 }

@@ -11,6 +11,7 @@
 #include "LoggerTelnetServer.h"
 
 
+
 using LoggerCommandParserPtr	= std::shared_ptr <LoggerCommandParser>;
 using AsyncTCPbufferPtr			= std::shared_ptr <AsyncTCPbuffer>;
 
@@ -20,6 +21,7 @@ struct LoggerTelnetData {
 	AsyncTCPbufferPtr		printer;
 	FunctionId				fnId;
 };
+
 
 std::map <AsyncClient *, LoggerTelnetData> 	loggerTelnetDataByClientMap;
 

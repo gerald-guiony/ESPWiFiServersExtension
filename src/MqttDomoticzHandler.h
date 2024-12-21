@@ -23,6 +23,8 @@
 #define DOMOTICS_TOPIC_OUT				"domoticz/out"		// Topic MQTT pour les publications vers Domoticz - Topic MQTT for Pan servor
 
 #define PAYLOAD_NAME					"name"
+#define PAYLOAD_COMMAND					"command"
+#define PAYLOAD_SWITCH_COMMAND			"switchcmd"
 #define PAYLOAD_IDX						"idx"
 #define PAYLOAD_NVALUE					"nvalue"
 #define PAYLOAD_SVALUE					"svalue"
@@ -41,7 +43,10 @@ public:
 	MqttDomoticzPublisher				() {};
 
 	size_t publishJsonObj 				(const JsonObject& jsonObj, size_t len);
-	virtual size_t publishMessage		(const String & msg) = 0;
+
+	size_t publishMessage 				(const uint8_t idx, const String & msg);
+	size_t publishValue 				(const uint8_t idx, const double value);
+	size_t publishSwitchStatut 			(const uint8_t idx, const bool isOn);
 
 	virtual void setup 					(AsyncMqttClient * asyncMqttClient) override;
 
@@ -56,8 +61,9 @@ class MqttDomoticzLogPublisher : public MqttDomoticzPublisher
 	SINGLETON_CLASS(MqttDomoticzLogPublisher)
 
 public:
+	virtual size_t publishMessage		(const String & msg);
 	void publishStringLine				(const String & msg);
-	virtual size_t publishMessage		(const String & msg) override;
+
 
 	virtual void setup 					(AsyncMqttClient * asyncMqttClient) override;
 };
@@ -72,7 +78,7 @@ public:
 	void onMqttConnected				(bool sessionPresent);
 	void onMqttMessageReceived			(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
 
-	virtual void parseJsonObj			(const JsonObject& jsonObj) = 0;
+	virtual bool parseJsonObj			(const JsonObject& jsonObj) = 0;
 
 	virtual void setup 					(AsyncMqttClient * asyncMqttClient) override;
 

@@ -27,6 +27,7 @@ public:
 	Signal <char*, char*,
 				AsyncMqttClientMessageProperties,
 				size_t, size_t, size_t> 			notifyMessageReceived;
+	Signal <> 										notifyValidMessageParsed;
 	Signal <uint16_t>								notifyPublishSent;
 
 protected:

@@ -8,8 +8,11 @@
 
 #include <memory>
 
-#include <ESPAsyncTCP.h>							// https://github.com/me-no-dev/ESPAsyncTCP
-
+#ifdef ESP8266
+#	include <ESPAsyncTCP.h>							// https://github.com/me-no-dev/ESPAsyncTCP
+#elif defined (ESP32)
+#	include <AsyncTCP.h>
+#endif
 
 #include <Tools/Signal.h>
 

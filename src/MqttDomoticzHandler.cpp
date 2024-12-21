@@ -36,6 +36,49 @@ size_t MqttDomoticzPublisher :: publishJsonObj (const JsonObject& jsonObj, size_
 //========================================================================================================================
 //
 //========================================================================================================================
+size_t MqttDomoticzPublisher :: publishMessage (const uint8_t idx, const String & msg) {
+
+	// publish : "{\"idx\": 21, \"nvalue\": 0, \"svalue\": \"%s\"}"
+
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& jsonObj = jsonBuffer.createObject();
+
+	jsonObj[PAYLOAD_IDX]	= idx;
+	jsonObj[PAYLOAD_NVALUE]	= 0;
+	jsonObj[PAYLOAD_SVALUE]	= msg;
+
+	return publishJsonObj (jsonObj, msg.length());
+}
+
+
+//========================================================================================================================
+//
+//========================================================================================================================
+size_t MqttDomoticzPublisher :: publishValue (const uint8_t idx, const double svalue) {
+
+	return publishMessage (idx, String (svalue));
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+size_t MqttDomoticzPublisher :: publishSwitchStatut (const uint8_t idx, const bool isOn) {
+
+	// mosquitto_pub -h 192.168.64.7 -t "domoticz/in" -m '{"command": "switchlight", "idx": 171, "switchcmd": "On" }'
+
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& jsonObj = jsonBuffer.createObject();
+
+	jsonObj[PAYLOAD_COMMAND]		= F("switchlight");
+	jsonObj[PAYLOAD_IDX]			= idx;
+	jsonObj[PAYLOAD_SWITCH_COMMAND]	= isOn ? F("On") : F("Off");
+
+	return publishJsonObj (jsonObj, isOn ? 2 : 3);
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
 void MqttDomoticzPublisher :: setup (AsyncMqttClient * asyncMqttClient) {
 
 	_asyncMqttClient = asyncMqttClient;
@@ -43,25 +86,6 @@ void MqttDomoticzPublisher :: setup (AsyncMqttClient * asyncMqttClient) {
 
 
 /************************************************************************************************************************/
-
-
-//========================================================================================================================
-//
-//========================================================================================================================
-void MqttDomoticzLogPublisher :: publishStringLine (const String & logMsg) {
-
-	static String str;
-
-	int end = logMsg.indexOf (ln);
-	if (end < 0) return;
-
-	str = logMsg.substring(0, end);
-
-	size_t msgSizePublished = publishMessage (str);
-//	if (msgSizePublished) {
-//		sstr.remove (0, msgSizePublished);
-//	}
-}
 
 //========================================================================================================================
 //
@@ -83,6 +107,24 @@ size_t MqttDomoticzLogPublisher :: publishMessage (const String & logMsg) {
 	jsonObj[PAYLOAD_LOG_MESSAGE] = str;
 
 	return publishJsonObj (jsonObj, str.length());
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+void MqttDomoticzLogPublisher :: publishStringLine (const String & logMsg) {
+
+	static String str;
+
+	int end = logMsg.indexOf (_ln);
+	if (end < 0) return;
+
+	str = logMsg.substring(0, end);
+
+	size_t msgSizePublished = publishMessage (str);
+//	if (msgSizePublished) {
+//		sstr.remove (0, msgSizePublished);
+//	}
 }
 
 //========================================================================================================================
@@ -147,7 +189,10 @@ void MqttDomoticzSubscriber :: onMqttMessageReceived (char* topic, char* payload
 			<< F(" -payload =") << output << LN
 		);
 
-		parseJsonObj (jsonArg);
+		if (parseJsonObj (jsonArg))
+		{
+			I(MqttClient).notifyValidMessageParsed ();
+		}
 	}
 }
 

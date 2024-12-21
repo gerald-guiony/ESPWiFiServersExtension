@@ -8,7 +8,13 @@
 
 //needed for library
 #include <DNSServer.h>
-#include <ESP8266WebServer.h>
+
+#ifdef ESP8266
+#	include <ESP8266WebServer.h>
+#elif defined(ESP32)
+#	include <WebServer.h>
+#endif
+
 #include <WiFiManager.h>								//https://github.com/tzapu/WiFiManager  =>  hotfixes branch !!!
 
 // includes necessaires au fonctionnement de l'OTA :
@@ -20,24 +26,25 @@
 
 #include <Common.h>
 
-#include "LoggerTelnetServer.h"
 #include "DeviceDetectorServer.h"
-
 #include "WiFiServersManager.h"
+#include "LoggerTelnetServer.h"
 
 
 DNSServer dnsSrv;
 
+
+#ifdef ESP8266
 // Les instances ne doivent pas etre détruite (shared_ptr) pour que les Event puissent être gérés
 WiFiEventHandler wifiConnectedHandler;
 WiFiEventHandler wifiDisconnectedHandler;
 
 WiFiEventHandler stationConnectedHandler;
 WiFiEventHandler stationDisconnectedHandler;
+#endif
 
-// En attendant la mise à jour ...
+
 //Ticker wifiReconnectTimer;
-//Tycker wifiReconnectTimer;
 
 // volatile because changed by ISR
 // Volatile car mis a jour dans une interruption
@@ -166,12 +173,10 @@ void WiFiServersManager :: startAllServers () {
 //		Logln(F("* MDNS responder started. Hostname -> ") << getChipName());
 //	}
 
-#ifdef DEBUG
-
 	startOTA ();
 
+#ifdef DEBUG
 	I(LoggerTelnetServer).setup ();
-
 #endif
 
 	if (!WiFiHelper::isAccessPointMode()) {
@@ -257,13 +262,13 @@ void WiFiServersManager :: startWifiAndServers () {
 //========================================================================================================================
 // Interrupt Service Routines (ISR) handler has to be marked with ICACHE_RAM_ATTR
 //========================================================================================================================
-#ifdef ESP8266
+#if defined (ESP8266) || defined (ESP32)
 void IRAM_ATTR _ISR_user_btn ()
 #else
 void _ISR_user_btn ()
 #endif
 {
-//	Logln("User button state:" << digitalRead(USER_BTN));
+//	Logln("User button state:" << digitalRead());
 
 	// Si le device ne peut pas se reconnecter au wifi, l'utilisateur peut autoriser le wifiManager a se lancer en appuyant
 	// sur le boutton USER_BTN (notament lors d'un reboot après un deep sleep)
@@ -271,6 +276,47 @@ void _ISR_user_btn ()
 
 	BLINKLED_ON();	// Led on
 }
+
+#ifdef ESP32
+//========================================================================================================================
+//
+//========================================================================================================================
+static void logWiFiEvent(WiFiEvent_t event)
+{
+	Logln (F("[WiFi-event] event: ") << event);
+
+	switch (event) {
+		case ARDUINO_EVENT_WIFI_READY:              Logln (F("WiFi interface ready")); break;
+		case ARDUINO_EVENT_WIFI_SCAN_DONE:          Logln (F("Completed scan for access points")); break;
+		case ARDUINO_EVENT_WIFI_STA_START:          Logln (F("WiFi client started")); break;
+		case ARDUINO_EVENT_WIFI_STA_STOP:           Logln (F("WiFi clients stopped")); break;
+		case ARDUINO_EVENT_WIFI_STA_CONNECTED:      Logln (F("Connected to access point")); break;
+		case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:   Logln (F("Disconnected from WiFi access point")); break;
+		case ARDUINO_EVENT_WIFI_STA_AUTHMODE_CHANGE:Logln (F("Authentication mode of access point has changed")); break;
+		case ARDUINO_EVENT_WIFI_STA_GOT_IP: 		Logln (F("Obtained IP address: ")); break;
+		case ARDUINO_EVENT_WIFI_STA_LOST_IP:        Logln (F("Lost IP address and IP address is reset to 0")); break;
+		case ARDUINO_EVENT_WPS_ER_SUCCESS:          Logln (F("WiFi Protected Setup (WPS): succeeded in enrollee mode")); break;
+		case ARDUINO_EVENT_WPS_ER_FAILED:           Logln (F("WiFi Protected Setup (WPS): failed in enrollee mode")); break;
+		case ARDUINO_EVENT_WPS_ER_TIMEOUT:          Logln (F("WiFi Protected Setup (WPS): timeout in enrollee mode")); break;
+		case ARDUINO_EVENT_WPS_ER_PIN:              Logln (F("WiFi Protected Setup (WPS): pin code in enrollee mode")); break;
+		case ARDUINO_EVENT_WIFI_AP_START:           Logln (F("WiFi access point started")); break;
+		case ARDUINO_EVENT_WIFI_AP_STOP:            Logln (F("WiFi access point  stopped")); break;
+		case ARDUINO_EVENT_WIFI_AP_STACONNECTED:	Logln (F("Client connected")); break;
+		case ARDUINO_EVENT_WIFI_AP_STADISCONNECTED:	Logln (F("Client disconnected")); break;
+		case ARDUINO_EVENT_WIFI_AP_STAIPASSIGNED:   Logln (F("Assigned IP address to client")); break;
+		case ARDUINO_EVENT_WIFI_AP_PROBEREQRECVED:  Logln (F("Received probe request")); break;
+		case ARDUINO_EVENT_WIFI_AP_GOT_IP6:         Logln (F("AP IPv6 is preferred")); break;
+		case ARDUINO_EVENT_WIFI_STA_GOT_IP6:        Logln (F("STA IPv6 is preferred")); break;
+		case ARDUINO_EVENT_ETH_GOT_IP6:             Logln (F("Ethernet IPv6 is preferred")); break;
+		case ARDUINO_EVENT_ETH_START:               Logln (F("Ethernet started")); break;
+		case ARDUINO_EVENT_ETH_STOP:                Logln (F("Ethernet stopped")); break;
+		case ARDUINO_EVENT_ETH_CONNECTED:           Logln (F("Ethernet connected")); break;
+		case ARDUINO_EVENT_ETH_DISCONNECTED:        Logln (F("Ethernet disconnected")); break;
+		case ARDUINO_EVENT_ETH_GOT_IP:              Logln (F("Obtained IP address")); break;
+		default:                                    break;
+	}
+}
+#endif
 
 //========================================================================================================================
 //
@@ -288,32 +334,74 @@ void WiFiServersManager :: setup (bool forceAccessPoint /*= false */) {
 	Logln (F("Chip Hostname: ") << getChipName());
 	WiFi.hostname (getChipName().c_str());
 
+#ifdef ESP8266
+
 	// Register event handlers.
 	// Callback functions will be called as long as these handler objects exist.
 	wifiConnectedHandler 		= WiFi.onStationModeGotIP (
 		[this] (const WiFiEventStationModeGotIP& event) {
 			Logln (F("Wifi connected: ") << event.ip);
-			notifyWifiConnected (event);
+			notifyConnectedToWiFi (event.ip);
 		});
 	wifiDisconnectedHandler 	= WiFi.onStationModeDisconnected (
-		[this] (const WiFiEventStationModeDisconnected& event) {
+		[this] (const WiFiEventStationModeDisconnected& ) {
 			Logln (F("Wifi disconnected!"));
-			notifyWifiDisconnected (event);
+			notifyDisconnectedFromWiFi ();
 		});
 	stationConnectedHandler		= WiFi.onSoftAPModeStationConnected	(
 		[this] (const WiFiEventSoftAPModeStationConnected& event) {
 			const unsigned char* mac = event.mac;
-			Logln (F("Station connected: ")	<< mac[0] << F(":") << mac[1] << F(":") << mac[2] << F(":")
-													<< mac[3] << F(":") << mac[4] << F(":") << mac[5]);
-			notifyStationConnected (event);
+			Logln (F("Client connected: ")	<< mac[0] << F(":") << mac[1] << F(":") << mac[2] << F(":")
+											<< mac[3] << F(":") << mac[4] << F(":") << mac[5]);
+			notifyClientConnected ();
 		});
 	stationDisconnectedHandler	= WiFi.onSoftAPModeStationDisconnected (
 		[this] (const WiFiEventSoftAPModeStationDisconnected& event) {
 			const unsigned char* mac = event.mac;
-			Logln (F("Station disconnected: ")	<< mac[0] << F(":") << mac[1] << F(":") << mac[2] << F(":")
-													<< mac[3] << F(":") << mac[4] << F(":") << mac[5]);
-			notifyStationDisconnected (event);
+			Logln (F("Client disconnected: ")	<< mac[0] << F(":") << mac[1] << F(":") << mac[2] << F(":")
+												<< mac[3] << F(":") << mac[4] << F(":") << mac[5]);
+			notifyClientDisconnected ();
 		});
+
+#elif defined (ESP32)
+
+	WiFi.onEvent(logWiFiEvent);
+
+	WiFi.onEvent(
+		[this](WiFiEvent_t event, WiFiEventInfo_t info) {
+  			Logln (F("WiFi connected, IP address: "));
+  			Logln (IPAddress(info.got_ip.ip_info.ip.addr));
+			notifyConnectedToWiFi (info.got_ip.ip_info.ip.addr);
+    	},
+    	WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
+
+	WiFi.onEvent(
+		[this](WiFiEvent_t event, WiFiEventInfo_t info) {
+      		Logln (F("WiFi lost connection. Reason: "));
+      		Logln (info.wifi_sta_disconnected.reason);
+			notifyDisconnectedFromWiFi ();
+    	},
+    	WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
+
+	WiFi.onEvent(
+		[this](WiFiEvent_t event, WiFiEventInfo_t info) {
+      		Logln (F("Client connected: "));
+ 			Logln (IPAddress(info.wifi_ap_staipassigned.ip.addr));
+			notifyClientConnected ();
+    	},
+    	WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STACONNECTED);
+
+	WiFi.onEvent(
+		[this](WiFiEvent_t event, WiFiEventInfo_t info) {
+      		Logln (F("Client disconnect: "));
+      		//Logln (info.wifi_ap_stadisconnected);
+			notifyClientDisconnected ();
+    	},
+    	WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STADISCONNECTED);
+
+#endif
+
+
 
 	if (!_isWifiManagerEnabled) {
 		pinMode(USER_BTN, INPUT);
@@ -333,13 +421,9 @@ void WiFiServersManager :: loop () {
 
 		dnsSrv.processNextRequest();
 
-#ifdef DEBUG
-
 		// A chaque iteration, on verifie si une mise a jour nous est envoyee
 		// si tel est cas, la lib ArduinoOTA se charge de gerer la suite :)
 		ArduinoOTA.handle();
-
-#endif
 
 		if (!WiFiHelper::isAccessPointMode()) {
 			I(DeviceDetectorServer).loop();
