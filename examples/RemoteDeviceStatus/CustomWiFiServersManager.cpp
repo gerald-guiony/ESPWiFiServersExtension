@@ -11,9 +11,7 @@
 
 #include <HttpAdminCommandRequestHandler.h>
 
-#include "HttpDeviceONCommandRequestHandler.h"
 #include "MqttDeviceONDomoticzHandler.h"
-
 #include "CustomWiFiServersManager.h"
 
 
@@ -37,15 +35,8 @@ SINGLETON_IMPL (CustomWiFiServersManager)
 //========================================================================================================================
 void CustomWiFiServersManager :: startCustomServers () {
 
-//	if (WiFiHelper::isAccessPointMode()) {
-
-		// Add the administrative commands request handler
-		// Only when the device is in Access Point mode (not connected to Wifi)
-		// IP address is 192.168.4.1 no password and the IP port is fixed and the same for all esp
-		I(HttpServer).addRequestHandlers( { &I(HttpAdminCommandRequestHandler) } );
-//	}
-
-	I(HttpServer).addRequestHandlers( { &I(HttpDeviceONCommandRequestHandler) } );
+	// Add the administrative commands request handler
+	I(HttpServer).addRequestHandlers( { &I(HttpAdminCommandRequestHandler) } );
 
 	// Start the Web Server
 	I(HttpServer).setup ();
@@ -56,7 +47,6 @@ void CustomWiFiServersManager :: startCustomServers () {
 		// Start the MQTT Client
 		I(MqttClient).addHandlers ( { &I(MqttDomoticzLogPublisher), &I(MqttDeviceONDomoticzPublisher), &I(MqttDeviceONDomoticzSubscriber) } );
 		I(MqttClient).setup (MQTT_SERVER_IP, MQTT_SERVER_PORT);
-
 	}
 #endif
 }
@@ -97,6 +87,7 @@ void CustomWiFiServersManager :: loop () {
 
 #ifdef USING_MQTT
 		if (!WiFiHelper::isAccessPointMode()) {
+
 			I(MqttClient).loop();
 
 			if (millis() - lastRefresh > MQTT_REFRESH_DEVICE_ON_DELAY_MS) {

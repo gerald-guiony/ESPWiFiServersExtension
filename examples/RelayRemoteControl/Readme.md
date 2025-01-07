@@ -1,10 +1,11 @@
-This sketch has been developed for the version 3.1.2 of the Arduino Core for ESP8266 WiFi chip. Switch to that in the Board Manager, if you havn't done already.
-
 # RelayRemoteControl
 
 RelayRemoteControl is an application which uses an ESP8266 WiFi chip to control remotely an electrical relay (electrically operated switches that open and close the circuits by receiving electrical signals)
 
 Here I used a [Wio node](https://wiki.seeedstudio.com/Wio_Node/) and this [Grove relay](https://wiki.seeedstudio.com/Grove-Relay/) to remotely control my kitchen light :)
+In this example there are 2 possibilities in Domoticz to control the relay, using JSON commands or using MQTT commands.
+
+![JSON and MQTT buttons in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/KLightJsonMqtt.png)
 
 ## JSON commands
 
@@ -19,11 +20,20 @@ Here I used a [Wio node](https://wiki.seeedstudio.com/Wio_Node/) and this [Grove
 
 ![Settings in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/DomoticzOpenCloseRelay.png)
 
-## MQTT
+## MQTT in Domoticz
 
 In Domoticz, I added the MQTT mosquitto server 
 
 ![MQTT mosquitto server settings](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/MqttInDomoticz.png)
 
-Now I can parse the mqtt command coming from a Domoticz button using its name, see the source files [Settings.h](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/Settings.h) and [MqttRelayDomoticzHandler.cpp](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/MqttRelayDomoticzHandler.cpp)
+Now I can parse the mqtt command coming from a Domoticz button using its idx, see the source files [Settings.h](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/Settings.h) and [MqttRelayDomoticzHandler.cpp](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/MqttRelayDomoticzHandler.cpp)
 
+## Dependencies
+
+To upload this application you must have the latest version of :
+* [ESPCoreExtension library](https://github.com/gerald-guiony/ESPCoreExtension) 
+* [ESPWiFiServersExtension library](https://github.com/gerald-guiony/ESPWiFiServersExtension)
+
+## Board settings
+
+The Arduino IDE board settings for my Wio node [here](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/WioNodeBoardSettings.png)

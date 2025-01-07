@@ -35,7 +35,6 @@
 
 #elif defined(ESP32)
 
-
 #else
 
 #	define RELAY_PIN 			TIMER_PWM_PIN
@@ -51,5 +50,5 @@
 #define MQTT_SERVER_PORT			1883				// Port Broker MQTT
 
 // Relay component
-#define REMOTE_RELAY_SWITCH_IDX 	255					// Not defined at this time
+#define REMOTE_RELAY_SWITCH_IDX 	44
 #define REMOTE_MQTT_LOG_IDX			17

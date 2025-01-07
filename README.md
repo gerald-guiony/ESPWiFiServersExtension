@@ -23,9 +23,9 @@ To use ESPWiFiServersExtension, you need:
 
 ## Dependencies
 
-To use this library you might need to have: 
+To compile this library you must have: 
 
-* Version 4.0 of [ESPCoreExtension](https://github.com/gerald-guiony/ESPCoreExtension)
+* Latest version of [ESPCoreExtension](https://github.com/gerald-guiony/ESPCoreExtension)
 * Version 5.13.4 of [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
 * Version 2.0.17 of [WiFiManager](https://github.com/tzapu/WiFiManager)
 * Version 1.2.4 of [ESP Async WebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
@@ -38,16 +38,22 @@ With this library you can debug remotely with telnet in a terminal :
 
 ![Settings in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/debug.png)
 
-You also have debugging commands, type 'h' to see the list of commands :
+You also have debugging commands, type 'h' to see the list of these commands :
 
 ![Settings in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/debugCommand.png)
 
+## Administrative JSON commands
+
+In this library you can access to administrative commands for your esp with JSON, see source file  
+
+[HttpAdminCommandRequestHandler.cpp](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/src/HttpAdminCommandRequestHandler.cpp)
+
+> http:://[IP address of your Esp]/admin/help
+
+![Admin commands](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/JsonAdminCommand.png)
+
 ## Examples
 
-1. [RelayRemoteControl](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl)
-
-![Settings in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/DomoticzOpenCloseRelay.png)
-
-2. [RemoteDeviceStatus](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus)
-
-![Freebox Wio Node](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/doc/img/FreeboxPlayerWioNode.jpg)
+1. Control remotely an electrical relay : [RelayRemoteControl](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl)
+2. Device waking up from standby mode : [RemoteDeviceStatus](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus)
+3. Universal InfraRed remote control : [IrRemoteControl](https://github.com/gerald-guiony/ESPInfraredTransceiver/blob/master/examples/IrRemoteControl)

@@ -31,9 +31,7 @@
 
 #elif defined(ESP32)
 
-
 #else
-
 
 #endif
 

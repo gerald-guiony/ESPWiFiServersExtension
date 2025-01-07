@@ -1,11 +1,13 @@
-This sketch has been developed for the version 3.1.2 of the Arduino Core for ESP8266 WiFi chip. Switch to that in the Board Manager, if you havn't done already.
-
 # RemoteDeviceStatus
 
 RemoteDeviceStatus is an application that uses an ESP8266 WiFi chip to indicate whether a device has power.
 Particularly useful if the device has its USB ports powered when waking up from standby mode.
 
-Here I used a [Wio node](https://wiki.seeedstudio.com/Wio_Node/) to know if my [Freebox Player](https://www.actusfree.fr/freebox-player/) has come out of standby mode.
+Here I used a [Wio node](https://wiki.seeedstudio.com/Wio_Node/) to know if my [Freebox Player](https://www.actusfree.fr/freebox-player/) has come out of standby mode, 
+but you can use this principle for any other device that powers its USB ports when coming out of standby mode.
+
+This saves me from installing a Domoticz plugin for the Freebox like [this one](https://github.com/supermat/PluginDomoticzFreebox) which requires the registration of 
+a connection token and modification rights.
 
 ## Freebox Player settings 
 
@@ -13,7 +15,7 @@ Here I used a [Wio node](https://wiki.seeedstudio.com/Wio_Node/) to know if my [
 
 ## Freebox Player with an esp8266 Wio Node on its USB port 
 
-![Freebox Wio Node](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/doc/img/FreeboxPlayerWioNode.jpg)
+![Freebox with a Wio Node](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/doc/img/FreeboxPlayerWioNode.jpg)
 
 ## Freebox Player Status
 
@@ -24,8 +26,16 @@ Additionally, a Lua script in Domoticz pings the Wio node to update its status t
 
 ## Domoticz and MQTT
 
-Now in Domoticz, with the help of MQTT mosquitto server I can show the status of my Freebox Player coming from MQTT or updated by a Lua script with a simple Domoticz On/Off button. 
-
-## Simple On/Off Domoticz button
+In Domoticz, with the help of MQTT mosquitto server I can show the status of my Freebox Player coming from MQTT or updated by a Lua script with a simple Domoticz On/Off button. 
 
 ![Simple Domoticz button](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/doc/img/SimpleDomoticzButton.png)
+
+## Dependencies
+
+To upload this application you must have the latest version of :
+* [ESPCoreExtension library](https://github.com/gerald-guiony/ESPCoreExtension) 
+* [ESPWiFiServersExtension library](https://github.com/gerald-guiony/ESPWiFiServersExtension)
+
+## Board settings
+
+The Arduino IDE board settings for my Wio node [here](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/doc/WioNodeBoardSettings.png)
