@@ -36,4 +36,4 @@ To upload this application you must have the latest version of :
 
 ## Board settings
 
-The Arduino IDE board settings for my Wio node [here](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/WioNodeBoardSettings.png)
+Board settings in Arduino IDE to upload the sketch with OTA (Over The Air) to my Wio node : [Wio Node board settings](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/WioNodeBoardSettings.png)
