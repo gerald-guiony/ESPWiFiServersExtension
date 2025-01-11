@@ -6,7 +6,7 @@
 [![ESP8266](https://img.shields.io/badge/ESP-8266-000000.svg?longCache=true&style=flat&colorA=CC101F)](https://www.espressif.com/en/products/socs/esp8266)
 [![ESP32](https://img.shields.io/badge/ESP-32-000000.svg?longCache=true&style=flat&colorA=CC101F)](https://www.espressif.com/en/products/socs/esp32)
 
-ESPWiFiServersExtension is a C++ library for the Arduino Core for ESP8266 & ESP32 WiFi chip which extends the libraries [ESP async Webserver](https://github.com/me-no-dev/ESPAsyncWebServer) and [async Mqtt Client](https://github.com/marvinroger/async-mqtt-client)
+ESPWiFiServersExtension is a C++ library for the Arduino Core for ESP8266 & ESP32 WiFi chip which extends my favorite esp libraries [ESP async Webserver](https://github.com/me-no-dev/ESPAsyncWebServer) and [async Mqtt Client](https://github.com/marvinroger/async-mqtt-client)
 
 ## Getting started
 
@@ -55,5 +55,5 @@ In this library you can access to administrative commands for your esp with JSON
 ## Examples
 
 1. Control remotely an electrical relay : [RelayRemoteControl](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl)
-2. Device waking up from standby mode : [RemoteDeviceStatus](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus)
+2. Detect wake from standby mode for electronic devices : [RemoteDeviceStatus](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus)
 3. Universal InfraRed remote control : [IrRemoteControl](https://github.com/gerald-guiony/ESPInfraredTransceiver/blob/master/examples/IrRemoteControl)

@@ -1,5 +1,7 @@
 # RemoteDeviceStatus
 
+## Detect wake from standby mode for electronic devices
+
 RemoteDeviceStatus is an application that uses an ESP8266 WiFi chip to indicate whether a device has power.
 Particularly useful if the device has its USB ports powered when waking up from standby mode.
 
