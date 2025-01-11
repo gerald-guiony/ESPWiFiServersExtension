@@ -27,6 +27,7 @@ Additionally, a Lua script in Domoticz pings the Wio node to update its status t
 ## Domoticz and MQTT
 
 In Domoticz, with the help of MQTT mosquitto server I can show the status of my Freebox Player coming from MQTT or updated by a Lua script with a simple Domoticz On/Off button. 
+I just need to write his idx number in the include file [Settings.h](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/Settings.h)
 
 ![Simple Domoticz button](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/doc/img/SimpleDomoticzButton.png)
 
