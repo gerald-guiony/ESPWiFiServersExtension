@@ -71,15 +71,15 @@ void HttpAdminCommandRequestHandler :: handleInfo (AsyncWebServerRequest * reque
 	PrettyAsyncJsonResponse * response = new PrettyAsyncJsonResponse();
 	JsonObject& jsonRsp = response->getRoot();
 
-	jsonRsp["deviceName"]		= getChipName ();
-	jsonRsp["chipId"]			= getChipId ();
-	jsonRsp["timeSinceBoot"]	= timeElapsedSinceBoot ();
+	jsonRsp["deviceName"]		= EspBoard::getDeviceName ();
+	jsonRsp["chipId"]			= EspBoard::getDeviceId ();
+	jsonRsp["timeSinceBoot"]	= EspBoard::getTimeElapsedSinceBoot ();
 	jsonRsp["heap"]				= ESP.getFreeHeap ();
 #ifdef ESP8266
-	jsonRsp["lastResetReason"]	= ESP.getResetReason ();
+	jsonRsp["lastResetReason"]	= EspBoard::getResetReason ();
 #elif defined (ESP32)
-	jsonRsp["resetReason cpu0"]	= get_reset_reason (0);
-	jsonRsp["resetReason cpu1"]	= get_reset_reason (1);
+	jsonRsp["resetReason cpu0"]	= EspBoard::getResetReason (0);
+	jsonRsp["resetReason cpu1"]	= EspBoard::getResetReason (1);
 #endif
 	jsonRsp["coreVersion"]		= ESP.getCoreVersion ();
 	jsonRsp["sdkVersion"]		= ESP.getSdkVersion ();
@@ -217,7 +217,7 @@ void HttpAdminCommandRequestHandler :: handleWifi (AsyncWebServerRequest * reque
 	String pass = jsonArg ["pass"];
 
 	WiFi.begin (ssid.c_str(), pass.c_str());		// Serialization automatique du ssid et password
-	asyncDelayMillis (1000);
+	EspBoard::asyncDelayMillis (1000);
 
 	// This way of sending Json is great for when the result is below 4KB
 	AsyncResponseStream *response = request->beginResponseStream(F("application/json"));

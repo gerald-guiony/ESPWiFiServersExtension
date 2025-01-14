@@ -55,7 +55,7 @@ bool DeviceDetectorCommandParser :: parse (Stream & stream, Print & printer) {
 			Logln(F("=> NAME, CATEGORY, IP AND MAC ADDRESS"));
 
 			printer << PRINT_RESP (commandId,
-				getChipName()														<< F(MSG_SEPARATOR_PARAM) <<
+				EspBoard::getDeviceName()											<< F(MSG_SEPARATOR_PARAM) <<
 				F("IOT Remote Control")												<< F(MSG_SEPARATOR_PARAM) <<
 				WiFi.localIP()														<< F(MSG_SEPARATOR_PARAM) <<
 				WiFi.macAddress()

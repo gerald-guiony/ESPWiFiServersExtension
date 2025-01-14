@@ -32,7 +32,7 @@ SINGLETON_IMPL (MqttRelayDomoticzPublisher)
 //========================================================================================================================
 size_t MqttRelayDomoticzPublisher :: publishStatutMessage (const String & msg) {
 
-	static const String msgHeader = "[" + getChipName() + "] ";
+	static const String msgHeader = "[" + EspBoard::getDeviceName() + "] ";
 	String custom_msg = msgHeader + msg;
 
 	return publishMessage (REMOTE_MQTT_LOG_IDX, custom_msg);

@@ -7,38 +7,11 @@
 #pragma once
 
 #ifdef ESP8266
-
 #	include <ESPAsyncTCPbuffer.h>							// https://github.com/me-no-dev/ESPAsyncTCP
-
 #elif defined (ESP32)
-
-#	include <AsyncTCP.h>
-
-class AsyncTCPbuffer: public Print
-{
-protected:
-	AsyncClient * _asyncClient;
-
-public:
-
-	AsyncTCPbuffer (AsyncClient* c) : _asyncClient (c) {}
-
-	virtual ~AsyncTCPbuffer() {
-		if(_asyncClient) {
-        	_asyncClient->close();
-		}
-	}
-
-	size_t write(uint8_t data) override {
-    	return write((const char *) &data, 1);
-	}
-
-	size_t write(const char* data, size_t len) {
-		return _asyncClient->write (data, len);
-	}
-
-};
-
+#	include <AsyncTCPbuffer.h>
+#else
+#	error Platform not supported
 #endif
 
 

@@ -24,13 +24,11 @@ void setup() {
 
 	// ------------ Global Init
 
-	initSketch ();
+	EspBoard::init (true);
 
 	// ------------- setup
 
-	I(ModuleSequencer).enterDeepSleepWhenWifiOff ();														// Deep sleep
-
-	I(CustomWiFiServersManager).setWifiManagerEnabled (!I(ModuleSequencer).isDeviceWakeUpFromDeepSleep());	// If WakeUpFromDeepSleep => No WifiManager & No Ap Mode
+	I(CustomWiFiServersManager).setWifiManagerEnabled (!EspBoard::isWakeUpFromDeepSleep());	// If WakeUpFromDeepSleep => No WifiManager & No Ap Mode
 	I(CustomWiFiServersManager).setup();
 
 	// ------------- Connect notifiers
@@ -40,10 +38,8 @@ void setup() {
 	I(MqttClient).notifyValidMessageParsed += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
 #endif
 
+	I(ModuleSequencer).enterDeepSleepWhenWifiOff ();										// Deep sleep
 	I(ModuleSequencer).setup ({ &I(CustomWiFiServersManager) });
-
-	// Power ON the Grove sockets
-	//setModulesPower (true);
 }
 
 //========================================================================================================================

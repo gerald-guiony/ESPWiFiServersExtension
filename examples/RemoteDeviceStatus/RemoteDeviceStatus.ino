@@ -19,7 +19,7 @@ void setup() {
 
 	// ------------ Global Init
 
-	initSketch ();
+	EspBoard::init ();
 
 	// ------------- setup
 

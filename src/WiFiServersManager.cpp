@@ -95,7 +95,7 @@ bool WiFiServersManager :: startWiFiManager () {
 
 	if (result) {
 		Logln(F("Wifi credential ok => Restart the chip"));
-		reboot ();
+		EspBoard::reboot ();
 	}
 	else {
 		Logln(F("Failed to connect and hit timeout"));
@@ -104,7 +104,7 @@ bool WiFiServersManager :: startWiFiManager () {
 														// L'alternance entre mode AP et STA provoque des deconnexions en mode AP
 		}
 		else {
-			reboot ();
+			EspBoard::reboot ();
 		}
 	}
 	return result;
@@ -120,7 +120,7 @@ void WiFiServersManager :: startOTA () {
 	// Port defaults to 8266
 	// ArduinoOTA.setPort(8266);
 	// Hostname defaults to esp8266-[ChipID]
-	ArduinoOTA.setHostname(getChipName().c_str());
+	ArduinoOTA.setHostname(EspBoard::getDeviceName().c_str());
 	// No authentication by default
 	// ArduinoOTA.setPassword((const char *)"123");
 
@@ -169,8 +169,8 @@ void WiFiServersManager :: startAllServers () {
 	// - For Mac OSX and iOS support is built in through Bonjour already.
 	// - Point your browser to http://espXXXXXXX.local, you should see a response
 	// server accessible via http://espXXXXXXX.local, URL thanks to mDNS responder
-//	if (MDNS.begin(getChipName().c_str())) {
-//		Logln(F("* MDNS responder started. Hostname -> ") << getChipName());
+//	if (MDNS.begin(EspBoard::getDeviceName().c_str())) {
+//		Logln(F("* MDNS responder started. Hostname -> ") << EspBoard::getDeviceName());
 //	}
 
 	startOTA ();
@@ -194,7 +194,7 @@ void WiFiServersManager :: startAllServers () {
 //	MDNS.addService("http", "tcp", 80);
 
 	// start dns server
-	if (!dnsSrv.start(53, getChipName (), WiFiHelper :: getIpAddress ())) {
+	if (!dnsSrv.start(53, EspBoard::getDeviceName (), WiFiHelper :: getIpAddress ())) {
 		Logln(F("Failed to start dns service"));
 	}
 }
@@ -243,7 +243,7 @@ void WiFiServersManager :: startWifi () {
 //========================================================================================================================
 void WiFiServersManager :: startWifiAndServers () {
 
-	BLINKLED_ON();									// Led on
+	EspBoard::blinkOn();									// Led on
 
 	startWifi ();
 
@@ -256,7 +256,7 @@ void WiFiServersManager :: startWifiAndServers () {
 		//	enter in deepsleep or reboot ?
 	}
 
-	BLINKLED_OFF();									// Led off
+	EspBoard::blinkOff();									// Led off
 }
 
 //========================================================================================================================
@@ -274,7 +274,7 @@ void _ISR_user_btn ()
 	// sur le boutton USER_BTN (notament lors d'un reboot après un deep sleep)
 	wifiManagerForcedByUser = true;
 
-	BLINKLED_ON();	// Led on
+	EspBoard::blinkOn();	// Led on
 }
 
 #ifdef ESP32
@@ -331,8 +331,8 @@ void WiFiServersManager :: setup (bool forceAccessPoint /*= false */) {
 
 	// Host name of WiFi
 	// Hostname defaults to esp8266-[FIN DE LA MAC ADDRESS]
-	Logln (F("Chip Hostname: ") << getChipName());
-	WiFi.hostname (getChipName().c_str());
+	Logln (F("Chip Hostname: ") << EspBoard::getDeviceName());
+	WiFi.hostname (EspBoard::getDeviceName().c_str());
 
 #ifdef ESP8266
 

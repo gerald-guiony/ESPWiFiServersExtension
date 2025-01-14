@@ -35,6 +35,8 @@
 
 #elif defined(ESP32)
 
+#	define RELAY_PIN			IO32
+
 #else
 
 #	define RELAY_PIN 			TIMER_PWM_PIN

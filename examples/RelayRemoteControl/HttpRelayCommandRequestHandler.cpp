@@ -102,7 +102,7 @@ void HttpRelayCommandRequestHandler :: handleOpen (AsyncWebServerRequest * reque
 	}
 
 	// Visual indicator that signal sent
-	blinkStatus (2);
+	EspBoard::blinks (2);
 
 	relays[id].open();
 
@@ -152,7 +152,7 @@ void HttpRelayCommandRequestHandler :: handleClose (AsyncWebServerRequest * requ
 	}
 
 	// Visual indicator that signal sent
-	blinkStatus (5);
+	EspBoard::blinks (5);
 
 	relays[id].close();
 
