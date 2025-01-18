@@ -6,34 +6,8 @@
 
 #pragma once
 
-
-//------------------------------------------------------------------------------
-//
-
-// Add Wifi request handlers
-#define USING_WIFI
-
-// Add MQTT subscriber & publisher
-#define USING_MQTT
-
-
-//------------------------------------------------------------------------------
-// Pins
-//
-
-#include <EspBoardDefs.h>
-
-
-
-#ifdef ARDUINO_ESP8266_WIO_NODE
-
-#elif defined(ARDUINO_ESP8266_NODEMCU_ESP12E)
-
-#elif defined(ESP32)
-
-#else
-
-#endif
+#define TIME_AFTER_POWER_ON_FOR_OTA_UPDATE_MS	300000			// 300s == 5 minutes
+#define TIME_FOR_REFRESH_DEVICE_ON_STATUS_MS	300000			// every 300s == 5 minutes
 
 
 //------------------------------------------------------------------------------

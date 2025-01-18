@@ -18,8 +18,8 @@
 #include <Tools/Signal.h>
 
 
-#define WIFI_RECONNECT_DELAY				2000
-#define STA_CONNECTION_DELAY				20000
+#define WIFI_RECONNECT_TIME				2000
+#define STA_CONNECTION_TIME				20000
 
 
 //------------------------------------------------------------------------------

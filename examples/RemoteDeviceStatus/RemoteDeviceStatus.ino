@@ -23,15 +23,29 @@ void setup() {
 
 	// ------------- setup
 
-	I(CustomWiFiServersManager).setWifiManagerEnabled (true);
+	 // If WakeUpFromDeepSleep => No WifiManager & No Ap Mode
+	I(CustomWiFiServersManager).setWifiManagerEnabled (!EspBoard::isWakeUpFromDeepSleep());
 	I(CustomWiFiServersManager).setup();
 
 	// ------------- Connect notifiers
 
 	I(HttpServer).notifyRequestReceived	+= std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
-#ifdef USING_MQTT
 	I(MqttClient).notifyValidMessageParsed += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
-#endif
+
+	I(ModuleSequencer).setDeepSleepTime(TIME_FOR_REFRESH_DEVICE_ON_STATUS_MS);
+
+	I(ModuleSequencer).setConditionToEnterDeepSleep ([]() {
+		// Deep sleep cycle period: TIME_FOR_REFRESH_DEVICE_ON_STATUS_MS
+		if (EspBoard::isWakeUpFromDeepSleep())
+		{
+			return I(CustomWiFiServersManager).isMqttDeviceOnPublished();
+		}
+		// Fresh power-on or other reboot reason...
+		else
+		{
+			return (millis () > TIME_AFTER_POWER_ON_FOR_OTA_UPDATE_MS);
+		}
+	});
 
     I(ModuleSequencer).setup ({ &I(CustomWiFiServersManager) });
 }

@@ -19,17 +19,19 @@ a connection token and modification rights.
 
 ## Freebox Player Status
 
-When the Freebox Player exits standby, it powers its USB ports and, consequently, the Wio Node. The Wio Node then notifies its ON status through MQTT every 5 minutes as long as it remains powered..
-see the source files [Settings.h](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/Settings.h) and [MqttRelayDomoticzHandler.cpp](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/MqttDeviceONDomoticzHandler.cpp)
-for more details.
+When the Freebox Player exits standby, it powers its USB ports and, consequently, the Wio Node. 
+The Wio Node then notifies its ON status through MQTT every 5 minutes as long as it remains powered.
+For energy saving reasons, each time the Wio Node has published its status it enters deep sleep mode for 5 minutes.
 
-Additionally, a Lua script in Domoticz pings the Wio node to update its status to Off when it is no longer powered.
+see the source files for more details.
 
 ## Domoticz and MQTT
 
-In Domoticz, with the help of MQTT mosquitto server I can show the status of my Freebox Player coming from MQTT or updated by a Lua script with a simple Domoticz On/Off button. 
+In Domoticz, with the help of MQTT mosquitto server I can show the status of my Freebox Player coming from MQTT using a simple Domoticz On/Off button. 
 
 ![Simple Domoticz button](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/doc/img/SimpleDomoticzButton.png)
+
+Additionally, a Lua script in Domoticz checks how long the Freebox Player On/Off button has not been updated, if it has been more than 6 minutes its status is set to Off.
 
 ## Dependencies
 

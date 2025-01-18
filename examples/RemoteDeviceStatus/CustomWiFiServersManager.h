@@ -16,12 +16,18 @@ class CustomWiFiServersManager : public WiFiServersManager
 {
 	SINGLETON_CLASS(CustomWiFiServersManager)
 
+private:
+
+	bool _isMqttDeviceOnPublished = false;
+
 protected:
 
 	virtual void startCustomServers			() override;
 	virtual void stopCustomServers			() override;
 
 public:
+
+	bool isMqttDeviceOnPublished 			() const { return _isMqttDeviceOnPublished; }
 
 	virtual void setup						(bool forceAccessPoint = false) override;
 	virtual void loop						() override;

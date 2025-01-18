@@ -10,7 +10,7 @@
 #include "MqttClient.h"
 
 
-#define MQTT_CONNECTION_DELAY_MS						20000
+#define MQTT_CONNECTION_TIME_MS						20000
 
 
 static AsyncMqttClient	asyncMqttClient;
@@ -104,7 +104,7 @@ void MqttClient :: loop () {
 
 	if (!asyncMqttClient.connected()) {
 		if (WiFiHelper::isWifiAvailable ()) {
-			if (millis() - _lastConnectionTry > MQTT_CONNECTION_DELAY_MS) {
+			if (millis() - _lastConnectionTry > MQTT_CONNECTION_TIME_MS) {
 
 				connectToMqttServer ();
 				_lastConnectionTry = millis();
