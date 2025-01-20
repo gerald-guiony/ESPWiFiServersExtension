@@ -32,18 +32,18 @@ void setup() {
 	I(HttpServer).notifyRequestReceived	+= std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
 	I(MqttClient).notifyValidMessageParsed += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
 
-	I(ModuleSequencer).setDeepSleepTime(TIME_FOR_REFRESH_DEVICE_ON_STATUS_MS);
+	I(ModuleSequencer).setDeepSleepTime(DEVICE_ON_STATE_PUBLISH_PERIOD_ms);
 
 	I(ModuleSequencer).setConditionToEnterDeepSleep ([]() {
-		// Deep sleep cycle period: TIME_FOR_REFRESH_DEVICE_ON_STATUS_MS
 		if (EspBoard::isWakeUpFromDeepSleep())
 		{
+			// The condition is true if the ON state has been published
 			return I(CustomWiFiServersManager).isMqttDeviceOnPublished();
 		}
-		// Fresh power-on or other reboot reason...
-		else
+		else // Fresh power-on or other reboot reason...
 		{
-			return (millis () > TIME_AFTER_POWER_ON_FOR_OTA_UPDATE_MS);
+			// Leave time for debugging or for an update via OTA
+			return (millis () > TIME_WITHOUT_DEEPSLEEP_ms);
 		}
 	});
 

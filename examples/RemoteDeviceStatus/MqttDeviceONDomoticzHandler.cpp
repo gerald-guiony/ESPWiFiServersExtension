@@ -24,9 +24,9 @@ SINGLETON_IMPL (MqttDeviceONDomoticzPublisher)
 //========================================================================================================================
 //
 //========================================================================================================================
-size_t MqttDeviceONDomoticzPublisher :: publishDeviceON () {
+size_t MqttDeviceONDomoticzPublisher :: publishDeviceONState () {
 
-	return publishSwitchStatut (REMOTE_FREEBOX_PLAYER_SWITCH_IDX, true);
+	return publishSwitchStatus (REMOTE_FREEBOX_PLAYER_SWITCH_IDX, true);
 }
 
 
@@ -41,7 +41,7 @@ SINGLETON_IMPL (MqttDeviceONDomoticzSubscriber)
 //========================================================================================================================
 bool MqttDeviceONDomoticzSubscriber :: parseJsonObj	(const JsonObject& jsonArg) {
 
-	// Publish received : 
+	// Publish received :
 	//  -topic = domoticz/out
 	//  -payload = {
 	//		"Battery":255,

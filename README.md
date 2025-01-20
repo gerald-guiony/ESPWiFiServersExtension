@@ -34,18 +34,18 @@ To compile this library, you must have:
 
 ## Debug all your sketches remotely with Telnet
 
-With this library you can debug remotely with telnet in a terminal:
+This library allows you to perform remote debugging via Telnet in a basic terminal:
 > telnet [IP address of your Esp]
 
 ![Settings in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/debug.png)
 
-You also have debugging commands, type 'h' to see the list of these commands:
+Debugging commands are also available; type 'h' to display the list of commands:
 
 ![Settings in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/debugCommand.png)
 
 ## Administrative JSON commands
 
-In this library you can access to administrative commands for your esp with JSON, see source file  
+In this library, you can access JSON administrative commands for your ESP. Refer to this source file for more details:  
 
 [HttpAdminCommandRequestHandler.cpp](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/src/HttpAdminCommandRequestHandler.cpp)
 

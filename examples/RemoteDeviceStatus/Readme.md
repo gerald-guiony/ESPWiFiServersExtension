@@ -19,9 +19,9 @@ a connection token and modification rights.
 
 ## Freebox Player Status
 
-When the Freebox Player exits standby, it powers its USB ports and, consequently, the Wio Node. 
+When the Freebox Player exits standby, it powers its USB ports and, consequently, the Wio Node :sunglasses: 
 The Wio Node then notifies its ON status through MQTT every 5 minutes as long as it remains powered.
-For energy saving reasons, each time the Wio Node has published its status it enters deep sleep mode for 5 minutes.
+For energy saving reasons, each time the Wio Node has published its status it enters deep sleep mode for 5 minutes :zzz:
 
 see the source files for more details.
 
@@ -36,9 +36,9 @@ Additionally, a Lua script in Domoticz checks how long the Freebox Player On/Off
 ## Dependencies
 
 To upload this application you must have the latest version of:
-* [ESPCoreExtension](https://github.com/gerald-guiony/ESPCoreExtension) library 
-* [ESPWiFiServersExtension](https://github.com/gerald-guiony/ESPWiFiServersExtension) library
+* [ESPCoreExtension library](https://github.com/gerald-guiony/ESPCoreExtension)
+* [ESPWiFiServersExtension library](https://github.com/gerald-guiony/ESPWiFiServersExtension)
 
 ## Board settings
 
-Board settings in Arduino IDE to upload the sketch to my Wio Node using OTA (Over-The-Air): [Wio Node board settings](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/doc/WioNodeBoardSettings.png)
+Here are the board settings in the Arduino IDE that I use to upload the sketch to my Wio Node via OTA (Over-The-Air): [Wio Node board settings](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus/doc/WioNodeBoardSettings.png)

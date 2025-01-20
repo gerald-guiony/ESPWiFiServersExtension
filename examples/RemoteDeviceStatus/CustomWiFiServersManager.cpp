@@ -24,7 +24,7 @@ SINGLETON_IMPL (CustomWiFiServersManager)
 //========================================================================================================================
 void CustomWiFiServersManager :: startCustomServers () {
 
-	// Add the administrative commands request handler
+	// Add the JSON administrative commands request handler
 	I(HttpServer).addRequestHandlers( { &I(HttpAdminCommandRequestHandler) } );
 
 	// Start the Web Server
@@ -57,7 +57,7 @@ void CustomWiFiServersManager :: setup (bool forceAccessPoint /*= false*/) {
 
 	I(MqttClient).notifySubscribed += [this] (uint16_t packetId, uint8_t qosk) {
 		if (!_isMqttDeviceOnPublished)	{
-			I(MqttDeviceONDomoticzPublisher).publishDeviceON ();
+			I(MqttDeviceONDomoticzPublisher).publishDeviceONState ();
 			_isMqttDeviceOnPublished = true;
 		}
 	};

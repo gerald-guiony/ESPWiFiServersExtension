@@ -46,7 +46,7 @@ public:
 
 	size_t publishMessage 				(const uint8_t idx, const String & msg);
 	size_t publishValue 				(const uint8_t idx, const double value);
-	size_t publishSwitchStatut 			(const uint8_t idx, const bool isOn);
+	size_t publishSwitchStatus 			(const uint8_t idx, const bool isOn);
 
 	virtual void setup 					(AsyncMqttClient * asyncMqttClient) override;
 

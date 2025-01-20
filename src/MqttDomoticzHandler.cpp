@@ -62,7 +62,7 @@ size_t MqttDomoticzPublisher :: publishValue (const uint8_t idx, const double sv
 //========================================================================================================================
 //
 //========================================================================================================================
-size_t MqttDomoticzPublisher :: publishSwitchStatut (const uint8_t idx, const bool isOn) {
+size_t MqttDomoticzPublisher :: publishSwitchStatus (const uint8_t idx, const bool isOn) {
 
 	// mosquitto_pub -h 192.168.64.7 -t "domoticz/in" -m '{"command": "switchlight", "idx": 171, "switchcmd": "On" }'
 

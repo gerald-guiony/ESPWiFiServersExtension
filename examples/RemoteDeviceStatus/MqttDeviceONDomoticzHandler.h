@@ -17,7 +17,7 @@ class MqttDeviceONDomoticzPublisher : public MqttDomoticzPublisher
 	SINGLETON_CLASS(MqttDeviceONDomoticzPublisher)
 
 public:
-	size_t publishDeviceON 				();
+	size_t publishDeviceONState 		();
 };
 
 

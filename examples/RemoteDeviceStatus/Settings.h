@@ -6,8 +6,8 @@
 
 #pragma once
 
-#define TIME_AFTER_POWER_ON_FOR_OTA_UPDATE_MS	300000			// 300s == 5 minutes
-#define TIME_FOR_REFRESH_DEVICE_ON_STATUS_MS	300000			// every 300s == 5 minutes
+#define TIME_WITHOUT_DEEPSLEEP_ms			300000				// 300s == 5 minutes
+#define DEVICE_ON_STATE_PUBLISH_PERIOD_ms	300000				// every 300s == 5 minutes
 
 
 //------------------------------------------------------------------------------
