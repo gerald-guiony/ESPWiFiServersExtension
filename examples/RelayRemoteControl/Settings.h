@@ -23,26 +23,13 @@
 
 #include <EspBoardDefs.h>
 
-
-
 #ifdef ARDUINO_ESP8266_WIO_NODE
-
 #	define RELAY_PIN			PORT0B
-
 #elif defined(ARDUINO_ESP8266_NODEMCU_ESP12E)
-
 #	define RELAY_PIN			D1
-
-#elif defined(ESP32)
-
+#elif defined(ARDUINO_WT32_ETH01)
 #	define RELAY_PIN			IO32
-
-#else
-
-#	define RELAY_PIN 			TIMER_PWM_PIN
-
 #endif
-
 
 //------------------------------------------------------------------------------
 // Domoticz MQTT

@@ -11,7 +11,7 @@
 
 
 //------------------------------------------------------------------------------
-// WARNING : SINGLETON !!!!
+// Singleton
 class CustomWiFiServersManager : public WiFiServersManager
 {
 	SINGLETON_CLASS(CustomWiFiServersManager)

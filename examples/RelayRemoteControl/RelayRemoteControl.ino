@@ -7,7 +7,6 @@
 #include <Common.h>
 #include <HttpServer.h>
 #include <MqttClient.h>
-
 #include <Switches/BasicRelay.h>
 
 #include "Settings.h"
@@ -28,17 +27,18 @@ void setup() {
 
 	// ------------- setup
 
-	I(CustomWiFiServersManager).setWifiManagerEnabled (!EspBoard::isWakeUpFromDeepSleep());	// If WakeUpFromDeepSleep => No WifiManager & No Ap Mode
+	// If WakeUpFromDeepSleep => No WifiManager & No Ap Mode
+	I(CustomWiFiServersManager).setWifiManagerEnabled (!EspBoard::isWakeUpFromDeepSleep());
 	I(CustomWiFiServersManager).setup();
 
-	// ------------- Connect notifiers
+	// ------------- Connect signals
 
 	I(HttpServer).notifyRequestReceived	+= std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
 #ifdef USING_MQTT
 	I(MqttClient).notifyValidMessageParsed += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
 #endif
 
-	I(ModuleSequencer).enterDeepSleepWhenWifiOff ();										// Deep sleep
+	I(ModuleSequencer).enterDeepSleepWhenWifiOff ();
 	I(ModuleSequencer).setup ({ &I(CustomWiFiServersManager) });
 }
 

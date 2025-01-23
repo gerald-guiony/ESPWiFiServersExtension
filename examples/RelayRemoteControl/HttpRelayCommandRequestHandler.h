@@ -12,20 +12,20 @@
 #include <HttpRequestHandler.h>
 
 //------------------------------------------------------------------------------
-// WARNING : SINGLETON !!!!
+// Singleton
 class HttpRelayCommandRequestHandler : public HttpRequestHandler
 {
 	SINGLETON_CLASS(HttpRelayCommandRequestHandler)
 
 private:
 
-	void handleHelp									(AsyncWebServerRequest * request);
-	void handleOpen									(AsyncWebServerRequest * request);
-	void handleClose								(AsyncWebServerRequest * request);
+	void handleHelp			(AsyncWebServerRequest * request);
+	void handleOpen			(AsyncWebServerRequest * request);
+	void handleClose		(AsyncWebServerRequest * request);
 
 public:
 
-	virtual void setup 								(AsyncWebServer & asyncWebServer) override;
+	virtual void setup 		(AsyncWebServer & asyncWebServer) override;
 };
 
 

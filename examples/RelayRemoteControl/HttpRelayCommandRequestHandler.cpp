@@ -31,7 +31,8 @@ extern std::vector <BasicRelay> relays;
 
 
 
-// Use PROGMEM and server.send_P to send data from PROGMEM — in this case it doesn't need to be copied to RAM twice, you avoid allocating Strings and all the associated issues.
+// Use PROGMEM and server.send_P to send data from PROGMEM — in this case it doesn't need to be copied
+// to RAM twice, you avoid allocating Strings and all the associated issues.
 static const char PROGMEM PRINT_HELP[] = R"rawliteral(
 ===========================================================================================================
  *** AVAILABLE IR JSON COMMANDS ON THIS DEVICE ***
