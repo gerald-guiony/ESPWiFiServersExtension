@@ -286,34 +286,34 @@ static void logWiFiEvent(WiFiEvent_t event)
 	Logln (F("[WiFi-event] event: ") << event);
 
 	switch (event) {
-		case ARDUINO_EVENT_WIFI_READY:              Logln (F("WiFi interface ready")); break;
-		case ARDUINO_EVENT_WIFI_SCAN_DONE:          Logln (F("Completed scan for access points")); break;
-		case ARDUINO_EVENT_WIFI_STA_START:          Logln (F("WiFi client started")); break;
-		case ARDUINO_EVENT_WIFI_STA_STOP:           Logln (F("WiFi clients stopped")); break;
-		case ARDUINO_EVENT_WIFI_STA_CONNECTED:      Logln (F("Connected to access point")); break;
+		case ARDUINO_EVENT_WIFI_READY:			  	Logln (F("WiFi interface ready")); break;
+		case ARDUINO_EVENT_WIFI_SCAN_DONE:		  	Logln (F("Completed scan for access points")); break;
+		case ARDUINO_EVENT_WIFI_STA_START:		  	Logln (F("WiFi client started")); break;
+		case ARDUINO_EVENT_WIFI_STA_STOP:		   	Logln (F("WiFi clients stopped")); break;
+		case ARDUINO_EVENT_WIFI_STA_CONNECTED:	  	Logln (F("Connected to access point")); break;
 		case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:   Logln (F("Disconnected from WiFi access point")); break;
 		case ARDUINO_EVENT_WIFI_STA_AUTHMODE_CHANGE:Logln (F("Authentication mode of access point has changed")); break;
 		case ARDUINO_EVENT_WIFI_STA_GOT_IP: 		Logln (F("Obtained IP address: ")); break;
-		case ARDUINO_EVENT_WIFI_STA_LOST_IP:        Logln (F("Lost IP address and IP address is reset to 0")); break;
-		case ARDUINO_EVENT_WPS_ER_SUCCESS:          Logln (F("WiFi Protected Setup (WPS): succeeded in enrollee mode")); break;
-		case ARDUINO_EVENT_WPS_ER_FAILED:           Logln (F("WiFi Protected Setup (WPS): failed in enrollee mode")); break;
-		case ARDUINO_EVENT_WPS_ER_TIMEOUT:          Logln (F("WiFi Protected Setup (WPS): timeout in enrollee mode")); break;
-		case ARDUINO_EVENT_WPS_ER_PIN:              Logln (F("WiFi Protected Setup (WPS): pin code in enrollee mode")); break;
-		case ARDUINO_EVENT_WIFI_AP_START:           Logln (F("WiFi access point started")); break;
-		case ARDUINO_EVENT_WIFI_AP_STOP:            Logln (F("WiFi access point  stopped")); break;
+		case ARDUINO_EVENT_WIFI_STA_LOST_IP:		Logln (F("Lost IP address and IP address is reset to 0")); break;
+		case ARDUINO_EVENT_WPS_ER_SUCCESS:		  	Logln (F("WiFi Protected Setup (WPS): succeeded in enrollee mode")); break;
+		case ARDUINO_EVENT_WPS_ER_FAILED:		   	Logln (F("WiFi Protected Setup (WPS): failed in enrollee mode")); break;
+		case ARDUINO_EVENT_WPS_ER_TIMEOUT:		  	Logln (F("WiFi Protected Setup (WPS): timeout in enrollee mode")); break;
+		case ARDUINO_EVENT_WPS_ER_PIN:			  	Logln (F("WiFi Protected Setup (WPS): pin code in enrollee mode")); break;
+		case ARDUINO_EVENT_WIFI_AP_START:		   	Logln (F("WiFi access point started")); break;
+		case ARDUINO_EVENT_WIFI_AP_STOP:			Logln (F("WiFi access point  stopped")); break;
 		case ARDUINO_EVENT_WIFI_AP_STACONNECTED:	Logln (F("Client connected")); break;
 		case ARDUINO_EVENT_WIFI_AP_STADISCONNECTED:	Logln (F("Client disconnected")); break;
 		case ARDUINO_EVENT_WIFI_AP_STAIPASSIGNED:   Logln (F("Assigned IP address to client")); break;
 		case ARDUINO_EVENT_WIFI_AP_PROBEREQRECVED:  Logln (F("Received probe request")); break;
-		case ARDUINO_EVENT_WIFI_AP_GOT_IP6:         Logln (F("AP IPv6 is preferred")); break;
-		case ARDUINO_EVENT_WIFI_STA_GOT_IP6:        Logln (F("STA IPv6 is preferred")); break;
-		case ARDUINO_EVENT_ETH_GOT_IP6:             Logln (F("Ethernet IPv6 is preferred")); break;
-		case ARDUINO_EVENT_ETH_START:               Logln (F("Ethernet started")); break;
-		case ARDUINO_EVENT_ETH_STOP:                Logln (F("Ethernet stopped")); break;
-		case ARDUINO_EVENT_ETH_CONNECTED:           Logln (F("Ethernet connected")); break;
-		case ARDUINO_EVENT_ETH_DISCONNECTED:        Logln (F("Ethernet disconnected")); break;
-		case ARDUINO_EVENT_ETH_GOT_IP:              Logln (F("Obtained IP address")); break;
-		default:                                    break;
+		case ARDUINO_EVENT_WIFI_AP_GOT_IP6:		 	Logln (F("AP IPv6 is preferred")); break;
+		case ARDUINO_EVENT_WIFI_STA_GOT_IP6:		Logln (F("STA IPv6 is preferred")); break;
+		case ARDUINO_EVENT_ETH_GOT_IP6:			 	Logln (F("Ethernet IPv6 is preferred")); break;
+		case ARDUINO_EVENT_ETH_START:			   	Logln (F("Ethernet started")); break;
+		case ARDUINO_EVENT_ETH_STOP:				Logln (F("Ethernet stopped")); break;
+		case ARDUINO_EVENT_ETH_CONNECTED:		   	Logln (F("Ethernet connected")); break;
+		case ARDUINO_EVENT_ETH_DISCONNECTED:		Logln (F("Ethernet disconnected")); break;
+		case ARDUINO_EVENT_ETH_GOT_IP:			  	Logln (F("Obtained IP address")); break;
+		default:									break;
 	}
 }
 #endif
@@ -372,32 +372,32 @@ void WiFiServersManager :: setup (bool forceAccessPoint /*= false */) {
   			Logln (F("WiFi connected, IP address: "));
   			Logln (IPAddress(info.got_ip.ip_info.ip.addr));
 			notifyConnectedToWiFi (info.got_ip.ip_info.ip.addr);
-    	},
-    	WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
+		},
+		WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
 
 	WiFi.onEvent(
 		[this](WiFiEvent_t event, WiFiEventInfo_t info) {
-      		Logln (F("WiFi lost connection. Reason: "));
-      		Logln (info.wifi_sta_disconnected.reason);
+	  		Logln (F("WiFi lost connection. Reason: "));
+	  		Logln (info.wifi_sta_disconnected.reason);
 			notifyDisconnectedFromWiFi ();
-    	},
-    	WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
+		},
+		WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
 
 	WiFi.onEvent(
 		[this](WiFiEvent_t event, WiFiEventInfo_t info) {
-      		Logln (F("Client connected: "));
+	  		Logln (F("Client connected: "));
  			Logln (IPAddress(info.wifi_ap_staipassigned.ip.addr));
 			notifyClientConnected ();
-    	},
-    	WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STACONNECTED);
+		},
+		WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STACONNECTED);
 
 	WiFi.onEvent(
 		[this](WiFiEvent_t event, WiFiEventInfo_t info) {
-      		Logln (F("Client disconnect: "));
-      		//Logln (info.wifi_ap_stadisconnected);
+	  		Logln (F("Client disconnect: "));
+	  		//Logln (info.wifi_ap_stadisconnected);
 			notifyClientDisconnected ();
-    	},
-    	WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STADISCONNECTED);
+		},
+		WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STADISCONNECTED);
 
 #endif
 

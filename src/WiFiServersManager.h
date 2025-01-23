@@ -28,40 +28,40 @@ class WiFiServersManager : public Module
 {
 protected:
 
-	bool _isWifiManagerEnabled									= true;				// By default ...
-	bool _accessPointIfNoWifi									= false;
-	bool _forceAccessPoint										= false;
+	bool _isWifiManagerEnabled					= true;				// By default ...
+	bool _accessPointIfNoWifi					= false;
+	bool _forceAccessPoint						= false;
 
 
 public:
 
-	Signal <>													notifyArduinoOTAStart;
-	Signal <unsigned int, unsigned int>							notifyArduinoOTAProgress;
-	Signal <>													notifyArduinoOTAEnd;
+	Signal <>									notifyArduinoOTAStart;
+	Signal <unsigned int, unsigned int>			notifyArduinoOTAProgress;
+	Signal <>									notifyArduinoOTAEnd;
 
-	Signal <const IPAddress &>									notifyConnectedToWiFi;
-	Signal <>													notifyDisconnectedFromWiFi;
-	Signal <>													notifyClientConnected;
-	Signal <>													notifyClientDisconnected;
+	Signal <const IPAddress &>					notifyConnectedToWiFi;
+	Signal <>									notifyDisconnectedFromWiFi;
+	Signal <>									notifyClientConnected;
+	Signal <>									notifyClientDisconnected;
 
 protected:
 
-	void startWifi 												();
-	void startWifiAndServers									();
+	void startWifi 								();
+	void startWifiAndServers					();
 
-	bool startWiFiManager										();
-	void startOTA												();
+	bool startWiFiManager						();
+	void startOTA								();
 
-	void startAllServers										();
-	void stopAllServers											();
+	void startAllServers						();
+	void stopAllServers							();
 
-	virtual void startCustomServers								() = 0;
-	virtual void stopCustomServers								() = 0;
+	virtual void startCustomServers				() = 0;
+	virtual void stopCustomServers				() = 0;
 
 public:
 
-	void setWifiManagerEnabled									(bool enabled, bool accessPointIfNoWifi = false);
+	void setWifiManagerEnabled					(bool enabled, bool accessPointIfNoWifi = false);
 
-	virtual void setup											(bool forceAccessPoint = false);
-	virtual void loop											() override;
+	virtual void setup							(bool forceAccessPoint = false);
+	virtual void loop							() override;
 };

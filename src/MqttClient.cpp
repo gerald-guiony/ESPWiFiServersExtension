@@ -79,8 +79,8 @@ void MqttClient :: setup (const char * ip, int port) {
 			//		F("Publish received : ") << LN
 			//		<< F(" -topic   =") << topic << LN
 			//		<< F(" -payload =") << payload << LN
-			//		<< F(" -qos     =") << properties.qos << F(", dup=") << properties.dup << F(", retain=") << properties.retain << LN
-			//		<< F(" -len     =") << len << LN
+			//		<< F(" -qos	 =") 	<< properties.qos << F(", dup=") << properties.dup << F(", retain=") << properties.retain << LN
+			//		<< F(" -len	 =") 	<< len << LN
 			//		<< F(" -index   =") << index << LN
 			//		<< F(" -total   =") << total << LN
 			//	);

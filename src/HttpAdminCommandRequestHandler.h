@@ -18,15 +18,15 @@ class HttpAdminCommandRequestHandler : public HttpRequestHandler
 	SINGLETON_CLASS(HttpAdminCommandRequestHandler)
 
 private:
-	void handleHelp									(AsyncWebServerRequest * request);
-	void handleInfo									(AsyncWebServerRequest * request);
-	void handleReboot								(AsyncWebServerRequest * request);
-	void handleListAllFiles							(AsyncWebServerRequest * request);
-	void handleDelAllFiles							(AsyncWebServerRequest * request);
-	void handleWifi									(AsyncWebServerRequest * request);
+	void handleHelp				(AsyncWebServerRequest * request);
+	void handleInfo				(AsyncWebServerRequest * request);
+	void handleReboot			(AsyncWebServerRequest * request);
+	void handleListAllFiles		(AsyncWebServerRequest * request);
+	void handleDelAllFiles		(AsyncWebServerRequest * request);
+	void handleWifi				(AsyncWebServerRequest * request);
 
 public:
-	virtual void setup								(AsyncWebServer & asyncWebServer) override;
+	virtual void setup			(AsyncWebServer & asyncWebServer) override;
 };
 
 
