@@ -12,11 +12,12 @@
 
 
 
+namespace wifix {
+
 // Exemples json : https://reqres.in/
 
 // HTTP Request Methods
 // https://www.w3schools.com/tags/ref_httpmethods.asp
-
 
 
 // Use PROGMEM and server.send_P to send data from PROGMEM — in this case it doesn't need to be copied to RAM twice, you avoid allocating Strings and all the associated issues.
@@ -246,3 +247,4 @@ void HttpAdminCommandRequestHandler :: setup (AsyncWebServer & asyncWebServer)
 	asyncWebServer.on("/admin/wifi",			std::bind(&HttpAdminCommandRequestHandler::handleWifi,			this, _1));
 }
 
+}

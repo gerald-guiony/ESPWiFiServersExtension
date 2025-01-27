@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// DeviceDetectorServer.h
+// UdpDeviceDetectorServer.h
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -10,13 +10,17 @@
 
 #include "UdpServer.h"
 
+
+namespace wifix {
+
 //------------------------------------------------------------------------------
 // Singleton
-class DeviceDetectorServer : public UdpServer
+class UdpDeviceDetectorServer : public UdpServer
 {
-	SINGLETON_CLASS(DeviceDetectorServer)
+	SINGLETON_CLASS(UdpDeviceDetectorServer)
 
 private:
 	virtual StreamParser & getCmdParser			() override;
 };
 
+}

@@ -1,20 +1,21 @@
 //************************************************************************************************************************
-// DeviceDetectorClient.cpp
+// UdpDeviceDetectorClient.cpp
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
 
-#include "DeviceDetectorResponseParser.h"
-#include "DeviceDetectorClient.h"
+#include "UdpDeviceDetectorResponseParser.h"
+#include "UdpDeviceDetectorClient.h"
 
 
-SINGLETON_IMPL (DeviceDetectorClient)
+namespace wifix {
 
+SINGLETON_IMPL (UdpDeviceDetectorClient)
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void DeviceDetectorClient :: sendDeviceDetectionCmd (int port) {
+void UdpDeviceDetectorClient :: sendDeviceDetectionCmd (int port) {
 	MemStream mem;
 	mem << PRINT_CMD(1);
 	String cmd = mem.readString();
@@ -29,7 +30,8 @@ void DeviceDetectorClient :: sendDeviceDetectionCmd (int port) {
 //========================================================================================================================
 //
 //========================================================================================================================
-StreamParser & DeviceDetectorClient :: getRespParser () {
-	return I(DeviceDetectorResponseParser);
+StreamParser & UdpDeviceDetectorClient :: getRespParser () {
+	return I(UdpDeviceDetectorResponseParser);
 }
 
+}

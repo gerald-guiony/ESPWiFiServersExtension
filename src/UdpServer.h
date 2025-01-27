@@ -12,25 +12,33 @@
 #include <Stream/StreamParser.h>
 #include <Tools/Signal.h>
 
+using namespace corex;
+
+
 #define DEFAULT_UDP_PORT				555
 
+namespace wifix {
 
 //------------------------------------------------------------------------------
 //
-class UdpServer
+class UdpServer : public Module <uint16_t>
 {
 protected:
-	WiFiUDP								_wiFiUdp;
+	uint16_t 	_port;
+	WiFiUDP		_wiFiUdp;
 
 public:
-	Signal <> 						notifyPacketReceived;
+	Signal <> 	notifyPacketReceived;
 
 public:
-
-	void stop							();
-
-	void setup							(uint16_t thePort = DEFAULT_UDP_PORT);
-	void loop							();
 
 	virtual StreamParser & getCmdParser () = 0;
+
+	void start	();
+	void stop	();
+
+	void setup	(uint16_t thePort = DEFAULT_UDP_PORT) override;
+	void loop	() override;
 };
+
+}

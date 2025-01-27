@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// DeviceDetectorResponseParser.h
+// UdpDeviceDetectorClient.h
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -8,12 +8,22 @@
 
 #include <Common.h>
 
+#include "UdpClient.h"
+
+
+namespace wifix {
+
 //------------------------------------------------------------------------------
-// WARNING : SINGLETON !!!!
-class DeviceDetectorResponseParser : public StreamRespParser
+// Singleton
+class UdpDeviceDetectorClient : public UdpClient
 {
-	SINGLETON_CLASS(DeviceDetectorResponseParser)
+	SINGLETON_CLASS(UdpDeviceDetectorClient)
+
+private:
+	virtual StreamParser & getRespParser		() override;
 
 public:
-	virtual bool parse				(Stream & stream, Print & printer) override;
+	void sendDeviceDetectionCmd 				(int port);
 };
+
+}

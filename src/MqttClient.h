@@ -6,17 +6,27 @@
 
 #pragma once
 
-#include <AsyncMqttClient.h>				// https://github.com/marvinroger/async-mqtt-client
-
 #include <Common.h>
+#include <Module/AsyncModule.h>
 
 #include "MqttHandler.h"
 
+
+namespace wifix {
+
 //------------------------------------------------------------------------------
 // Singleton
-class MqttClient
+//
+// WARNING : Not a true AsyncModule because we need to periodically check the
+// 			 connection to the server
+//
+class MqttClient : public AsyncModule <const char *, int, std::vector <MqttHandler *>>
 {
 	SINGLETON_CLASS(MqttClient)
+
+private:
+
+	bool _stopped = false;
 
 public:
 
@@ -25,22 +35,21 @@ public:
 	Signal <uint16_t, uint8_t> 						notifySubscribed;
 	Signal <uint16_t> 								notifyUnsubscribed;
 	Signal <char*, char*,
-				AsyncMqttClientMessageProperties,
-				size_t, size_t, size_t> 			notifyMessageReceived;
+			AsyncMqttClientMessageProperties,
+			size_t, size_t, size_t> 				notifyMessageReceived;
 	Signal <> 										notifyValidMessageParsed;
 	Signal <uint16_t>								notifyPublishSent;
 
 protected:
 
-	void connectToMqttServer 						();
+	void addHandlers								(std::vector <MqttHandler *> handlers);
 
 public:
 
-	void addHandlers								(std::vector <MqttHandler *> handlers);
-	void stop										();
+	void setup										(const char * ip, int port, std::vector <MqttHandler *> handlers) override;
 
-	void setup										(const char * ip, int port);
-	void loop										();
+	void start				 						();
+	void stop										();
 };
 
-
+}

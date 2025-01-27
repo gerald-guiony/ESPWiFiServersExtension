@@ -17,15 +17,14 @@
 extern std::vector <BasicRelay> relays;
 
 
+namespace wifix {
 
 // Todo :
 // - Ajouter les paramètres du serveur mqtt (Ip, Port..) a la page du wifimanager
 // https://github.com/tzapu/WiFiManager/blob/master/examples/AutoConnectWithFSParameters/AutoConnectWithFSParameters.ino
 
 
-
 SINGLETON_IMPL (MqttRelayDomoticzPublisher)
-
 
 //========================================================================================================================
 //
@@ -43,7 +42,6 @@ size_t MqttRelayDomoticzPublisher :: publishStatutMessage (const String & msg) {
 
 
 SINGLETON_IMPL (MqttRelayDomoticzSubscriber)
-
 
 //========================================================================================================================
 //
@@ -92,4 +90,6 @@ bool MqttRelayDomoticzSubscriber :: parseJsonObj	(const JsonObject& jsonArg) {
 	}
 
 	return false;
+}
+
 }

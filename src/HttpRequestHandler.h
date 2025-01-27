@@ -6,13 +6,22 @@
 
 #pragma once
 
+#include <ESPAsyncWebServer.h>
+
+#include <Module/AsyncModule.h>
+
+using namespace corex;
+
+
+namespace wifix {
+
 //------------------------------------------------------------------------------
 //
-class HttpRequestHandler
+class HttpRequestHandler : public AsyncModule <AsyncWebServer &>
 {
-public:
-	virtual void setup	(AsyncWebServer & asyncWebServer) = 0;
 };
+
+}
 
 
 

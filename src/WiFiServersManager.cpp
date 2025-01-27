@@ -26,9 +26,9 @@
 
 #include <Common.h>
 
-#include "DeviceDetectorServer.h"
+#include "UdpDeviceDetectorServer.h"
 #include "WiFiServersManager.h"
-#include "LoggerTelnetServer.h"
+#include "TelnetServerLogger.h"
 
 
 DNSServer dnsSrv;
@@ -44,6 +44,9 @@ WiFiEventHandler stationDisconnectedHandler;
 #endif
 
 
+namespace wifix {
+
+
 //Ticker wifiReconnectTimer;
 
 // volatile because changed by ISR
@@ -54,7 +57,8 @@ volatile bool wifiManagerForcedByUser = false;
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: setWifiManagerEnabled (bool enabled, bool accessPointIfNoWifi /* = false */) {
+void WiFiServersManager :: setWifiManagerEnabled (bool enabled, bool accessPointIfNoWifi /* = false */)
+{
 	_isWifiManagerEnabled = enabled;
 	_accessPointIfNoWifi = accessPointIfNoWifi;
 }
@@ -62,8 +66,8 @@ void WiFiServersManager :: setWifiManagerEnabled (bool enabled, bool accessPoint
 //========================================================================================================================
 // Gets called when WiFiManager enters configuration mode
 //========================================================================================================================
-void configModeCallback (WiFiManager * wiFiManager) {
-
+void configModeCallback (WiFiManager * wiFiManager)
+{
 	Logln(
 	F("Entered config mode: ")			<<
 	WiFi.softAPIP() 					<< F(", ") <<
@@ -73,8 +77,46 @@ void configModeCallback (WiFiManager * wiFiManager) {
 //========================================================================================================================
 //
 //========================================================================================================================
-bool WiFiServersManager :: startWiFiManager () {
+void WiFiServersManager :: setupOTA ()
+{
+	Logln(F("Setup OTA.."));
 
+	// Port defaults to 8266
+	// ArduinoOTA.setPort(8266);
+	// Hostname defaults to esp8266-[ChipID]
+	ArduinoOTA.setHostname(EspBoard::getDeviceName().c_str());
+	// No authentication by default
+	// ArduinoOTA.setPassword((const char *)"123");
+
+	ArduinoOTA.onStart([this]() {
+		Logln(F("* OTA: Start"));
+		notifyArduinoOTAStart ();
+	});
+	ArduinoOTA.onEnd([this]() {
+		Logln(LN << F("*OTA: End"));
+		notifyArduinoOTAEnd ();
+	});
+	ArduinoOTA.onProgress([this](unsigned int progress, unsigned int total) {
+		Logln(F("*OTA: Progress: ") << (progress / (total / 100)) << F("%"));
+		notifyArduinoOTAProgress (progress, total);
+	});
+	ArduinoOTA.onError([](ota_error_t error) {
+		Logln(F("*OTA: Error[") << error << F("]: "));
+		if (error == OTA_AUTH_ERROR)			Logln(F("Auth Failed"));
+		else if (error == OTA_BEGIN_ERROR)		Logln(F("Begin Failed"));
+		else if (error == OTA_CONNECT_ERROR)	Logln(F("Connect Failed"));
+		else if (error == OTA_RECEIVE_ERROR)	Logln(F("Receive Failed"));
+		else if (error == OTA_END_ERROR)		Logln(F("End Failed"));
+	});
+
+	ArduinoOTA.begin();
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+bool WiFiServersManager :: startWiFiManager ()
+{
 	Logln(F("Starting WiFiManager.."));
 
 	// Setup the DNS server redirecting all the domains to the apIP
@@ -113,113 +155,9 @@ bool WiFiServersManager :: startWiFiManager () {
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: startOTA () {
-
-	Logln(F("Starting OTA.."));
-
-	// Port defaults to 8266
-	// ArduinoOTA.setPort(8266);
-	// Hostname defaults to esp8266-[ChipID]
-	ArduinoOTA.setHostname(EspBoard::getDeviceName().c_str());
-	// No authentication by default
-	// ArduinoOTA.setPassword((const char *)"123");
-
-	ArduinoOTA.onStart([this]() {
-		Logln(F("* OTA: Start"));
-		notifyArduinoOTAStart ();
-	});
-	ArduinoOTA.onEnd([this]() {
-		Logln(LN << F("*OTA: End"));
-		notifyArduinoOTAEnd ();
-	});
-	ArduinoOTA.onProgress([this](unsigned int progress, unsigned int total) {
-		Logln(F("*OTA: Progress: ") << (progress / (total / 100)) << F("%"));
-		notifyArduinoOTAProgress (progress, total);
-	});
-	ArduinoOTA.onError([](ota_error_t error) {
-		Logln(F("*OTA: Error[") << error << F("]: "));
-		if (error == OTA_AUTH_ERROR)			Logln(F("Auth Failed"));
-		else if (error == OTA_BEGIN_ERROR)		Logln(F("Begin Failed"));
-		else if (error == OTA_CONNECT_ERROR)	Logln(F("Connect Failed"));
-		else if (error == OTA_RECEIVE_ERROR)	Logln(F("Receive Failed"));
-		else if (error == OTA_END_ERROR)		Logln(F("End Failed"));
-	});
-
-	ArduinoOTA.begin();						// initialisation de l'OTA
-}
-
-//========================================================================================================================
-//
-//========================================================================================================================
-void WiFiServersManager :: startAllServers () {
-
-	Logln(F("Starting Wifi servers.."));
-
-	// Multicast DNS
-	// http://onlineshouter.com/assign-web-address-esp8266-using-multicast-dns/
-	// Set up mDNS responder:
-	// - first argument is the domain name, in this example
-	//   the fully-qualified domain name is "espXXXXXXX.local"
-	// - second argument is the IP address to advertise
-	//   we send our IP address on the WiFi network
-	//
-	// - Install host software:
-	// - For Linux, install Avahi (http://avahi.org/).
-	// - For Windows, install Bonjour (http://www.apple.com/support/bonjour/).
-	// - For Mac OSX and iOS support is built in through Bonjour already.
-	// - Point your browser to http://espXXXXXXX.local, you should see a response
-	// server accessible via http://espXXXXXXX.local, URL thanks to mDNS responder
-//	if (MDNS.begin(EspBoard::getDeviceName().c_str())) {
-//		Logln(F("* MDNS responder started. Hostname -> ") << EspBoard::getDeviceName());
-//	}
-
-	startOTA ();
-
-#ifdef DEBUG
-	I(LoggerTelnetServer).setup ();
-#endif
-
-	if (!WiFiHelper::isAccessPointMode()) {
-		// Only when the device is connected to Wifi in station mode
-		I(DeviceDetectorServer).setup ();
-	}
-
-	// Start other servers here ...
-	startCustomServers ();
-
-	// Lastly (after servers started), use the MDNS built-in object to call the method Add service
-	// Add service to MDNS-SD
-	// This requires three parameters. These parameters describe the type of service that we want to broadcast over
-	// the network. In this case, we will use HTTP over TCP on 80.
-//	MDNS.addService("http", "tcp", 80);
-
-	// start dns server
-	if (!dnsSrv.start(53, EspBoard::getDeviceName (), WiFiHelper :: getIpAddress ())) {
-		Logln(F("Failed to start dns service"));
-	}
-}
-
-//========================================================================================================================
-//
-//========================================================================================================================
-void WiFiServersManager :: stopAllServers () {
-
-	Logln(F("Stop Wifi servers"));
-
-#ifdef DEBUG
-	I(LoggerTelnetServer).stop ();
-#endif
-
-	I(DeviceDetectorServer).stop();
-
-	// Stop other servers...
-	stopCustomServers();
-}
-
-//========================================================================================================================
-//
-//========================================================================================================================
-void WiFiServersManager :: startWifi () {
+void WiFiServersManager :: startWifi ()
+{
+	EspBoard::blinkOn();
 
 	if (_forceAccessPoint) {
 		Logln (F("Starting wifi access point.."));
@@ -236,22 +174,8 @@ void WiFiServersManager :: startWifi () {
 			}
 		}
 	}
-}
 
-//========================================================================================================================
-//
-//========================================================================================================================
-void WiFiServersManager :: startWifiAndServers () {
-
-	EspBoard::blinkOn();									// Led on
-
-	startWifi ();
-
-	if (WiFiHelper::isWifiAvailable ()) {
-		Logln (F("Chip IP Address: ") << WiFiHelper :: getIpAddress ());
-		startAllServers ();
-	}
-	else {
+	if (!WiFiHelper::isWifiAvailable ()) {
 		Logln (F("No Wifi available !"));
 		//	enter in deepsleep or reboot ?
 	}
@@ -321,9 +245,8 @@ static void logWiFiEvent(WiFiEvent_t event)
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: setup (bool forceAccessPoint /*= false */) {
-
-	_forceAccessPoint = forceAccessPoint;
+void WiFiServersManager :: setupWifi ()
+{
 
 #ifdef ARDUINO_ESP8266_WIO_NODE
 	WiFiHelper::resetWiFiHardware ();
@@ -401,22 +324,102 @@ void WiFiServersManager :: setup (bool forceAccessPoint /*= false */) {
 
 #endif
 
-
-
 	if (!_isWifiManagerEnabled) {
 		pinMode(USER_BTN, INPUT);
 		attachInterrupt(digitalPinToInterrupt(USER_BTN), _ISR_user_btn, CHANGE);
 	}
-
-	startWifiAndServers ();
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: loop () {
+void WiFiServersManager :: setupServers ()
+{
+	// WARNING :
+	// Setup OTA first to avoid this crash "Fatal exception 28(LoadProhibitedCause) error." !?
+	// I don't understand why...
+	setupOTA();
 
+#ifdef DEBUG
+	I(TelnetServerLogger).setup ();
+#endif
+	I(UdpDeviceDetectorServer).setup ();
+	setupCustomServers ();
+}
 
+//========================================================================================================================
+//
+//========================================================================================================================
+void WiFiServersManager :: startServers ()
+{
+	Logln(F("Starting Wifi servers :"));
+
+#ifdef DEBUG
+	Logln(F("Starting Telnet server logger.."));
+	I(TelnetServerLogger).start ();
+#endif
+
+	if (WiFiHelper::isStationModeActive()) {
+		Logln(F("Starting Udp Detector Server.."));
+		// Only when the device is connected to Wifi in station mode
+		I(UdpDeviceDetectorServer).start ();
+	}
+
+	// Start other servers here ...
+	Logln(F("Starting custom servers.."));
+	startCustomServers ();
+
+	Logln(F("Starting DNS.."));
+	if (!dnsSrv.start(53, EspBoard::getDeviceName (), WiFiHelper :: getIpAddress ())) {
+		Logln(F("Failed to start dns service"));
+	}
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+void WiFiServersManager :: stopServers ()
+{
+	Logln(F("Stopping Wifi servers"));
+
+	// Stop other servers...
+	stopCustomServers();
+
+#ifdef DEBUG
+	I(TelnetServerLogger).stop ();
+#endif
+
+	I(UdpDeviceDetectorServer).stop();
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+void WiFiServersManager :: setup (bool forceAccessPoint /*= false */)
+{
+	_forceAccessPoint = forceAccessPoint;
+
+	setupWifi ();
+	setupServers ();
+
+	// In station mode only
+	notifyConnectedToWiFi += [this] (const IPAddress &) { startServers (); };
+
+	startWifi ();
+
+	// In Access point mode only
+	if (WiFiHelper::isAccessPointMode ())
+	//if (WiFiHelper::isWifiAvailable ())
+	{
+		startServers ();
+	}
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+void WiFiServersManager :: loop ()
+{
 	if (WiFiHelper::isWifiAvailable()) {
 
 		dnsSrv.processNextRequest();
@@ -425,9 +428,10 @@ void WiFiServersManager :: loop () {
 		// si tel est cas, la lib ArduinoOTA se charge de gerer la suite :)
 		ArduinoOTA.handle();
 
-		if (!WiFiHelper::isAccessPointMode()) {
-			I(DeviceDetectorServer).loop();
+		if (WiFiHelper::isStationModeActive()) {
+			I(UdpDeviceDetectorServer).loop();
 		}
 	}
 }
 
+}

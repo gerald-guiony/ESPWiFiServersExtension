@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// LoggerTelnetServer.h
+// TelnetServerLogger.h
 // Version 2.0 June, 2018
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -22,12 +22,13 @@
 #define ASYNC_CLIENT_ACK_TIMEOUT 10000
 
 
+namespace wifix {
 
 //------------------------------------------------------------------------------
 // Singleton
-class LoggerTelnetServer : public TelnetServer
+class TelnetServerLogger : public TelnetServer
 {
-	SINGLETON_CLASS(LoggerTelnetServer)
+	SINGLETON_CLASS(TelnetServerLogger)
 
 protected:
 
@@ -44,3 +45,5 @@ public:
 	virtual void stop				() override;
 	virtual void setup				(uint16_t thePort = DEFAULT_TELNET_PORT) override;
 };
+
+}

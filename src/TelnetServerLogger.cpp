@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// LoggerTelnetServer.cpp
+// TelnetServerLogger.cpp
 // Version 2.0 June, 2018
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -8,8 +8,11 @@
 
 #include <Print/LoggerCommandParser.h>
 
-#include "LoggerTelnetServer.h"
+#include "TelnetServerLogger.h"
 
+
+
+namespace wifix {
 
 
 using LoggerCommandParserPtr	= std::shared_ptr <LoggerCommandParser>;
@@ -26,13 +29,13 @@ struct LoggerTelnetData {
 std::map <AsyncClient *, LoggerTelnetData> 	loggerTelnetDataByClientMap;
 
 
-SINGLETON_IMPL (LoggerTelnetServer)
+SINGLETON_IMPL (TelnetServerLogger)
 
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void LoggerTelnetServer :: stop () {
+void TelnetServerLogger :: stop () {
 
 	for (auto pair : loggerTelnetDataByClientMap) {
 		I(Logger).notifyRequestLineToPrint -= pair.second.fnId;
@@ -46,7 +49,7 @@ void LoggerTelnetServer :: stop () {
 //========================================================================================================================
 //
 //========================================================================================================================
-void LoggerTelnetServer :: addClient (AsyncClient * client) {
+void TelnetServerLogger :: addClient (AsyncClient * client) {
 
 	LoggerTelnetData & loggerTelnetData = loggerTelnetDataByClientMap [client];
 
@@ -65,7 +68,7 @@ void LoggerTelnetServer :: addClient (AsyncClient * client) {
 //========================================================================================================================
 //
 //========================================================================================================================
-void LoggerTelnetServer :: deleteClient (AsyncClient * client) {
+void TelnetServerLogger :: deleteClient (AsyncClient * client) {
 
 	if (loggerTelnetDataByClientMap.find (client) == loggerTelnetDataByClientMap.end()) return;
 	LoggerTelnetData & loggerTelnetData = loggerTelnetDataByClientMap [client];
@@ -78,7 +81,7 @@ void LoggerTelnetServer :: deleteClient (AsyncClient * client) {
 //========================================================================================================================
 //
 //========================================================================================================================
-void LoggerTelnetServer :: onClientDataReceived (AsyncClient* client, void *data, size_t len) {
+void TelnetServerLogger :: onClientDataReceived (AsyncClient* client, void *data, size_t len) {
 
 	if (loggerTelnetDataByClientMap.find (client) == loggerTelnetDataByClientMap.end()) return;
 	LoggerTelnetData & loggerTelnetData = loggerTelnetDataByClientMap [client];
@@ -94,7 +97,7 @@ void LoggerTelnetServer :: onClientDataReceived (AsyncClient* client, void *data
 //========================================================================================================================
 //
 //========================================================================================================================
-void LoggerTelnetServer :: onClientDisconnected (AsyncClient* client) {
+void TelnetServerLogger :: onClientDisconnected (AsyncClient* client) {
 
 	if (loggerTelnetDataByClientMap.find (client) == loggerTelnetDataByClientMap.end()) return;
 	LoggerTelnetData & loggerTelnetData = loggerTelnetDataByClientMap [client];
@@ -107,7 +110,7 @@ void LoggerTelnetServer :: onClientDisconnected (AsyncClient* client) {
 //========================================================================================================================
 //
 //========================================================================================================================
-void LoggerTelnetServer :: onNewClient (void* arg, AsyncClient* client) {
+void TelnetServerLogger :: onNewClient (void* arg, AsyncClient* client) {
 
 //	client->setNoDelay (true);
 	client->setAckTimeout (ASYNC_CLIENT_ACK_TIMEOUT);		// Default is 5000 milliseconds (ASYNC_MAX_ACK_TIME)
@@ -120,10 +123,12 @@ void LoggerTelnetServer :: onNewClient (void* arg, AsyncClient* client) {
 //========================================================================================================================
 //
 //========================================================================================================================
-void LoggerTelnetServer :: setup (uint16_t thePort /*= DEFAULT_TELNET_PORT*/) {
+void TelnetServerLogger :: setup (uint16_t thePort /*= DEFAULT_TELNET_PORT*/) {
 
-	notifyClientDataReceived += std::bind(&LoggerTelnetServer::onClientDataReceived, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-	notifyClientDisconnected += std::bind(&LoggerTelnetServer::onClientDisconnected, this, std::placeholders::_1);
+	notifyClientDataReceived += std::bind(&TelnetServerLogger::onClientDataReceived, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	notifyClientDisconnected += std::bind(&TelnetServerLogger::onClientDisconnected, this, std::placeholders::_1);
 
 	TelnetServer :: setup (thePort);
+}
+
 }

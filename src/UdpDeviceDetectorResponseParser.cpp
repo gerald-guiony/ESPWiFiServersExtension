@@ -1,20 +1,22 @@
 //************************************************************************************************************************
-// DeviceDetectorResponseParser.cpp
+// UdpDeviceDetectorResponseParser.cpp
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
 
-#include "DeviceDetectorResponseParser.h"
+#include "UdpDeviceDetectorResponseParser.h"
 
 
+namespace wifix {
 
-SINGLETON_IMPL (DeviceDetectorResponseParser)
+
+SINGLETON_IMPL (UdpDeviceDetectorResponseParser)
 
 
 //========================================================================================================================
 //
 //========================================================================================================================
-bool DeviceDetectorResponseParser :: parse (Stream & stream, Print & printer) {
+bool UdpDeviceDetectorResponseParser :: parse (Stream & stream, Print & printer) {
 
 	while (stream.available()) {
 		if (checkRespBegin (stream)) break;
@@ -69,6 +71,7 @@ bool DeviceDetectorResponseParser :: parse (Stream & stream, Print & printer) {
 	return true;
 }
 
+}
 
 
 

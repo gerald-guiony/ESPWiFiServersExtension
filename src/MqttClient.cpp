@@ -6,15 +6,18 @@
 
 #include <Stream.h>
 #include <StreamString.h>
+#include <Ticker.h>
 
 #include "MqttClient.h"
 
 
-#define MQTT_CONNECTION_TIME_MS						20000
+#define MQTT_CONNECTION_TIME_MS						2000
+
+static Ticker mqttReconnectTimer;
+static AsyncMqttClient asyncMqttClient;
 
 
-static AsyncMqttClient	asyncMqttClient;
-
+namespace wifix {
 
 
 SINGLETON_IMPL (MqttClient)
@@ -23,24 +26,35 @@ SINGLETON_IMPL (MqttClient)
 //========================================================================================================================
 //
 //========================================================================================================================
-void MqttClient :: stop () {
-	asyncMqttClient.disconnect();
+void MqttClient :: start ()
+{
+	_stopped = false;
+	if (WiFiHelper::isStationModeActive())
+	{
+		if (!asyncMqttClient.connected()) {
+			Logln(F("Connecting to MQTT..."));
+			asyncMqttClient.connect();
+		}
+	}
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void MqttClient :: connectToMqttServer () {
-
-	Logln(F("Connecting to MQTT..."));
-	asyncMqttClient.connect();
+void MqttClient :: stop ()
+{
+	_stopped = true;
+	if (WiFiHelper::isStationModeActive())
+	{
+		asyncMqttClient.disconnect();
+	}
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void MqttClient :: addHandlers	(std::vector <MqttHandler *> handlers) {
-
+void MqttClient :: addHandlers	(std::vector <MqttHandler *> handlers)
+{
 	for (MqttHandler * handler : handlers) {
 		handler->setup (&asyncMqttClient);
 	}
@@ -49,18 +63,27 @@ void MqttClient :: addHandlers	(std::vector <MqttHandler *> handlers) {
 //========================================================================================================================
 //
 //========================================================================================================================
-void MqttClient :: setup (const char * ip, int port) {
+void MqttClient :: setup (const char * ip, int port, std::vector <MqttHandler *> handlers)
+{
+	if (WiFiHelper::isAccessPointMode()) {
+		Logln(F("Access point mode => MQTT aborted.."));
+		return;
+	}
 
-	Logln(F("Starting MQTT.."));
+	Logln(F("Setting MQTT.."));
+
+	addHandlers (handlers);
 
 	asyncMqttClient.onConnect (
 		[this](bool sessionPresent) {
 			Logln(F("Connected to MQTT : ") << F("Session present=") << sessionPresent);
+			mqttReconnectTimer.detach(); // ensure we don't try to reconnect to MQTT server
 			notifyConnected (sessionPresent);
 		});
 	asyncMqttClient.onDisconnect (
 		[this](AsyncMqttClientDisconnectReason reason) {
 			Logln(F("Disconnected from MQTT"));
+			if (!_stopped) mqttReconnectTimer.attach_ms (MQTT_CONNECTION_TIME_MS, std::bind(&MqttClient::start, this));
 			notifyDisconnected (reason);
 		});
 	asyncMqttClient.onSubscribe	(
@@ -95,20 +118,4 @@ void MqttClient :: setup (const char * ip, int port) {
 	asyncMqttClient.setServer (ip, port);
 }
 
-//========================================================================================================================
-//
-//========================================================================================================================
-void MqttClient :: loop () {
-
-	static unsigned long _lastConnectionTry = 0;
-
-	if (!asyncMqttClient.connected()) {
-		if (WiFiHelper::isWifiAvailable ()) {
-			if (millis() - _lastConnectionTry > MQTT_CONNECTION_TIME_MS) {
-
-				connectToMqttServer ();
-				_lastConnectionTry = millis();
-			}
-		}
-	}
 }

@@ -6,12 +6,12 @@
 
 #pragma once
 
-#include <ESPAsyncWebServer.h>
-
 #include <Common.h>
 
 #include "HttpRequestHandler.h"
 
+
+namespace wifix {
 
 // Important things to remember
 // ----------------------------
@@ -20,10 +20,9 @@
 // * The server is smart enough to know when to close the connection and free resources
 // * You can not send more than one response to a single request
 
-
 //------------------------------------------------------------------------------
 // Singleton
-class HttpServer
+class HttpServer : public AsyncModule <std::vector <HttpRequestHandler *>>
 {
 	SINGLETON_CLASS(HttpServer)
 
@@ -32,17 +31,16 @@ public:
 
 private:
 	void handleNotFound							(AsyncWebServerRequest * request);
+	void addRequestHandlers						(std::vector <HttpRequestHandler *> handlers);
 
 public:
-	static AsyncWebServer & getAsyncWebServer	();
 
 	bool isCaptivePortal						(AsyncWebServerRequest * request);
+
+	virtual void setup							(std::vector <HttpRequestHandler *> handlers) override;
+
+	void start									();
 	void stop									();
-
-	void addRequestHandlers						(std::vector <HttpRequestHandler *> hanlders);
-
-	virtual void setup							();
-	virtual void loop							();
 };
 
 //------------------------------------------------------------------------------
@@ -60,3 +58,5 @@ public:
 		I(HttpServer).notifyRequestReceived (request);
 	}
 };
+
+}

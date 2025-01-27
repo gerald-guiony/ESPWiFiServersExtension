@@ -18,6 +18,7 @@
 // https://github.com/tzapu/WiFiManager/blob/master/examples/AutoConnectWithFSParameters/AutoConnectWithFSParameters.ino
 
 
+namespace wifix {
 
 SINGLETON_IMPL (MqttDeviceONDomoticzPublisher)
 
@@ -78,4 +79,6 @@ bool MqttDeviceONDomoticzSubscriber :: parseJsonObj	(const JsonObject& jsonArg) 
 	}
 
 	return false;
+}
+
 }

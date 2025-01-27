@@ -14,15 +14,20 @@
 #	include <AsyncTCP.h>
 #endif
 
+#include <Module/AsyncModule.h>
 #include <Tools/Signal.h>
+
+using namespace corex;
 
 
 #define DEFAULT_TELNET_PORT					23
 
 
+namespace wifix {
+
 //------------------------------------------------------------------------------
 //
-class TelnetServer
+class TelnetServer : public AsyncModule <uint16_t>
 {
 protected:
 
@@ -45,13 +50,13 @@ public:
 	TelnetServer								();
 	virtual ~TelnetServer 						();
 
-	virtual void stop							();
+	virtual void setup							(uint16_t thePort = DEFAULT_TELNET_PORT) override;
 
-	virtual void setup							(uint16_t thePort = DEFAULT_TELNET_PORT);
-	virtual void loop							();
+	virtual void start							();
+	virtual void stop							();
 };
 
-
+}
 
 
 

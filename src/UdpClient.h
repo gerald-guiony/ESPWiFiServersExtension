@@ -10,13 +10,17 @@
 
 #include <Stream/StreamParser.h>
 
+using namespace corex;
+
 
 #define DEFAULT_UDP_PORT				555
 
 
+namespace wifix {
+
 //------------------------------------------------------------------------------
 //
-class UdpClient
+class UdpClient : public Module <uint16_t>
 {
 protected:
 	WiFiUDP								_wiFiUdp;
@@ -25,10 +29,13 @@ protected:
 
 public:
 
-	void setup							(uint16_t thePort = DEFAULT_UDP_PORT);
-
 	void sendCmd 						(IPAddress & ip, int port, String & cmd);
 
 	bool isResponseAvailable 			();
 	bool parseResponse					(Print & printer);
+
+	virtual void setup					(uint16_t thePort = DEFAULT_UDP_PORT) override;
+	virtual void loop					() override {}
 };
+
+}

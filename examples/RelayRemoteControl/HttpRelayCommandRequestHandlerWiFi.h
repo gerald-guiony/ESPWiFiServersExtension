@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// HttpRelayCommandRequestHandler.h
+// HttpRelayCommandRequestHandlerWiFi.h
 // Version 1.0 December, 2020
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -11,24 +11,23 @@
 #include <Common.h>
 #include <HttpRequestHandler.h>
 
+#include "HttpRelayCommandRequestHandlerAbstract.h"
+
+namespace wifix {
+
 //------------------------------------------------------------------------------
 // Singleton
-class HttpRelayCommandRequestHandler : public HttpRequestHandler
+class HttpRelayCommandRequestHandler : 	public HttpRequestHandler,
+										public HttpRelayCommandRequestHandlerAbs <AsyncWebServerRequest, AsyncResponseStream>
 {
 	SINGLETON_CLASS(HttpRelayCommandRequestHandler)
 
-private:
-
-	void handleHelp			(AsyncWebServerRequest * request);
-	void handleOpen			(AsyncWebServerRequest * request);
-	void handleClose		(AsyncWebServerRequest * request);
-
 public:
 
-	virtual void setup 		(AsyncWebServer & asyncWebServer) override;
+	virtual void setup (AsyncWebServer & asyncWebServer) override;
 };
 
-
+}
 
 
 

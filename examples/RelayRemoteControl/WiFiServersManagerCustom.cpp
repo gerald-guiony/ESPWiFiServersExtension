@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// CustomWiFiServersManager.cpp
+// WiFiServersManagerCustom.cpp
 // Version 1.0 August, 2018
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -11,10 +11,10 @@
 
 #include <HttpAdminCommandRequestHandler.h>
 
-#include "HttpRelayCommandRequestHandler.h"
+#include "HttpRelayCommandRequestHandlerWiFi.h"
 #include "MqttRelayDomoticzHandler.h"
 
-#include "CustomWiFiServersManager.h"
+#include "WiFiServersManagerCustom.h"
 
 
 #ifdef USING_WIFI
@@ -25,67 +25,47 @@
 #endif
 
 
+namespace wifix {
 
-SINGLETON_IMPL (CustomWiFiServersManager)
-
+SINGLETON_IMPL (WiFiServersManagerCustom)
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void CustomWiFiServersManager :: startCustomServers () {
-
-	I(HttpServer).addRequestHandlers( { &I(HttpAdminCommandRequestHandler), &I(HttpRelayCommandRequestHandler) } );
-
-	// Start the Web Server
-	I(HttpServer).setup ();
-
-
+void WiFiServersManagerCustom :: setupCustomServers ()
+{
+	// Setup the Web Servers
+	I(HttpServer).setup ({ &I(HttpAdminCommandRequestHandler), &I(HttpRelayCommandRequestHandler) });
 #ifdef USING_MQTT
-	if (!WiFiHelper::isAccessPointMode()) {
-		// Start the MQTT Client
-		I(MqttClient).addHandlers ( { &I(MqttDomoticzLogPublisher), &I(MqttRelayDomoticzPublisher), &I(MqttRelayDomoticzSubscriber) } );
-		I(MqttClient).setup (MQTT_SERVER_IP, MQTT_SERVER_PORT);
-	}
+	// Setup the MQTT Clients
+	I(MqttClient).setup (MQTT_SERVER_IP, MQTT_SERVER_PORT, { &I(MqttDomoticzLogPublisher),
+															 &I(MqttRelayDomoticzPublisher),
+															 &I(MqttRelayDomoticzSubscriber) });
 #endif
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void CustomWiFiServersManager :: stopCustomServers () {
+void WiFiServersManagerCustom :: startCustomServers ()
+{
+	// Start the Web Servers
+	I(HttpServer).start ();
+#ifdef USING_MQTT
+	// Start the MQTT Clients
+	I(MqttClient).start ();
+#endif
+}
 
+//========================================================================================================================
+//
+//========================================================================================================================
+void WiFiServersManagerCustom :: stopCustomServers ()
+{
 	I(HttpServer).stop();
-
 #ifdef USING_MQTT
-	if (!WiFiHelper::isAccessPointMode()) {
-		I(MqttClient).stop();
-	}
+	I(MqttClient).stop();
 #endif
 }
 
-//========================================================================================================================
-//
-//========================================================================================================================
-void CustomWiFiServersManager :: setup (bool forceAccessPoint /*= false*/) {
-	WiFiServersManager::setup (forceAccessPoint);
 }
-
-//========================================================================================================================
-//
-//========================================================================================================================
-void CustomWiFiServersManager :: loop () {
-
-	if (WiFiHelper::isWifiAvailable()) {
-
-		WiFiServersManager::loop ();
-
-		I(HttpServer).loop();
-
-#ifdef USING_MQTT
-		if (!WiFiHelper::isAccessPointMode()) {
-			I(MqttClient).loop();
-		}
-#endif
-	}
-}
-

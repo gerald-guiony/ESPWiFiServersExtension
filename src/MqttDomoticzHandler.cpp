@@ -12,6 +12,8 @@
 #include "MqttDomoticzHandler.h"
 
 
+namespace wifix {
+
 
 SINGLETON_IMPL (MqttDomoticzLogPublisher)
 
@@ -205,4 +207,6 @@ void MqttDomoticzSubscriber :: setup (AsyncMqttClient * asyncMqttClient) {
 
 	I(MqttClient).notifyConnected 		+= std::bind (&MqttDomoticzSubscriber::onMqttConnected, this, _1);
 	I(MqttClient).notifyMessageReceived += std::bind (&MqttDomoticzSubscriber::onMqttMessageReceived, this, _1, _2, _3, _4, _5, _6);
+}
+
 }

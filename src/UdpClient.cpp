@@ -8,6 +8,7 @@
 
 #include "UdpClient.h"
 
+namespace wifix {
 
 //========================================================================================================================
 //
@@ -42,4 +43,6 @@ bool UdpClient :: isResponseAvailable () {
 //========================================================================================================================
 bool UdpClient :: parseResponse (Print & printer) {
 	return getRespParser ().parse (_wiFiUdp, printer);
+}
+
 }

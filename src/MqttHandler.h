@@ -6,17 +6,21 @@
 
 #pragma once
 
-#include <AsyncMqttClient.h>
+#include <AsyncMqttClient.h>				// https://github.com/marvinroger/async-mqtt-client
+
+#include <Module/AsyncModule.h>
 
 using namespace std::placeholders;
+using namespace corex;
+
+namespace wifix {
 
 //------------------------------------------------------------------------------
 //
-class MqttHandler
+class MqttHandler : public AsyncModule <AsyncMqttClient * >
 {
-public:
-	virtual void setup 	(AsyncMqttClient * asyncMqttClient) = 0;
 };
 
+}
 
 

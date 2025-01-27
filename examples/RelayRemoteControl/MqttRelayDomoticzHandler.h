@@ -10,12 +10,14 @@
 #include <MqttDomoticzHandler.h>
 
 
+namespace wifix {
+
 //------------------------------------------------------------------------------
 // Singleton
 class MqttRelayDomoticzPublisher : public MqttDomoticzPublisher
 {
 	SINGLETON_CLASS(MqttRelayDomoticzPublisher)
-	
+
 public:
 	size_t publishStatutMessage		(const String & msg);
 };
@@ -32,8 +34,7 @@ public:
 };
 
 
-
-
+}
 
 
 

@@ -13,6 +13,9 @@
 #include "TelnetServer.h"
 
 
+namespace wifix {
+
+
 std::vector <AsyncClient *> clients; // a list to hold all clients
 
 
@@ -30,26 +33,6 @@ TelnetServer :: ~TelnetServer () {
 	if (_server) {
 		delete _server;
 		_server = NULL;
-	}
-}
-
-//========================================================================================================================
-//
-//========================================================================================================================
-void TelnetServer :: stop () {
-
-	for (AsyncClient * client : clients) {
-		if (client != nullptr) {
-			client->close(true);
-//			delete client;
-		}
-	}
-
-	clients.clear ();
-
-	// Stop server
-	if (_server) {
-//		_server->end();
 	}
 }
 
@@ -102,19 +85,45 @@ void TelnetServer :: onNewClient (void* arg, AsyncClient* client) {
 //========================================================================================================================
 void TelnetServer :: setup (uint16_t thePort /* = DEFAULT_TELNET_PORT*/) {
 
-	_server = new AsyncServer (thePort); // start listening on tcp port
+	_port = thePort;
+	_server = new AsyncServer (_port); // start listening on tcp port
 
 //	_server->setNoDelay (true);
 
 	_server->onClient (std::bind(&TelnetServer::onNewClient, this, std::placeholders::_1, std::placeholders::_2), NULL);
-	_server->begin ();
 
-	Logln(F("Telnet server is up"));
-	Logln(F("Ready! Use 'telnet ") << WiFiHelper::getIpAddress() << F(":") << thePort << F(" to connect"));
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void TelnetServer :: loop () {
+void TelnetServer :: start () {
+
+	_server->begin ();
+
+	Logln(F("Telnet server is up"));
+	Logln(F("Ready! Use 'telnet ") << WiFiHelper::getIpAddress() << F(":") << _port << F(" to connect"));
+
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+void TelnetServer :: stop () {
+
+	for (AsyncClient * client : clients) {
+		if (client != nullptr) {
+			client->close(true);
+//			delete client;
+		}
+	}
+
+	clients.clear ();
+
+	// Stop server
+	if (_server) {
+//		_server->end();
+	}
+}
+
 }

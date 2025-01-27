@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// CustomWiFiServersManager.h
+// WiFiServersManagerCustom.h
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -10,11 +10,13 @@
 #include <WiFiServersManager.h>
 
 
+namespace wifix {
+
 //------------------------------------------------------------------------------
-// WARNING : SINGLETON !!!!
-class CustomWiFiServersManager : public WiFiServersManager
+// Singleton
+class WiFiServersManagerCustom : public WiFiServersManager
 {
-	SINGLETON_CLASS(CustomWiFiServersManager)
+	SINGLETON_CLASS(WiFiServersManagerCustom)
 
 private:
 
@@ -22,13 +24,13 @@ private:
 
 protected:
 
+	virtual void setupCustomServers			() override;
 	virtual void startCustomServers			() override;
 	virtual void stopCustomServers			() override;
 
 public:
 
 	bool isMqttDeviceOnPublished 			() const { return _isMqttDeviceOnPublished; }
-
-	virtual void setup						(bool forceAccessPoint = false) override;
-	virtual void loop						() override;
 };
+
+}

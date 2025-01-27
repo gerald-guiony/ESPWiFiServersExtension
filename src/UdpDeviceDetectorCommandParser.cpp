@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// DeviceDetectorCommandParser.cpp
+// UdpDeviceDetectorCommandParser.cpp
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -10,7 +10,7 @@
 #	include <WiFi.h>
 #endif
 
-#include "DeviceDetectorCommandParser.h"
+#include "UdpDeviceDetectorCommandParser.h"
 
 
 #define PRINT_HELP																											 \
@@ -23,13 +23,16 @@
 
 
 
-SINGLETON_IMPL (DeviceDetectorCommandParser)
+namespace wifix {
+
+
+SINGLETON_IMPL (UdpDeviceDetectorCommandParser)
 
 
 //========================================================================================================================
 //
 //========================================================================================================================
-bool DeviceDetectorCommandParser :: parse (Stream & stream, Print & printer) {
+bool UdpDeviceDetectorCommandParser :: parse (Stream & stream, Print & printer) {
 
 	if (!checkCmdBegin (stream)) return false;
 
@@ -73,8 +76,7 @@ bool DeviceDetectorCommandParser :: parse (Stream & stream, Print & printer) {
 	return true;
 }
 
-
-
+}
 
 
 

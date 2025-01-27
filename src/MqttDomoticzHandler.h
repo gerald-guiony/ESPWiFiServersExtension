@@ -13,8 +13,6 @@
 
 #include "MqttHandler.h"
 
-
-
 //------------------------------------------------------------------------------
 // Domoticz
 //
@@ -34,6 +32,7 @@
 #define PAYLOAD_LOG_MESSAGE				"message"
 
 
+namespace wifix {
 
 //------------------------------------------------------------------------------
 //
@@ -85,3 +84,5 @@ public:
 protected:
 	AsyncMqttClient * _asyncMqttClient	= nullptr;
 };
+
+}

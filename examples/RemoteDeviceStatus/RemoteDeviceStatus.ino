@@ -9,8 +9,10 @@
 #include <MqttClient.h>
 
 #include "Settings.h"
-#include "CustomWiFiServersManager.h"
+#include "WiFiServersManagerCustom.h"
 
+using namespace corex;
+using namespace wifix;
 
 //========================================================================================================================
 //
@@ -24,10 +26,10 @@ void setup() {
 	// ------------- setup
 
 	 // If WakeUpFromDeepSleep => No WifiManager & No Ap Mode
-	I(CustomWiFiServersManager).setWifiManagerEnabled (!EspBoard::isWakeUpFromDeepSleep());
-	I(CustomWiFiServersManager).setup();
+	I(WiFiServersManagerCustom).setWifiManagerEnabled (!EspBoard::isWakeUpFromDeepSleep());
+	I(WiFiServersManagerCustom).setup();
 
-	// ------------- Connect notifiers
+	// ------------- Connect signals
 
 	I(HttpServer).notifyRequestReceived	+= std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
 	I(MqttClient).notifyValidMessageParsed += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
@@ -38,7 +40,7 @@ void setup() {
 		if (EspBoard::isWakeUpFromDeepSleep())
 		{
 			// The condition is true if the ON state has been published
-			return I(CustomWiFiServersManager).isMqttDeviceOnPublished();
+			return I(WiFiServersManagerCustom).isMqttDeviceOnPublished();
 		}
 		else // Fresh power-on or other reboot reason...
 		{
@@ -47,7 +49,7 @@ void setup() {
 		}
 	});
 
-    I(ModuleSequencer).setup ({ &I(CustomWiFiServersManager) });
+    I(ModuleSequencer).setup ({ &I(WiFiServersManagerCustom) });
 }
 
 //========================================================================================================================

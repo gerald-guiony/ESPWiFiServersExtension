@@ -17,21 +17,22 @@
 #include <Module/Module.h>
 #include <Tools/Signal.h>
 
+using namespace corex;
 
 #define WIFI_RECONNECT_TIME				2000
 #define STA_CONNECTION_TIME				20000
 
+namespace wifix {
 
 //------------------------------------------------------------------------------
 // WARNING : SINGLETON !!!!
-class WiFiServersManager : public Module
+class WiFiServersManager : public Module <bool>
 {
 protected:
 
 	bool _isWifiManagerEnabled					= true;				// By default ...
 	bool _accessPointIfNoWifi					= false;
 	bool _forceAccessPoint						= false;
-
 
 public:
 
@@ -46,15 +47,17 @@ public:
 
 protected:
 
-	void startWifi 								();
-	void startWifiAndServers					();
+	void setupWifi								();
+	void setupOTA								();
 
 	bool startWiFiManager						();
-	void startOTA								();
+	void startWifi 								();
 
-	void startAllServers						();
-	void stopAllServers							();
+	void setupServers 							();
+	void startServers							();
+	void stopServers							();
 
+	virtual void setupCustomServers				() = 0;
 	virtual void startCustomServers				() = 0;
 	virtual void stopCustomServers				() = 0;
 
@@ -62,6 +65,8 @@ public:
 
 	void setWifiManagerEnabled					(bool enabled, bool accessPointIfNoWifi = false);
 
-	virtual void setup							(bool forceAccessPoint = false);
+	virtual void setup							(bool forceAccessPoint = false) override;
 	virtual void loop							() override;
 };
+
+}

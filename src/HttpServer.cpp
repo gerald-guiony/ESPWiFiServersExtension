@@ -11,29 +11,13 @@
 #include "HttpServer.h"
 
 
+namespace wifix {
 
 static AsyncWebServer			asyncWebServer (80);
 static HttpAsyncWebHandler		httpAsyncWebHandler;
 
 
-
 SINGLETON_IMPL (HttpServer)
-
-//========================================================================================================================
-//
-//========================================================================================================================
-void HttpServer :: stop ()
-{
-//	_asyncWebServer->reset ();  // remove all writers and handlers, with onNotFound/onFileUpload/onRequestBody
-}
-
-//========================================================================================================================
-//
-//========================================================================================================================
-AsyncWebServer & HttpServer::getAsyncWebServer	()
-{
-	return asyncWebServer;
-}
 
 //========================================================================================================================
 //
@@ -105,26 +89,35 @@ void HttpServer :: addRequestHandlers	(std::vector <HttpRequestHandler *> hanlde
 //========================================================================================================================
 //
 //========================================================================================================================
-void HttpServer :: setup () {
-
-	//_asyncWebServer->on("/generate_204", std::bind(&WebServer::handle204, this, std::placeholders::_1));  	// Android/Chrome OS captive portal check (par ex dans le cas où on connecte l'esp8266 au wifi d'un Android)
-	//_asyncWebServer->on("/fwlink", std::bind(&WebServer::handleRoot, this, std::placeholders::_1)); 			// Microsoft captive portal. Maybe not needed. Might be handled by notFound handler.
-	asyncWebServer.onNotFound (std::bind(&HttpServer::handleNotFound, this, std::placeholders::_1));			// Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
-	asyncWebServer.addHandler (&httpAsyncWebHandler);
-
+void HttpServer :: start ()
+{
 	asyncWebServer.begin();
 
 	Logln(F("HTTP Web server is up"));
 	Logln(F("Open http://") << WiFiHelper::getIpAddress() << F("/ in your browser to see it working"));
 }
 
+
 //========================================================================================================================
 //
 //========================================================================================================================
-void HttpServer :: loop () {
+void HttpServer :: stop ()
+{
+//	_asyncWebServer->reset ();  // remove all writers and handlers, with onNotFound/onFileUpload/onRequestBody
+}
 
-// Pas besoin car le serveur est asynchrone
-//	_asyncWebServer->handleClient();
+//========================================================================================================================
+//
+//========================================================================================================================
+void HttpServer :: setup (std::vector <HttpRequestHandler *> handlers) {
+
+	addRequestHandlers (handlers);
+
+	//_asyncWebServer->on("/generate_204", std::bind(&WebServer::handle204, this, std::placeholders::_1));  	// Android/Chrome OS captive portal check (par ex dans le cas où on connecte l'esp8266 au wifi d'un Android)
+	//_asyncWebServer->on("/fwlink", std::bind(&WebServer::handleRoot, this, std::placeholders::_1)); 			// Microsoft captive portal. Maybe not needed. Might be handled by notFound handler.
+	asyncWebServer.onNotFound (std::bind(&HttpServer::handleNotFound, this, std::placeholders::_1));			// Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
+	asyncWebServer.addHandler (&httpAsyncWebHandler);
+}
 
 }
 

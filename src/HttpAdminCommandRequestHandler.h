@@ -6,10 +6,11 @@
 
 #pragma once
 
-#include <ESPAsyncWebServer.h>
-
 #include <Common.h>
 #include "HttpRequestHandler.h"
+
+
+namespace wifix {
 
 //------------------------------------------------------------------------------
 // WARNING : SINGLETON !!!!
@@ -29,6 +30,7 @@ public:
 	virtual void setup			(AsyncWebServer & asyncWebServer) override;
 };
 
+}
 
 
 

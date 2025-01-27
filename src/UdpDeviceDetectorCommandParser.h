@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// CustomWiFiServersManager.h
+// UdpDeviceDetectorCommandParser.h
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -7,22 +7,19 @@
 #pragma once
 
 #include <Common.h>
-#include <WiFiServersManager.h>
 
+using namespace corex;
+
+namespace wifix {
 
 //------------------------------------------------------------------------------
-// Singleton
-class CustomWiFiServersManager : public WiFiServersManager
+// WARNING : SINGLETON !!!!
+class UdpDeviceDetectorCommandParser : public StreamCmdParser
 {
-	SINGLETON_CLASS(CustomWiFiServersManager)
-
-protected:
-
-	virtual void startCustomServers			() override;
-	virtual void stopCustomServers			() override;
+	SINGLETON_CLASS(UdpDeviceDetectorCommandParser)
 
 public:
-
-	virtual void setup						(bool forceAccessPoint = false) override;
-	virtual void loop						() override;
+	virtual bool parse	(Stream & stream, Print & printer) override;
 };
+
+}

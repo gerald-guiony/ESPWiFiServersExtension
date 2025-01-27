@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// DeviceDetectorCommandParser.h
+// WiFiServersManagerCustom.h
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -7,13 +7,22 @@
 #pragma once
 
 #include <Common.h>
+#include <WiFiServersManager.h>
+
+
+namespace wifix {
 
 //------------------------------------------------------------------------------
-// WARNING : SINGLETON !!!!
-class DeviceDetectorCommandParser : public StreamCmdParser
+// Singleton
+class WiFiServersManagerCustom : public WiFiServersManager
 {
-	SINGLETON_CLASS(DeviceDetectorCommandParser)
+	SINGLETON_CLASS(WiFiServersManagerCustom)
 
-public:
-	virtual bool parse				(Stream & stream, Print & printer) override;
+protected:
+
+	virtual void setupCustomServers			() override;
+	virtual void startCustomServers			() override;
+	virtual void stopCustomServers			() override;
 };
+
+}

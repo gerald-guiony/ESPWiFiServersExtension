@@ -1,19 +1,22 @@
 //************************************************************************************************************************
-// DeviceDetectorServer.cpp
+// UdpDeviceDetectorServer.cpp
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
 
-#include "DeviceDetectorCommandParser.h"
-#include "DeviceDetectorServer.h"
+#include "UdpDeviceDetectorCommandParser.h"
+#include "UdpDeviceDetectorServer.h"
 
 
-SINGLETON_IMPL (DeviceDetectorServer)
+namespace wifix {
+
+SINGLETON_IMPL (UdpDeviceDetectorServer)
 
 //========================================================================================================================
 //
 //========================================================================================================================
-StreamParser & DeviceDetectorServer :: getCmdParser () {
-	return I(DeviceDetectorCommandParser);
+StreamParser & UdpDeviceDetectorServer :: getCmdParser () {
+	return I(UdpDeviceDetectorCommandParser);
 }
 
+}
