@@ -1,32 +1,33 @@
 //************************************************************************************************************************
-// MqttClient.h
+// MqttClientAsync.h
 // Version 1.0 December, 2018
 // Author Gerald Guiony
 //************************************************************************************************************************
 
 #pragma once
 
+#include <Ticker.h>
+
 #include <Common.h>
 #include <Module/AsyncModule.h>
 
+#include "IWiFiLink.h"
 #include "MqttHandler.h"
 
 
 namespace wifix {
 
 //------------------------------------------------------------------------------
-// Singleton
 //
-// WARNING : Not a true AsyncModule because we need to periodically check the
-// 			 connection to the server
-//
-class MqttClient : public AsyncModule <const char *, int, std::vector <MqttHandler *>>
+class MqttClientAsync : public AsyncModule <const char *, int, const std::vector <AsyncMqttHandler *> &>,
+						public IWiFiLink
 {
-	SINGLETON_CLASS(MqttClient)
-
-private:
+protected:
 
 	bool _stopped = false;
+
+	Ticker 			_mqttReconnectTimer;
+	AsyncMqttClient _asyncMqttClient;
 
 public:
 
@@ -37,19 +38,22 @@ public:
 	Signal <char*, char*,
 			AsyncMqttClientMessageProperties,
 			size_t, size_t, size_t> 				notifyMessageReceived;
-	Signal <> 										notifyValidMessageParsed;
+	Signal <> 										notifyValidMessageReceived;
 	Signal <uint16_t>								notifyPublishSent;
 
 protected:
 
-	void addHandlers								(std::vector <MqttHandler *> handlers);
+	void addHandlers								(const std::vector <AsyncMqttHandler *> & handlers);
 
 public:
 
-	void setup										(const char * ip, int port, std::vector <MqttHandler *> handlers) override;
+	MqttClientAsync									();
+	virtual ~MqttClientAsync 						();
 
-	void start				 						();
-	void stop										();
+	virtual void connect				 			() override;
+	virtual void disconnect							() override;
+
+	virtual void setup								(const char * ip, int port, const std::vector <AsyncMqttHandler *> & handlers) override;
 };
 
 }

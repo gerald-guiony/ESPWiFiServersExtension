@@ -1,39 +1,45 @@
 //************************************************************************************************************************
-// MqttClient.cpp
+// MqttClientAsync.cpp
 // Version 1.0 December, 2018
 // Author Gerald Guiony
 //************************************************************************************************************************
 
 #include <Stream.h>
 #include <StreamString.h>
-#include <Ticker.h>
 
-#include "MqttClient.h"
+#include "MqttClientAsync.h"
 
 
 #define MQTT_CONNECTION_TIME_MS						2000
-
-static Ticker mqttReconnectTimer;
-static AsyncMqttClient asyncMqttClient;
 
 
 namespace wifix {
 
 
-SINGLETON_IMPL (MqttClient)
-
+//========================================================================================================================
+//
+//========================================================================================================================
+MqttClientAsync :: MqttClientAsync () {
+}
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void MqttClient :: start ()
+MqttClientAsync :: ~MqttClientAsync () {
+	disconnect ();
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+void MqttClientAsync :: connect ()
 {
 	_stopped = false;
 	if (WiFiHelper::isStationModeActive())
 	{
-		if (!asyncMqttClient.connected()) {
+		if (!_asyncMqttClient.connected()) {
 			Logln(F("Connecting to MQTT..."));
-			asyncMqttClient.connect();
+			_asyncMqttClient.connect();
 		}
 	}
 }
@@ -41,29 +47,29 @@ void MqttClient :: start ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void MqttClient :: stop ()
+void MqttClientAsync :: disconnect ()
 {
 	_stopped = true;
 	if (WiFiHelper::isStationModeActive())
 	{
-		asyncMqttClient.disconnect();
+		_asyncMqttClient.disconnect();
 	}
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void MqttClient :: addHandlers	(std::vector <MqttHandler *> handlers)
+void MqttClientAsync :: addHandlers	(const std::vector <AsyncMqttHandler *> & handlers)
 {
-	for (MqttHandler * handler : handlers) {
-		handler->setup (&asyncMqttClient);
+	for (AsyncMqttHandler * handler : handlers) {
+		handler->setup (&_asyncMqttClient);
 	}
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void MqttClient :: setup (const char * ip, int port, std::vector <MqttHandler *> handlers)
+void MqttClientAsync :: setup (const char * ip, int port, const std::vector <AsyncMqttHandler *> & handlers)
 {
 	if (WiFiHelper::isAccessPointMode()) {
 		Logln(F("Access point mode => MQTT aborted.."));
@@ -74,29 +80,29 @@ void MqttClient :: setup (const char * ip, int port, std::vector <MqttHandler *>
 
 	addHandlers (handlers);
 
-	asyncMqttClient.onConnect (
+	_asyncMqttClient.onConnect (
 		[this](bool sessionPresent) {
 			Logln(F("Connected to MQTT : ") << F("Session present=") << sessionPresent);
-			mqttReconnectTimer.detach(); // ensure we don't try to reconnect to MQTT server
+			_mqttReconnectTimer.detach(); // ensure we don't try to reconnect to MQTT server
 			notifyConnected (sessionPresent);
 		});
-	asyncMqttClient.onDisconnect (
+	_asyncMqttClient.onDisconnect (
 		[this](AsyncMqttClientDisconnectReason reason) {
 			Logln(F("Disconnected from MQTT"));
-			if (!_stopped) mqttReconnectTimer.attach_ms (MQTT_CONNECTION_TIME_MS, std::bind(&MqttClient::start, this));
+			if (!_stopped) _mqttReconnectTimer.attach_ms (MQTT_CONNECTION_TIME_MS, std::bind(&MqttClientAsync::connect, this));
 			notifyDisconnected (reason);
 		});
-	asyncMqttClient.onSubscribe	(
+	_asyncMqttClient.onSubscribe	(
 		[this](uint16_t packetId, uint8_t qos) {
 			Logln(F("Subscribe acknowledged : ") << F("PacketId=") << packetId << F(", qos=") << qos);
 			notifySubscribed (packetId, qos);
 		});
-	asyncMqttClient.onUnsubscribe (
+	_asyncMqttClient.onUnsubscribe (
 		[this](uint16_t packetId) {
 			Logln(F("Unsubscribe acknowledged : ") << F("PacketId=") << packetId);
 			notifyUnsubscribed (packetId);
 		});
-	asyncMqttClient.onMessage (
+	_asyncMqttClient.onMessage (
 		[this](char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
 			//	Logln(
 			//		F("Publish received : ") << LN
@@ -109,13 +115,13 @@ void MqttClient :: setup (const char * ip, int port, std::vector <MqttHandler *>
 			//	);
 			notifyMessageReceived (topic, payload, properties, len, index, total);
 		});
-	asyncMqttClient.onPublish (
+	_asyncMqttClient.onPublish (
 		[this](uint16_t packetId) {
 			//	Logln(F("Publish acknowledged : ") << F("PacketId=") << packetId);
 			notifyPublishSent (packetId);
 		});
 
-	asyncMqttClient.setServer (ip, port);
+	_asyncMqttClient.setServer (ip, port);
 }
 
 }

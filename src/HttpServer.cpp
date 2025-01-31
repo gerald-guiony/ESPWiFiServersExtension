@@ -79,8 +79,8 @@ bool HttpServer :: isCaptivePortal (AsyncWebServerRequest *request) {
 //========================================================================================================================
 //
 //========================================================================================================================
-void HttpServer :: addRequestHandlers	(std::vector <HttpRequestHandler *> hanlders) {
-
+void HttpServer :: addRequestHandlers	(const std::vector <HttpRequestHandler *> & hanlders)
+{
 	for (HttpRequestHandler * handler : hanlders) {
 		handler->setup (asyncWebServer);
 	}
@@ -89,7 +89,7 @@ void HttpServer :: addRequestHandlers	(std::vector <HttpRequestHandler *> hanlde
 //========================================================================================================================
 //
 //========================================================================================================================
-void HttpServer :: start ()
+void HttpServer :: connect ()
 {
 	asyncWebServer.begin();
 
@@ -101,7 +101,7 @@ void HttpServer :: start ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void HttpServer :: stop ()
+void HttpServer :: disconnect ()
 {
 //	_asyncWebServer->reset ();  // remove all writers and handlers, with onNotFound/onFileUpload/onRequestBody
 }
@@ -109,7 +109,7 @@ void HttpServer :: stop ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void HttpServer :: setup (std::vector <HttpRequestHandler *> handlers) {
+void HttpServer :: setup (const std::vector <HttpRequestHandler *> & handlers) {
 
 	addRequestHandlers (handlers);
 

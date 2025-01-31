@@ -9,6 +9,8 @@
 #define _ASYNC_WEBSERVER_LOGLEVEL_	2
 #include <AsyncWebServer_WT32_ETH01.h>
 
+#include <Ticker.h>
+
 #include <Common.h>
 #include <Module/AsyncModule.h>
 
@@ -23,6 +25,10 @@ class HttpRelayCommandRequestHandler : 	public AsyncModule <>,
 										public HttpRelayCommandRequestHandlerAbs <eth::AsyncWebServerRequest, eth::AsyncResponseStream>
 {
 	SINGLETON_CLASS(HttpRelayCommandRequestHandler)
+
+private:
+
+	Ticker _checkConnectionTimer;
 
 private:
 

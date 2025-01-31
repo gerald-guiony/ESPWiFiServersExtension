@@ -24,7 +24,7 @@ void UdpClient :: setup (uint16_t thePort) {
 //========================================================================================================================
 //
 //========================================================================================================================
-void UdpClient :: sendCmd (IPAddress & ip, int port, String & cmd) {
+void UdpClient :: sendCmd (const IPAddress & ip, int port, const String & cmd) {
 
 	_wiFiUdp.beginPacket(ip, port);
 	_wiFiUdp << cmd;

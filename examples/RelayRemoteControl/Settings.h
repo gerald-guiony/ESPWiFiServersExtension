@@ -6,15 +6,15 @@
 
 #pragma once
 
-
 //------------------------------------------------------------------------------
 //
 
 #define USING_WIFI
+#define USING_ETH
 
-// Add MQTT subscriber & publisher
-#define USING_MQTT
-
+// Add MQTT subscriber & publisherq
+#define USING_DOMOTICZ_MQTT
+//#define USING_AWS_MQTT
 
 //------------------------------------------------------------------------------
 // Pins
@@ -34,9 +34,9 @@
 // Domoticz MQTT
 //
 
-#define MQTT_SERVER_IP				"192.168.1.138"		// IP Broker MQTT
-#define MQTT_SERVER_PORT			1883				// Port Broker MQTT
+#define MQTT_DOMOTICZ_ENDPOINT			"192.168.1.138"		// IP Broker MQTT
+#define MQTT_DOMOTICZ_PORT				1883				// Port Broker MQTT
 
 // Relay component
-#define REMOTE_RELAY_SWITCH_IDX 	44
-#define REMOTE_MQTT_LOG_IDX			17
+#define MQTT_DOMOTICZ_RELAY_SWITCH_IDX 	44
+#define MQTT_DOMOTICZ_LOG_IDX			17

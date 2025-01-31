@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// WiFiServersManager.h
+// WiFiLinksManager.h
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -15,6 +15,8 @@
 #endif
 
 #include <Module/Module.h>
+#include <Module/AsyncModule.h>
+
 #include <Tools/Signal.h>
 
 using namespace corex;
@@ -26,13 +28,15 @@ namespace wifix {
 
 //------------------------------------------------------------------------------
 // WARNING : SINGLETON !!!!
-class WiFiServersManager : public Module <bool>
+class WiFiLinksManager : public Module <bool>
 {
 protected:
 
 	bool _isWifiManagerEnabled					= true;				// By default ...
 	bool _accessPointIfNoWifi					= false;
 	bool _forceAccessPoint						= false;
+
+	std::vector <IWiFiLink *> 					_customLinks;
 
 public:
 
@@ -47,23 +51,26 @@ public:
 
 protected:
 
+	void addCustomLinks							(const std::vector <IWiFiLink *> & customLinks);
+
 	void setupWifi								();
 	void setupOTA								();
 
 	bool startWiFiManager						();
 	void startWifi 								();
+	void startOTA 								();
 
-	void setupServers 							();
-	void startServers							();
-	void stopServers							();
+	void setupLinks 							();
+	void connectLinks							();
+	void disconnectLinks						();
 
-	virtual void setupCustomServers				() = 0;
-	virtual void startCustomServers				() = 0;
-	virtual void stopCustomServers				() = 0;
+	virtual void setupCustomLinks				() = 0;
 
 public:
 
 	void setWifiManagerEnabled					(bool enabled, bool accessPointIfNoWifi = false);
+
+	std::list <IModule *> getModules 			();
 
 	virtual void setup							(bool forceAccessPoint = false) override;
 	virtual void loop							() override;

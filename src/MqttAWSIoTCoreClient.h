@@ -1,28 +1,20 @@
 //************************************************************************************************************************
-// WiFiServersManagerCustom.h
-// Version 1.0 June, 2017
+// MqttAWSIoTCoreClient.h
+// Version 1.0 Jan, 2025
 // Author Gerald Guiony
 //************************************************************************************************************************
 
 #pragma once
 
-#include <Common.h>
-#include <WiFiServersManager.h>
-
+#include "MqttClientCredential.h"
 
 namespace wifix {
 
 //------------------------------------------------------------------------------
-// Singleton
-class WiFiServersManagerCustom : public WiFiServersManager
+//
+class MqttAWSIoTCoreClient : public MqttClientCredential
 {
-	SINGLETON_CLASS(WiFiServersManagerCustom)
-
-protected:
-
-	virtual void setupCustomServers			() override;
-	virtual void startCustomServers			() override;
-	virtual void stopCustomServers			() override;
+	SINGLETON_CLASS(MqttAWSIoTCoreClient)
 };
 
 }

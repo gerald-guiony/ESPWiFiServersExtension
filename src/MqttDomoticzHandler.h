@@ -36,7 +36,7 @@ namespace wifix {
 
 //------------------------------------------------------------------------------
 //
-class MqttDomoticzPublisher : public MqttHandler
+class MqttDomoticzPublisher : public AsyncMqttHandler
 {
 public:
 	MqttDomoticzPublisher				() {};
@@ -69,20 +69,39 @@ public:
 
 //------------------------------------------------------------------------------
 //
-class MqttDomoticzSubscriber : public MqttHandler
+class MqttDomoticzSubscriber : public AsyncMqttHandler
 {
 public:
-	MqttDomoticzSubscriber				() {};
-
-	void onMqttConnected				(bool sessionPresent);
-	void onMqttMessageReceived			(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
-
-	virtual bool parseJsonObj			(const JsonObject& jsonObj) = 0;
+	MqttDomoticzSubscriber				() {}
 
 	virtual void setup 					(AsyncMqttClient * asyncMqttClient) override;
 
 protected:
+
+	void onMqttConnected				(bool sessionPresent);
+	void onMqttMessageReceived			(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
+
+	virtual bool parseMqttMsgReceived	(const JsonObject& jsonObj) = 0;
+
+protected:
 	AsyncMqttClient * _asyncMqttClient	= nullptr;
 };
+
+//------------------------------------------------------------------------------
+//
+class MqttDomoticzSubscriberIdx : public MqttDomoticzSubscriber
+{
+public:
+	MqttDomoticzSubscriberIdx			() {}
+
+	virtual bool onMqttMsgReceivedIdx	(const JsonObject& jsonObj) = 0;
+
+protected:
+	virtual bool parseMqttMsgReceived	(const JsonObject& jsonObj) override;
+
+protected:
+	int _idx;
+};
+
 
 }

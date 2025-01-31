@@ -34,7 +34,7 @@ size_t MqttRelayDomoticzPublisher :: publishStatutMessage (const String & msg) {
 	static const String msgHeader = "[" + EspBoard::getDeviceName() + "] ";
 	String custom_msg = msgHeader + msg;
 
-	return publishMessage (REMOTE_MQTT_LOG_IDX, custom_msg);
+	return publishMessage (MQTT_DOMOTICZ_LOG_IDX, custom_msg);
 }
 
 
@@ -46,7 +46,16 @@ SINGLETON_IMPL (MqttRelayDomoticzSubscriber)
 //========================================================================================================================
 //
 //========================================================================================================================
-bool MqttRelayDomoticzSubscriber :: parseJsonObj	(const JsonObject& jsonArg) {
+void MqttRelayDomoticzSubscriber :: setup (AsyncMqttClient * asyncMqttClient) {
+
+	_idx = MQTT_DOMOTICZ_RELAY_SWITCH_IDX;
+	MqttDomoticzSubscriberIdx :: setup (asyncMqttClient);
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+bool MqttRelayDomoticzSubscriber :: onMqttMsgReceivedIdx (const JsonObject& jsonArg) {
 
 	// domoticz/out {
 		// "Battery" : 255,
@@ -64,29 +73,21 @@ bool MqttRelayDomoticzSubscriber :: parseJsonObj	(const JsonObject& jsonArg) {
 	// }
 
 	// décode le message - decode payload message
+	// Here we know that the _idx member value matches the idx of the domoticz device
 
-	if (jsonArg [PAYLOAD_IDX].success()) {
+	if (jsonArg [PAYLOAD_NVALUE].success()) {
 
-		int idx = jsonArg [PAYLOAD_IDX];
+		bool close = (jsonArg [PAYLOAD_NVALUE] == 1);
 
-		// Process message
-		if (idx == REMOTE_RELAY_SWITCH_IDX) {
+		if (close)
+			relays[0].close();
+		else
+			relays[0].open();
 
-			if (jsonArg [PAYLOAD_NVALUE].success()) {
+		// Response
+		I(MqttRelayDomoticzPublisher).publishStatutMessage (close ? "Relay closed":"Relay opened");
 
-				bool close = (jsonArg [PAYLOAD_NVALUE] == 1);
-
-				if (close)
-					relays[0].close();
-				else
-					relays[0].open();
-
-				// Response
-				I(MqttRelayDomoticzPublisher).publishStatutMessage (close ? "Relay closed":"Relay opened");
-
-				return true;
-			}
-		}
+		return true;
 	}
 
 	return false;

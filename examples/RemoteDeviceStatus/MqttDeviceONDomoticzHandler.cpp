@@ -27,55 +27,35 @@ SINGLETON_IMPL (MqttDeviceONDomoticzPublisher)
 //========================================================================================================================
 size_t MqttDeviceONDomoticzPublisher :: publishDeviceONState () {
 
-	return publishSwitchStatus (REMOTE_FREEBOX_PLAYER_SWITCH_IDX, true);
+	return publishSwitchStatus (MQTT_DOMOTICZ_FREEBOX_PLAYER_SWITCH_IDX, true);
 }
 
 
 /************************************************************************************************************************/
 
-
 SINGLETON_IMPL (MqttDeviceONDomoticzSubscriber)
-
 
 //========================================================================================================================
 //
 //========================================================================================================================
-bool MqttDeviceONDomoticzSubscriber :: parseJsonObj	(const JsonObject& jsonArg) {
+void MqttDeviceONDomoticzSubscriber :: setup (AsyncMqttClient * asyncMqttClient) {
 
-	// Publish received :
-	//  -topic = domoticz/out
-	//  -payload = {
-	//		"Battery":255,
-	//		"LastUpdate":"2025-01-07 10:57:06",
-	//		"RSSI":12,
-	//		"description":"",
-	//		"dtype":"Light/Switch",
-	//		"hwid":"7",
-	//		"id":"00014069",
-	//		"idx":25,
-	//		"name":"Freebox Player",
-	//		"nvalue":1,
-	//		"o[ESP13901933] rg_hwid":"7",
-	//		"stype":"Switch",
-	//		"svalue1":"0",
-	//		"switchType":"On/Off","unit":1
-	// }
+	_idx = MQTT_DOMOTICZ_FREEBOX_PLAYER_SWITCH_IDX;
+	MqttDomoticzSubscriberIdx :: setup (asyncMqttClient);
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+bool MqttDeviceONDomoticzSubscriber :: onMqttMsgReceivedIdx	(const JsonObject& jsonArg) {
 
 	// décode le message - decode payload message
+	// Here we know that the _idx member value matches the idx of the domoticz device
 
-	if (jsonArg [PAYLOAD_IDX].success()) {
+	if (jsonArg [PAYLOAD_NVALUE].success()) {
 
-		int idx = jsonArg [PAYLOAD_IDX];
-
-		// Handle message
-		if (idx == REMOTE_FREEBOX_PLAYER_SWITCH_IDX) {
-
-			if (jsonArg [PAYLOAD_NVALUE].success()) {
-
-				// Nothing to do ..
-				return true;
-			}
-		}
+		// Nothing to do ..
+		return true;
 	}
 
 	return false;

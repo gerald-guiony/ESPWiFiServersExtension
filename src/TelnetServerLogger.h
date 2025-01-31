@@ -42,7 +42,8 @@ protected:
 
 public:
 
-	virtual void stop				() override;
+	virtual void disconnect			() override;
+	
 	virtual void setup				(uint16_t thePort = DEFAULT_TELNET_PORT) override;
 };
 

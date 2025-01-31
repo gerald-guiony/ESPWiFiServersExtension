@@ -35,7 +35,7 @@ SINGLETON_IMPL (TelnetServerLogger)
 //========================================================================================================================
 //
 //========================================================================================================================
-void TelnetServerLogger :: stop () {
+void TelnetServerLogger :: disconnect () {
 
 	for (auto pair : loggerTelnetDataByClientMap) {
 		I(Logger).notifyRequestLineToPrint -= pair.second.fnId;
@@ -43,7 +43,7 @@ void TelnetServerLogger :: stop () {
 
 	loggerTelnetDataByClientMap.clear ();
 
-	TelnetServer :: stop ();
+	TelnetServer :: disconnect ();
 }
 
 //========================================================================================================================
@@ -55,7 +55,7 @@ void TelnetServerLogger :: addClient (AsyncClient * client) {
 
 	loggerTelnetData.parser = std::make_shared <LoggerCommandParser> ();
 	loggerTelnetData.parser->notifyCloseCurrentSessionResquested	+= [client] ()	{ client->stop (); };
-	loggerTelnetData.parser->notifyCloseAllSessionResquested		+= [this] ()	{ stop (); };
+	loggerTelnetData.parser->notifyCloseAllSessionResquested		+= [this] ()	{ disconnect (); };
 
 	loggerTelnetData.printer = std::make_shared <AsyncTCPbuffer> (client);
 

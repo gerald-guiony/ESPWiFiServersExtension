@@ -17,6 +17,8 @@
 #include <Module/AsyncModule.h>
 #include <Tools/Signal.h>
 
+#include "IWiFiLink.h"
+
 using namespace corex;
 
 
@@ -27,7 +29,8 @@ namespace wifix {
 
 //------------------------------------------------------------------------------
 //
-class TelnetServer : public AsyncModule <uint16_t>
+class TelnetServer : public AsyncModule <uint16_t>,
+					 public IWiFiLink
 {
 protected:
 
@@ -50,10 +53,10 @@ public:
 	TelnetServer								();
 	virtual ~TelnetServer 						();
 
-	virtual void setup							(uint16_t thePort = DEFAULT_TELNET_PORT) override;
+	virtual void connect						() override;
+	virtual void disconnect						() override;
 
-	virtual void start							();
-	virtual void stop							();
+	virtual void setup							(uint16_t thePort = DEFAULT_TELNET_PORT) override;
 };
 
 }

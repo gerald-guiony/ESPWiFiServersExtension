@@ -7,7 +7,7 @@
 #include <Stream.h>
 #include <StreamString.h>
 
-#include "MqttClient.h"
+#include "MqttDomoticzClient.h"
 
 #include "MqttDomoticzHandler.h"
 
@@ -191,9 +191,9 @@ void MqttDomoticzSubscriber :: onMqttMessageReceived (char* topic, char* payload
 			<< F(" -payload =") << output << LN
 		);
 
-		if (parseJsonObj (jsonArg))
+		if (parseMqttMsgReceived (jsonArg))
 		{
-			I(MqttClient).notifyValidMessageParsed ();
+			I(MqttDomoticzClient).notifyValidMessageReceived ();
 		}
 	}
 }
@@ -205,8 +205,52 @@ void MqttDomoticzSubscriber :: setup (AsyncMqttClient * asyncMqttClient) {
 
 	_asyncMqttClient = asyncMqttClient;
 
-	I(MqttClient).notifyConnected 		+= std::bind (&MqttDomoticzSubscriber::onMqttConnected, this, _1);
-	I(MqttClient).notifyMessageReceived += std::bind (&MqttDomoticzSubscriber::onMqttMessageReceived, this, _1, _2, _3, _4, _5, _6);
+	I(MqttDomoticzClient).notifyConnected 		+= std::bind (&MqttDomoticzSubscriber::onMqttConnected, this, _1);
+	I(MqttDomoticzClient).notifyMessageReceived += std::bind (&MqttDomoticzSubscriber::onMqttMessageReceived, this, _1, _2, _3, _4, _5, _6);
 }
+
+
+/************************************************************************************************************************/
+
+
+
+//========================================================================================================================
+//
+//========================================================================================================================
+bool MqttDomoticzSubscriberIdx ::parseMqttMsgReceived	(const JsonObject& jsonArg) {
+
+	// sample :
+	// domoticz/out {
+		// "Battery" : 255,
+		// "RSSI" : 12,
+		// "description" : "",
+		// "dtype" : "Light/Switch",
+		// "id" : "00014051",
+		// "idx" : 255,
+		// "name" : "Kitchen light (MQTT)",
+		// "nvalue" : 1,
+		// "stype" : "Switch",
+		// "svalue1" : "0",
+		// "switchType" : "On/Off",
+		// "unit" : 1
+	// }
+
+	// décode le message - decode payload message
+
+	if (jsonArg [PAYLOAD_IDX].success()) {
+
+		int idx = jsonArg [PAYLOAD_IDX];
+
+		// Process message
+		if (idx == _idx) {
+
+			return onMqttMsgReceivedIdx (jsonArg);
+		}
+	}
+
+	return false;
+}
+
+
 
 }

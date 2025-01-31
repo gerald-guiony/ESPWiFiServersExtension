@@ -8,6 +8,7 @@
 
 #include <Common.h>
 
+#include "IWiFiLink.h"
 #include "HttpRequestHandler.h"
 
 
@@ -22,25 +23,26 @@ namespace wifix {
 
 //------------------------------------------------------------------------------
 // Singleton
-class HttpServer : public AsyncModule <std::vector <HttpRequestHandler *>>
+class HttpServer : public AsyncModule <const std::vector <HttpRequestHandler *> &>,
+				   public IWiFiLink
 {
 	SINGLETON_CLASS(HttpServer)
 
 public:
-	Signal <AsyncWebServerRequest *>			notifyRequestReceived;
+	Signal <AsyncWebServerRequest *>	notifyRequestReceived;
 
 private:
-	void handleNotFound							(AsyncWebServerRequest * request);
-	void addRequestHandlers						(std::vector <HttpRequestHandler *> handlers);
+	void handleNotFound					(AsyncWebServerRequest * request);
+	void addRequestHandlers				(const std::vector <HttpRequestHandler *> & handlers);
 
 public:
 
-	bool isCaptivePortal						(AsyncWebServerRequest * request);
+	bool isCaptivePortal				(AsyncWebServerRequest * request);
 
-	virtual void setup							(std::vector <HttpRequestHandler *> handlers) override;
+	virtual void connect				() override;
+	virtual void disconnect				() override;
 
-	void start									();
-	void stop									();
+	virtual void setup					(const std::vector <HttpRequestHandler *> & handlers) override;
 };
 
 //------------------------------------------------------------------------------

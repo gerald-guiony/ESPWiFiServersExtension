@@ -29,7 +29,7 @@ TelnetServer :: TelnetServer () {
 //
 //========================================================================================================================
 TelnetServer :: ~TelnetServer () {
-	stop ();
+	disconnect ();
 	if (_server) {
 		delete _server;
 		_server = NULL;
@@ -86,7 +86,7 @@ void TelnetServer :: onNewClient (void* arg, AsyncClient* client) {
 void TelnetServer :: setup (uint16_t thePort /* = DEFAULT_TELNET_PORT*/) {
 
 	_port = thePort;
-	_server = new AsyncServer (_port); // start listening on tcp port
+	_server = new AsyncServer (_port); // connect listening on tcp port
 
 //	_server->setNoDelay (true);
 
@@ -97,7 +97,7 @@ void TelnetServer :: setup (uint16_t thePort /* = DEFAULT_TELNET_PORT*/) {
 //========================================================================================================================
 //
 //========================================================================================================================
-void TelnetServer :: start () {
+void TelnetServer :: connect () {
 
 	_server->begin ();
 
@@ -109,7 +109,7 @@ void TelnetServer :: start () {
 //========================================================================================================================
 //
 //========================================================================================================================
-void TelnetServer :: stop () {
+void TelnetServer :: disconnect () {
 
 	for (AsyncClient * client : clients) {
 		if (client != nullptr) {

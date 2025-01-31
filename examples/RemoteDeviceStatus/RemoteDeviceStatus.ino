@@ -6,10 +6,10 @@
 
 #include <Common.h>
 #include <HttpServer.h>
-#include <MqttClient.h>
+#include <MqttDomoticzClient.h>
 
 #include "Settings.h"
-#include "WiFiServersManagerCustom.h"
+#include "WiFiLinksManagerCustom.h"
 
 using namespace corex;
 using namespace wifix;
@@ -21,26 +21,26 @@ void setup() {
 
 	// ------------ Global Init
 
-	EspBoard::init ();
+	EspBoard::init (true);
 
 	// ------------- setup
 
 	 // If WakeUpFromDeepSleep => No WifiManager & No Ap Mode
-	I(WiFiServersManagerCustom).setWifiManagerEnabled (!EspBoard::isWakeUpFromDeepSleep());
-	I(WiFiServersManagerCustom).setup();
+	I(WiFiLinksManagerCustom).setWifiManagerEnabled (!EspBoard::isWakeUpFromDeepSleep());
+	I(WiFiLinksManagerCustom).setup();
 
 	// ------------- Connect signals
 
 	I(HttpServer).notifyRequestReceived	+= std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
-	I(MqttClient).notifyValidMessageParsed += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
+	I(MqttDomoticzClient).notifyValidMessageReceived += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
 
-	I(ModuleSequencer).setDeepSleepTime(DEVICE_ON_STATE_PUBLISH_PERIOD_ms);
+	I(ModuleSequencer).setDeepSleepTime (DEVICE_ON_STATE_PUBLISH_PERIOD_ms);
 
 	I(ModuleSequencer).setConditionToEnterDeepSleep ([]() {
 		if (EspBoard::isWakeUpFromDeepSleep())
 		{
-			// The condition is true if the ON state has been published
-			return I(WiFiServersManagerCustom).isMqttDeviceOnPublished();
+			// The condition to enter deep sleep is true if the ON state has been published
+			return I(WiFiLinksManagerCustom).isMqttDeviceOnPublished();
 		}
 		else // Fresh power-on or other reboot reason...
 		{
@@ -49,7 +49,7 @@ void setup() {
 		}
 	});
 
-    I(ModuleSequencer).setup ({ &I(WiFiServersManagerCustom) });
+	I(ModuleSequencer).setup (I(WiFiLinksManagerCustom).getModules ());
 }
 
 //========================================================================================================================

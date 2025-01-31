@@ -6,8 +6,11 @@
 
 #pragma once
 
+#include <PubSubClient.h>
+
 #include <AsyncMqttClient.h>				// https://github.com/marvinroger/async-mqtt-client
 
+#include <Module/Module.h>
 #include <Module/AsyncModule.h>
 
 using namespace std::placeholders;
@@ -17,9 +20,16 @@ namespace wifix {
 
 //------------------------------------------------------------------------------
 //
-class MqttHandler : public AsyncModule <AsyncMqttClient * >
+class MqttHandler : public Module <PubSubClient * >
 {
 };
+
+//------------------------------------------------------------------------------
+//
+class AsyncMqttHandler : public AsyncModule <AsyncMqttClient * >
+{
+};
+
 
 }
 

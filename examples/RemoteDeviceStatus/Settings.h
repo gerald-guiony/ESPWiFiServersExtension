@@ -14,8 +14,8 @@
 // Domoticz MQTT
 //
 
-#define MQTT_SERVER_IP						"192.168.1.138"		// IP Broker MQTT
-#define MQTT_SERVER_PORT					1883				// Port Broker MQTT
+#define MQTT_DOMOTICZ_ENDPOINT						"192.168.1.138"		// IP Broker MQTT
+#define MQTT_DOMOTICZ_PORT							1883				// Port Broker MQTT
 
 // Switch in Domoticz
-#define REMOTE_FREEBOX_PLAYER_SWITCH_IDX	25
+#define MQTT_DOMOTICZ_FREEBOX_PLAYER_SWITCH_IDX		25

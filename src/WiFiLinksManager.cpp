@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// WiFiServersManager.cpp
+// WiFiLinksManager.cpp
 // Version 1.0 August, 2018
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -27,7 +27,7 @@
 #include <Common.h>
 
 #include "UdpDeviceDetectorServer.h"
-#include "WiFiServersManager.h"
+#include "WiFiLinksManager.h"
 #include "TelnetServerLogger.h"
 
 
@@ -57,7 +57,17 @@ volatile bool wifiManagerForcedByUser = false;
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: setWifiManagerEnabled (bool enabled, bool accessPointIfNoWifi /* = false */)
+void WiFiLinksManager :: addCustomLinks	(const std::vector <IWiFiLink *> & customLinks)
+{
+	for (IWiFiLink * customLink : customLinks) {
+		_customLinks.push_back (customLink);
+	}
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+void WiFiLinksManager :: setWifiManagerEnabled (bool enabled, bool accessPointIfNoWifi /* = false */)
 {
 	_isWifiManagerEnabled = enabled;
 	_accessPointIfNoWifi = accessPointIfNoWifi;
@@ -77,7 +87,7 @@ void configModeCallback (WiFiManager * wiFiManager)
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: setupOTA ()
+void WiFiLinksManager :: setupOTA ()
 {
 	Logln(F("Setup OTA.."));
 
@@ -109,13 +119,25 @@ void WiFiServersManager :: setupOTA ()
 		else if (error == OTA_END_ERROR)		Logln(F("End Failed"));
 	});
 
+	// WARNING ESP32 crash here : assert failed: tcpip_send_msg_wait_sem /IDF/components/lwip/lwip/src/api/tcpip.c:449 (Invalid mbox)
+#ifdef ESP8266
+	startOTA ();
+#endif
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+void WiFiLinksManager :: startOTA ()
+{
+	Logln(F("Start OTA.."));
 	ArduinoOTA.begin();
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-bool WiFiServersManager :: startWiFiManager ()
+bool WiFiLinksManager :: startWiFiManager ()
 {
 	Logln(F("Starting WiFiManager.."));
 
@@ -155,7 +177,7 @@ bool WiFiServersManager :: startWiFiManager ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: startWifi ()
+void WiFiLinksManager :: startWifi ()
 {
 	EspBoard::blinkOn();
 
@@ -166,7 +188,7 @@ void WiFiServersManager :: startWifi ()
 	}
 	else {
 		Logln (F("Starting wifi.."));
-		// Default setup : connect device to wifi in station mode otherwise start wifiManager ..
+		// Default setup : connect device to wifi in station mode otherwise connect wifiManager ..
 		if (!WiFiHelper::connectToWiFi ()) {
 			if ((_isWifiManagerEnabled)||(wifiManagerForcedByUser)) {
 				wifiManagerForcedByUser = false;
@@ -245,7 +267,7 @@ static void logWiFiEvent(WiFiEvent_t event)
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: setupWifi ()
+void WiFiLinksManager :: setupWifi ()
 {
 
 #ifdef ARDUINO_ESP8266_WIO_NODE
@@ -333,41 +355,45 @@ void WiFiServersManager :: setupWifi ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: setupServers ()
+void WiFiLinksManager :: setupLinks ()
 {
-	// WARNING :
-	// Setup OTA first to avoid this crash "Fatal exception 28(LoadProhibitedCause) error." !?
-	// I don't understand why...
 	setupOTA();
 
 #ifdef DEBUG
 	I(TelnetServerLogger).setup ();
 #endif
 	I(UdpDeviceDetectorServer).setup ();
-	setupCustomServers ();
+	setupCustomLinks ();
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: startServers ()
+void WiFiLinksManager :: connectLinks ()
 {
 	Logln(F("Starting Wifi servers :"));
 
+ 	// WARNING ESP8266 crash here : "Fatal exception 28(LoadProhibitedCause) error." !?
+#ifdef ESP32
+	startOTA ();
+#endif
+
 #ifdef DEBUG
 	Logln(F("Starting Telnet server logger.."));
-	I(TelnetServerLogger).start ();
+	I(TelnetServerLogger).connect ();
 #endif
 
 	if (WiFiHelper::isStationModeActive()) {
 		Logln(F("Starting Udp Detector Server.."));
 		// Only when the device is connected to Wifi in station mode
-		I(UdpDeviceDetectorServer).start ();
+		I(UdpDeviceDetectorServer).connect ();
 	}
 
 	// Start other servers here ...
 	Logln(F("Starting custom servers.."));
-	startCustomServers ();
+	for (IWiFiLink * customLink : _customLinks) {
+		customLink->connect ();
+	}
 
 	Logln(F("Starting DNS.."));
 	if (!dnsSrv.start(53, EspBoard::getDeviceName (), WiFiHelper :: getIpAddress ())) {
@@ -378,47 +404,77 @@ void WiFiServersManager :: startServers ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: stopServers ()
+void WiFiLinksManager :: disconnectLinks ()
 {
 	Logln(F("Stopping Wifi servers"));
 
 	// Stop other servers...
-	stopCustomServers();
+	for (IWiFiLink * customLink : _customLinks) {
+		customLink->disconnect ();
+	}
 
 #ifdef DEBUG
-	I(TelnetServerLogger).stop ();
+	I(TelnetServerLogger).disconnect ();
 #endif
 
-	I(UdpDeviceDetectorServer).stop();
+	I(UdpDeviceDetectorServer).disconnect();
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: setup (bool forceAccessPoint /*= false */)
+std::list <IModule *> WiFiLinksManager :: getModules ()
+{
+	std::list <IModule *> modules;
+
+	modules.push_back(this);
+
+	for (IWiFiLink * customLink : _customLinks) {
+
+		// Arduino doesn’t have dynamic cast because Real Time Type Info (RTTI) is disabled by the compiler to save memory.
+		// IModule * module = dynamic_cast<IModule *>(customLink);
+		// if (module) {
+		// 	modules.push_back(module);
+		// }
+
+		if (customLink->isModule ()) {
+			modules.push_back((IModule *) customLink);
+		}
+	}
+
+	Logln(F("Nb custom wiFiLinks : ") << _customLinks.size());
+	Logln(F("Nb modules : ") << modules.size() );
+
+	return modules;
+}
+
+//========================================================================================================================
+//
+//========================================================================================================================
+void WiFiLinksManager :: setup (bool forceAccessPoint /*= false */)
 {
 	_forceAccessPoint = forceAccessPoint;
 
 	setupWifi ();
-	setupServers ();
+	setupLinks ();
 
 	// In station mode only
-	notifyConnectedToWiFi += [this] (const IPAddress &) { startServers (); };
+	notifyConnectedToWiFi += [this] (const IPAddress &) {
+		connectLinks ();
+	};
 
 	startWifi ();
 
 	// In Access point mode only
-	if (WiFiHelper::isAccessPointMode ())
-	//if (WiFiHelper::isWifiAvailable ())
-	{
-		startServers ();
+	if (WiFiHelper::isAccessPointMode ()) {
+		connectLinks ();
 	}
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiServersManager :: loop ()
+void WiFiLinksManager :: loop ()
 {
 	if (WiFiHelper::isWifiAvailable()) {
 

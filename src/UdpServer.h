@@ -12,6 +12,8 @@
 #include <Stream/StreamParser.h>
 #include <Tools/Signal.h>
 
+#include "IWiFiLink.h"
+
 using namespace corex;
 
 
@@ -21,7 +23,7 @@ namespace wifix {
 
 //------------------------------------------------------------------------------
 //
-class UdpServer : public Module <uint16_t>
+class UdpServer : public Module <uint16_t>, public IWiFiLink
 {
 protected:
 	uint16_t 	_port;
@@ -34,8 +36,10 @@ public:
 
 	virtual StreamParser & getCmdParser () = 0;
 
-	void start	();
-	void stop	();
+	virtual bool isModule 	() const override { return true; }
+
+	virtual void connect	() override;
+	virtual void disconnect	() override;
 
 	void setup	(uint16_t thePort = DEFAULT_UDP_PORT) override;
 	void loop	() override;

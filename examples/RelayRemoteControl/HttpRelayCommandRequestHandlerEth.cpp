@@ -4,9 +4,9 @@
 // Author Gerald Guiony
 //************************************************************************************************************************
 
-#ifndef ARDUINO_WT32_ETH01
-	#error This code is designed for WT32_ETH01 to run on ESP32 platform! Please check your Tools->Board setting.
-#endif
+#ifdef ARDUINO_WT32_ETH01
+
+#include <WiFi.h>
 
 #include "HttpRelayCommandRequestHandlerEth.h"
 
@@ -67,6 +67,21 @@ void HttpRelayCommandRequestHandler :: handleNotFound (AsyncWebServerRequest *re
 //========================================================================================================================
 void HttpRelayCommandRequestHandler :: setup ()
 {
+	WiFi.onEvent(
+	[this](WiFiEvent_t event, WiFiEventInfo_t info) {
+
+		asyncWebServer.on("/relay/help",	std::bind(&HttpRelayCommandRequestHandler::handleHelp,	this, _1));
+		asyncWebServer.on("/relay/open",	std::bind(&HttpRelayCommandRequestHandler::handleOpen,	this, _1));
+		asyncWebServer.on("/relay/close",	std::bind(&HttpRelayCommandRequestHandler::handleClose,	this, _1));
+		// Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
+		asyncWebServer.onNotFound (std::bind(&HttpRelayCommandRequestHandler::handleNotFound, this, _1));
+
+		asyncWebServer.begin();
+
+		Logln(F("ETH Async Web Server is up !"));
+	},
+	WiFiEvent_t::ARDUINO_EVENT_ETH_GOT_IP);
+
 	// To be called before ETH.begin()
 	WT32_ETH01_onEvent();
 	ETH.begin();
@@ -74,24 +89,14 @@ void HttpRelayCommandRequestHandler :: setup ()
 	// Static IP, leave without this line to get IP via DHCP
 	ETH.config(myIP, myGW, mySN, myDNS);
 
-	WT32_ETH01_waitForConnect();
-
-	asyncWebServer.on("/relay/help",	std::bind(&HttpRelayCommandRequestHandler::handleHelp,	this, _1));
-	asyncWebServer.on("/relay/open",	std::bind(&HttpRelayCommandRequestHandler::handleOpen,	this, _1));
-	asyncWebServer.on("/relay/close",	std::bind(&HttpRelayCommandRequestHandler::handleClose,	this, _1));
-	// Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
-	asyncWebServer.onNotFound (std::bind(&HttpRelayCommandRequestHandler::handleNotFound, this, _1));
-
-	asyncWebServer.begin();
-
-	Logln(F("HTTP Web server is up"));
-	Logln(F("Open http://") << ETH.localIP() << F("/ in your browser to see it working"));
+	// Trop hardcore...
+	// WT32_ETH01_waitForConnect();
 }
 
 }
 
 
-
+#endif
 
 
 

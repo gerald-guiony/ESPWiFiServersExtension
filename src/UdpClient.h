@@ -29,7 +29,7 @@ protected:
 
 public:
 
-	void sendCmd 						(IPAddress & ip, int port, String & cmd);
+	void sendCmd 						(const IPAddress & ip, int port, const String & cmd);
 
 	bool isResponseAvailable 			();
 	bool parseResponse					(Print & printer);
