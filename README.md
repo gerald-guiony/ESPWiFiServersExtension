@@ -8,6 +8,8 @@
 
 ESPWiFiServersExtension is a C++ library for the Arduino Core designed for ESP8266 and ESP32 Wi-Fi chips. It extends the functionalities of the [ESP Async WebServer](https://github.com/me-no-dev/ESPAsyncWebServer) and [Async MQTT Client libraries](https://github.com/marvinroger/async-mqtt-client)
 
+This library, compatible with ESP32 and ESP8266 cards, allows you to quickly develop applications embedding an asynchronous HTTP server and/or an asynchronous Domoticz MQTT client.
+
 ## Getting started
 
 To use ESPWiFiServersExtension, you will need:
