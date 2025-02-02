@@ -33,7 +33,7 @@ In Domoticz, with the help of MQTT mosquitto server I can show the status of my 
 
 Additionally, a Lua script in Domoticz checks how long the Freebox Player On/Off button has not been updated, if it has been more than 6 minutes its status is set to Off.
 
-## Dependencies
+## Prerequisites
 
 To upload this application you must have the latest version of:
 * [ESPCoreExtension library](https://github.com/gerald-guiony/ESPCoreExtension)

@@ -4,23 +4,23 @@ This example demonstrates how to control a relay remotely using the ESPWiFiServe
 
 RelayRemoteControl is an application that uses an ESP8266 Wi-Fi chip to remotely control an electrical relay (an electrically operated switch that opens and closes circuits by receiving electrical signals).
 
-In this example, I used a [Wio node](https://wiki.seeedstudio.com/Wio_Node/) and a [Grove relay](https://wiki.seeedstudio.com/Grove-Relay/) to remotely control my kitchen light and 
-also an [ESP32 WT32-ETH01 Ethernet Module](https://werner.rothschopf.net/microcontroller/202401_esp32_wt32_eth01_en.htm) to power my pool pump (WiFi not accessible)
+In this example, I used a [Wio node](https://wiki.seeedstudio.com/Wio_Node/) and a [Grove relay](https://wiki.seeedstudio.com/Grove-Relay/) to remotely control my kitchen light. 
+I also use it using an [ESP32 WT32-ETH01 Ethernet Module](https://werner.rothschopf.net/microcontroller/202401_esp32_wt32_eth01_en.htm) to power my pool pump (WiFi not accessible)
 
-For my kitchen light, I added 2 possibilities to control the relay, using JSON command or using a MQTT topic.
+For my kitchen light, I added 2 switches in Domoticz to control the relay, using JSON request or MQTT topic.
 
 ![JSON and MQTT buttons in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/KLightJsonMqtt.png)
 
-## JSON commands
+## JSON requests
 
 * Turn off the light :  http://[IP address of the Esp8266]/relay/open?json={"id":0}
 * Turn on the light  :  http://[IP address of the Esp8266]/relay/close?json={"id":0}
 
-## JSON command in Mozilla Firefox 
+## JSON request in Mozilla Firefox 
 
 ![Example in Firefox](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/FirefoxCloseRelay.png)
 
-## JSON topics in Domoticz
+## JSON request parameters in Domoticz
 
 ![Configuration in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/DomoticzOpenCloseRelay.png)
 
@@ -30,9 +30,9 @@ In Domoticz, I added the MQTT Mosquitto server
 
 ![MQTT mosquitto server settings](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/MqttInDomoticz.png)
 
-Now I can parse the MQTT command coming from a Domoticz button using its idx, see the source files [Settings.h](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/Settings.h) and [MqttRelayDomoticzHandler.cpp](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/MqttRelayDomoticzHandler.cpp)
+Now I can parse the MQTT command coming from a Domoticz switch using its idx, see the source files [Settings.h](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/Settings.h) and [MqttRelayDomoticzHandler.cpp](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/MqttRelayDomoticzHandler.cpp)
 
-## Dependencies
+## Prerequisites
 
 To upload this application, you will need the following dependencies:
 * [ESPCoreExtension library](https://github.com/gerald-guiony/ESPCoreExtension)
@@ -43,5 +43,7 @@ For the ESP32 WT32-ETH01 you will also need:
 
 ## Board settings
 
-Here are the board settings in the Arduino IDE that I use to upload the sketch to my Wio Node via OTA (Over-The-Air): [Wio Node board settings](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/WioNodeBoardSettings.png)
-and the one for the ESP32 WT32-ETH01 : [WT32-ETH01 board settings](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/WT32ETH01BoardSettings.png)
+Here are the board settings in the Arduino IDE that I use to upload the sketch via OTA (Over-The-Air):
+
+* [Wio Node board settings](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/WioNodeBoardSettings.png)
+* [WT32-ETH01 board settings](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/WT32ETH01BoardSettings.png)

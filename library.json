@@ -1,7 +1,7 @@
 {
   "name": "ESPWiFiServersExtension",
   "keywords": "wifi, json, rest, tcp, http, mqtt, web, telnet, async, esp8266, esp32, domoticz, mosquitto",
-  "description": "A C++ library of asynchronous HTTP Server and Mqtt client Library for ESP8266 and ESP32",
+  "description": "A C++ library allows to quickly develop applications embedding an asynchronous HTTP server and an asynchronous Domoticz MQTT client",
   "authors":
   {
     "name": "Gérald GUIONY",

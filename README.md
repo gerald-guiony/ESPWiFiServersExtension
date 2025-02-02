@@ -6,9 +6,10 @@
 [![ESP8266](https://img.shields.io/badge/ESP-8266-000000.svg?longCache=true&style=flat&colorA=CC101F)](https://www.espressif.com/en/products/socs/esp8266)
 [![ESP32](https://img.shields.io/badge/ESP-32-000000.svg?longCache=true&style=flat&colorA=CC101F)](https://www.espressif.com/en/products/socs/esp32)
 
-ESPWiFiServersExtension is a C++ library for the Arduino Core designed for ESP8266 and ESP32 Wi-Fi chips. It extends the functionalities of the [ESP Async WebServer](https://github.com/me-no-dev/ESPAsyncWebServer) and [Async MQTT Client libraries](https://github.com/marvinroger/async-mqtt-client)
+ESPWiFiServersExtension is a C++ library, compatible with ESP32 and ESP8266 boards, allows you to quickly develop applications embedding an asynchronous HTTP server and/or an asynchronous Domoticz MQTT client.
+This library also offers several ways to debug your sketches.
 
-This library, compatible with ESP32 and ESP8266 boards, allows you to quickly develop applications embedding an asynchronous HTTP server and/or an asynchronous Domoticz MQTT client.
+Under construction : **AWS IoT Core MQTT client**
 
 ## Getting started
 
@@ -23,9 +24,9 @@ To use ESPWiFiServersExtension, you will need:
 1. Download the latest master source code as a [.zip](https://github.com/gerald-guiony/ESPWiFiServersExtension/archive/master.zip) file
 2. In the Arduino IDE, import the `.zip` file by navigating to **Sketch → Include Library → Add .ZIP Library**
 
-## Dependencies
+## Prerequisites
 
-To compile this library, you must have: 
+To use this library, you must have: 
 
 * Latest version of my [ESPCoreExtension](https://github.com/gerald-guiony/ESPCoreExtension) library
 * Latest version of my forked version of [AsyncTCP](https://github.com/gerald-guiony/AsyncTCP) library
