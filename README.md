@@ -46,9 +46,9 @@ Debugging commands are also available; type 'h' to display the list of commands:
 
 ![Settings in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/debugCommand.png)
 
-## Administrative JSON commands
+## Administrative JSON requests
 
-In this library, you can access JSON administrative commands for your ESP. Refer to this source file for more details:  
+In this library, you can access JSON administrative requests for your ESP. Refer to this source file for more details:  
 
 [HttpAdminCommandRequestHandler.cpp](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/src/HttpAdminCommandRequestHandler.cpp)
 
