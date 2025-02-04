@@ -46,12 +46,12 @@ void startWifi () {
 	// ------------- Connect signals
 
 	I(wifix::HttpServer).notifyRequestReceived	+= std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
-#	ifdef USING_DOMOTICZ_MQTT
+#ifdef USING_DOMOTICZ_MQTT
 	I(wifix::MqttDomoticzClient).notifyValidMessageReceived += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
-#	endif
-#	ifdef USING_AWS_MQTT
+#endif
+#ifdef USING_AWS_MQTT
 	I(wifix::MqttAWSIoTCoreClient).notifyValidMessageReceived += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
-#	endif
+#endif
 
 	I(ModuleSequencer).enterDeepSleepWhenWifiOff ();
 	I(ModuleSequencer).setup (I(wifix::WiFiLinksManagerCustom).getModules ());
