@@ -103,7 +103,7 @@ void HttpServer :: connect ()
 //========================================================================================================================
 void HttpServer :: disconnect ()
 {
-//	_asyncWebServer->reset ();  // remove all writers and handlers, with onNotFound/onFileUpload/onRequestBody
+	asyncWebServer.end ();  // remove all writers and handlers, with onNotFound/onFileUpload/onRequestBody
 }
 
 //========================================================================================================================

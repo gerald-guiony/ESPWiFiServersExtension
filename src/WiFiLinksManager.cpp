@@ -462,6 +462,9 @@ void WiFiLinksManager :: setup (bool forceAccessPoint /*= false */)
 	notifyConnectedToWiFi += [this] (const IPAddress &) {
 		connectLinks ();
 	};
+	// notifyDisconnectedFromWiFi += [this] () {
+	// 	disconnectLinks ();
+	// };
 
 	startWifi ();
 

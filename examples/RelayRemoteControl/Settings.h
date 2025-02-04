@@ -9,12 +9,10 @@
 //------------------------------------------------------------------------------
 //
 
-#define USING_WIFI
-#define USING_ETH
-
 // Add MQTT subscriber & publisherq
 #define USING_DOMOTICZ_MQTT
 //#define USING_AWS_MQTT
+
 
 //------------------------------------------------------------------------------
 // Pins
@@ -27,7 +25,8 @@
 #elif defined(ARDUINO_ESP8266_NODEMCU_ESP12E)
 #	define RELAY_PIN			D1
 #elif defined(ARDUINO_WT32_ETH01)
-#	define RELAY_PIN			IO32
+#	define RELAY_PIN			IO33
+#	define WIFI_PIN				IO32
 #endif
 
 //------------------------------------------------------------------------------
