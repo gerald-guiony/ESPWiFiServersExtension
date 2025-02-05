@@ -7,6 +7,12 @@ RelayRemoteControl is an application that uses an ESP8266 Wi-Fi chip to remotely
 In this example, I used a [Wio node](https://wiki.seeedstudio.com/Wio_Node/) and a [Grove relay](https://wiki.seeedstudio.com/Grove-Relay/) to remotely control my kitchen light. 
 I also use it using an [ESP32 WT32-ETH01 Ethernet Module](https://werner.rothschopf.net/microcontroller/202401_esp32_wt32_eth01_en.htm) to power my pool pump (WiFi not accessible)
 
+The purpose of this Ethernet smart plug is to operate the filtration of my swimming pool depending on the weather conditions and also depending on the cost of electricity at 
+certain times of the day ("Heures creuses" at EDF). For this I wrote a lua script in Domoticz.
+
+![WT32 ETH01 smart plug](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/WT32ETHSmartPlug.jpg)
+![WT32 ETH01 smart plug plugged in](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/WT32ETHSmartPlugIn.jpg)
+
 For my kitchen light, I added 2 switches in Domoticz to control the relay, using JSON request or MQTT topic.
 
 ![JSON and MQTT buttons in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl/doc/img/KLightJsonMqtt.png)
