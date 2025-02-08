@@ -52,7 +52,7 @@ public:
 	HttpAsyncWebHandler						() {}
 	virtual ~HttpAsyncWebHandler			() {}
 
-	bool canHandle							(AsyncWebServerRequest *request) override {
+	bool canHandle							(AsyncWebServerRequest *request) const override {
 		return true;
 	}
 

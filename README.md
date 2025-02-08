@@ -30,8 +30,9 @@ To use this library, you must have:
 
 * Latest version of my [ESPCoreExtension](https://github.com/gerald-guiony/ESPCoreExtension) library
 * Latest version of my forked version of [AsyncTCP](https://github.com/gerald-guiony/AsyncTCP) library
-* Version 1.2.4 of [ESP Async WebServer](https://github.com/me-no-dev/ESPAsyncWebServer) library
+* Version 3.6.0 of [ESP Async WebServer](https://github.com/me-no-dev/ESPAsyncWebServer) library
 * Version 0.9.0 of [AsyncMqttClient](https://github.com/marvinroger/async-mqtt-client) library
+* Version 2.8 of [PubSubClient](https://github.com/knolleary/pubsubclient) library
 * Version 5.13.4 of [ArduinoJson](https://github.com/bblanchon/ArduinoJson) library
 * Version 2.0.17 of [WiFiManager](https://github.com/tzapu/WiFiManager) library
 
