@@ -57,6 +57,10 @@ In this library, you can access JSON administrative requests for your ESP. Refer
 
 ![Admin commands](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/JsonAdminCommand.png)
 
+> http:://[IP address of your Esp]/admin/info
+
+![Admin info](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/JsonAdminInfo.png)
+
 ## Examples
 
 1. Remotely control an electrical relay: [RelayRemoteControl](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl)
