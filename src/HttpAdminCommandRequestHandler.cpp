@@ -87,7 +87,8 @@ void HttpAdminCommandRequestHandler :: handleInfo (AsyncWebServerRequest * reque
 	jsonRsp["cpuFreq"]			= ESP.getCpuFreqMHz ();
 	jsonRsp["sketchSize"]		= ESP.getSketchSize ();
 	jsonRsp["freeSketchSpace"]	= ESP.getFreeSketchSpace ();
-	jsonRsp["freeSpiffsSpace"]	= FileStorage::spiffsCheckRemainingBytes ();
+	jsonRsp["totalSpiffsSpace"]	= FileStorage::spiffsTotalBytes ();
+	jsonRsp["freeSpiffsSpace"]	= FileStorage::spiffsRemainingBytes ();
 	jsonRsp["accessPoint"]		= WiFiHelper::isAccessPointMode ();
 	jsonRsp["IP"]				= WiFiHelper::getIpAddress ().toString();
 	jsonRsp["macAddress"]		= WiFiHelper::getMacAddress ();
