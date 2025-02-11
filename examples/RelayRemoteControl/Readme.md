@@ -19,8 +19,8 @@ certain times of the day ("Heures creuses"). For this I wrote a lua script in Do
 
 ## JSON requests
 
-* Turn off the light :  http://[IP address of the Esp8266]/relay/open?json={"id":0}
-* Turn on the light  :  http://[IP address of the Esp8266]/relay/close?json={"id":0}
+* Turn off the light :  http://[IP address of the Esp8266]/relay/open
+* Turn on the light  :  http://[IP address of the Esp8266]/relay/close
 
 ## JSON request in Mozilla Firefox 
 
