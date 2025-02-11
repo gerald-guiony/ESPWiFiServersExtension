@@ -6,8 +6,6 @@
 
 #pragma once
 
-#include <Stream.h>
-#include <StreamString.h>
 #include <ArduinoJson.h>
 
 #include <Common.h>
@@ -16,7 +14,7 @@
 using namespace corex;
 
 
-extern std::vector <BasicRelay> relays;
+extern BasicRelay basicRelay;
 
 
 // HTTP Request Methods
@@ -38,8 +36,8 @@ static const char PROGMEM PRINT_HELP[] = R"rawliteral(
  Supported commands list ($cmd?json={"$name":"$value", ..}) :
 
  help ............................ Print this help
- open : {"id": $1} ............... Open the relay with Id between 0 to 255
- close : {"id": $1} .............. Close the relay with Id between 0 to 255
+ open ............................ Open the relay
+ close ........................... Close the relay
 
 ===========================================================================================================
 )rawliteral";
@@ -69,37 +67,14 @@ protected:
 	{
 		Logln (F("=> open relay"));
 
-		if (!request->hasArg("json")) {
-			request->send(400, F("text/plain"), F("400: json argument not found"));				// The request is invalid, so send HTTP status 400
-			return;
-		}
+		// Visual indicator that signal sent
+		EspBoard::blinks (3);
+
+		basicRelay.open();
 
 		// StaticJsonBuffer allocates memory on the stack, it can be
 		// replaced by DynamicJsonBuffer which allocates in the heap.
 		DynamicJsonBuffer jsonBuffer;
-		JsonObject& jsonArg = jsonBuffer.parse(request->arg("json"));
-
-		// Test if parsing succeeds.
-		if (!jsonArg.success()) {
-			request->send(400, F("text/plain"), F("400: Invalid json argument"));
-			return;
-		}
-
-		if (!jsonArg ["id"].success()) {
-			request->send(400, F("text/plain"), F("400: Invalid json field"));
-			return;
-		}
-
-		int id = jsonArg ["id"];
-		if ((id < 0) || (relays.size() <= id)) {
-			request->send(400, F("text/plain"), F("400: Invalid id argument"));
-			return;
-		}
-
-		// Visual indicator that signal sent
-		EspBoard::blinks (2);
-
-		relays[id].open();
 
 		// This way of sending Json is great for when the result is below 4KB
 		TAsyncResponseStream * response = request->beginResponseStream(F("application/json"));
@@ -119,37 +94,14 @@ protected:
 	{
 		Logln (F("=> close relay"));
 
-		if (!request->hasArg("json")) {
-			request->send(400, F("text/plain"), F("400: json argument not found"));				// The request is invalid, so send HTTP status 400
-			return;
-		}
+		// Visual indicator that signal sent
+		EspBoard::blinks (5);
+
+		basicRelay.close();
 
 		// StaticJsonBuffer allocates memory on the stack, it can be
 		// replaced by DynamicJsonBuffer which allocates in the heap.
 		DynamicJsonBuffer jsonBuffer;
-		JsonObject& jsonArg = jsonBuffer.parse(request->arg("json"));
-
-		// Test if parsing succeeds.
-		if (!jsonArg.success()) {
-			request->send(400, F("text/plain"), F("400: Invalid json argument"));
-			return;
-		}
-
-		if (!jsonArg ["id"].success()) {
-			request->send(400, F("text/plain"), F("400: Invalid json field"));
-			return;
-		}
-
-		int id = jsonArg ["id"];
-		if ((id < 0) || (relays.size() <= id)) {
-			request->send(400, F("text/plain"), F("400: Invalid id argument"));
-			return;
-		}
-
-		// Visual indicator that signal sent
-		EspBoard::blinks (5);
-
-		relays[id].close();
 
 		// This way of sending Json is great for when the result is below 4KB
 		TAsyncResponseStream * response = request->beginResponseStream(F("application/json"));

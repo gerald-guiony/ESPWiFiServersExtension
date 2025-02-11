@@ -31,8 +31,8 @@ class MqttRelayDomoticzSubscriber : public MqttDomoticzSubscriberIdx
 
 public:
 
-	virtual void setup 					(AsyncMqttClient * asyncMqttClient) override;
-	virtual bool onMqttMsgReceivedIdx	(const JsonObject& jsonObj) override;
+	virtual void setup 				(AsyncMqttClient * asyncMqttClient) override;
+	virtual bool onTopicIdxReceived	(const JsonObject& jsonObj) override;
 };
 
 

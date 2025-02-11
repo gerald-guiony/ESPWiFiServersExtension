@@ -79,9 +79,9 @@ public:
 protected:
 
 	void onMqttConnected				(bool sessionPresent);
-	void onMqttMessageReceived			(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
+	void onTopicReceived				(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
 
-	virtual bool parseMqttMsgReceived	(const JsonObject& jsonObj) = 0;
+	virtual bool parseTopicReceived		(const JsonObject& jsonObj) = 0;
 
 protected:
 	AsyncMqttClient * _asyncMqttClient	= nullptr;
@@ -94,10 +94,10 @@ class MqttDomoticzSubscriberIdx : public MqttDomoticzSubscriber
 public:
 	MqttDomoticzSubscriberIdx			() {}
 
-	virtual bool onMqttMsgReceivedIdx	(const JsonObject& jsonObj) = 0;
+	virtual bool onTopicIdxReceived		(const JsonObject& jsonObj) = 0;
 
 protected:
-	virtual bool parseMqttMsgReceived	(const JsonObject& jsonObj) override;
+	virtual bool parseTopicReceived		(const JsonObject& jsonObj) override;
 
 protected:
 	int _idx;

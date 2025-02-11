@@ -156,7 +156,7 @@ void MqttDomoticzSubscriber :: onMqttConnected (bool sessionPresent) {
 //========================================================================================================================
 //
 //========================================================================================================================
-void MqttDomoticzSubscriber :: onMqttMessageReceived (char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
+void MqttDomoticzSubscriber :: onTopicReceived (char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
 
 	// domoticz/out {
 		// "Battery" : 255,
@@ -191,9 +191,9 @@ void MqttDomoticzSubscriber :: onMqttMessageReceived (char* topic, char* payload
 			<< F(" -payload =") << output << LN
 		);
 
-		if (parseMqttMsgReceived (jsonArg))
+		if (parseTopicReceived (jsonArg))
 		{
-			I(MqttDomoticzClient).notifyValidMessageReceived ();
+			I(MqttDomoticzClient).notifyValidTopicReceived ();
 		}
 	}
 }
@@ -206,7 +206,7 @@ void MqttDomoticzSubscriber :: setup (AsyncMqttClient * asyncMqttClient) {
 	_asyncMqttClient = asyncMqttClient;
 
 	I(MqttDomoticzClient).notifyConnected 		+= std::bind (&MqttDomoticzSubscriber::onMqttConnected, this, _1);
-	I(MqttDomoticzClient).notifyMessageReceived += std::bind (&MqttDomoticzSubscriber::onMqttMessageReceived, this, _1, _2, _3, _4, _5, _6);
+	I(MqttDomoticzClient).notifyMessageReceived += std::bind (&MqttDomoticzSubscriber::onTopicReceived, this, _1, _2, _3, _4, _5, _6);
 }
 
 
@@ -217,7 +217,7 @@ void MqttDomoticzSubscriber :: setup (AsyncMqttClient * asyncMqttClient) {
 //========================================================================================================================
 //
 //========================================================================================================================
-bool MqttDomoticzSubscriberIdx ::parseMqttMsgReceived	(const JsonObject& jsonArg) {
+bool MqttDomoticzSubscriberIdx ::parseTopicReceived	(const JsonObject& jsonArg) {
 
 	// sample :
 	// domoticz/out {
@@ -244,7 +244,7 @@ bool MqttDomoticzSubscriberIdx ::parseMqttMsgReceived	(const JsonObject& jsonArg
 		// Process message
 		if (idx == _idx) {
 
-			return onMqttMsgReceivedIdx (jsonArg);
+			return onTopicIdxReceived (jsonArg);
 		}
 	}
 

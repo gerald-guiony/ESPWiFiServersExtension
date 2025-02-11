@@ -17,7 +17,7 @@
 #include <Module/AsyncModule.h>
 #include <Tools/Signal.h>
 
-#include "IWiFiLink.h"
+#include "IWiFiConnection.h"
 
 using namespace corex;
 
@@ -30,7 +30,7 @@ namespace wifix {
 //------------------------------------------------------------------------------
 //
 class TelnetServer : public AsyncModule <uint16_t>,
-					 public IWiFiLink
+					 public IWiFiConnection
 {
 protected:
 

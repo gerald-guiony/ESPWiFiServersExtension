@@ -11,7 +11,7 @@
 
 #include <Common.h>
 
-#include "IWiFiLink.h"
+#include "IWiFiConnection.h"
 #include "MqttHandler.h"
 
 
@@ -22,7 +22,7 @@ namespace wifix {
 class MqttClientCredential : public Module <const char *, int, const char *,
 											const char *, const char *, const char *,
 											const std::vector <MqttHandler *> &>,
-							 public IWiFiLink
+							 public IWiFiConnection
 {
 protected:
 
@@ -39,7 +39,7 @@ protected:
 public:
 
 	Signal <char *, byte *, unsigned int> notifyMessageReceived;
-	Signal <> 							  notifyValidMessageReceived;
+	Signal <> 							  notifyValidTopicReceived;
 
 protected:
 

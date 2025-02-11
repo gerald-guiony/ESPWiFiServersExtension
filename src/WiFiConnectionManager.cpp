@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// WiFiLinksManager.cpp
+// WiFiConnectionManager.cpp
 // Version 1.0 August, 2018
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -27,7 +27,7 @@
 #include <Common.h>
 
 #include "UdpDeviceDetectorServer.h"
-#include "WiFiLinksManager.h"
+#include "WiFiConnectionManager.h"
 #include "TelnetServerLogger.h"
 
 
@@ -54,20 +54,23 @@ namespace wifix {
 volatile bool wifiManagerForcedByUser = false;
 
 
+SINGLETON_IMPL (WiFiConnectionManager)
+
+
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: addCustomLinks	(const std::vector <IWiFiLink *> & customLinks)
+void WiFiConnectionManager :: addWifiConnections	(const std::vector <IWiFiConnection *> & wifiConnections)
 {
-	for (IWiFiLink * customLink : customLinks) {
-		_customLinks.push_back (customLink);
+	for (IWiFiConnection * wifiConnection : wifiConnections) {
+		_wifiConnections.push_back (wifiConnection);
 	}
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: setWifiManagerEnabled (bool enabled, bool accessPointIfNoWifi /* = false */)
+void WiFiConnectionManager :: setWifiManagerEnabled (bool enabled, bool accessPointIfNoWifi /* = false */)
 {
 	_isWifiManagerEnabled = enabled;
 	_accessPointIfNoWifi = accessPointIfNoWifi;
@@ -87,7 +90,7 @@ void configModeCallback (WiFiManager * wiFiManager)
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: setupOTA ()
+void WiFiConnectionManager :: setupOTA ()
 {
 	Logln(F("Setup OTA.."));
 
@@ -128,7 +131,7 @@ void WiFiLinksManager :: setupOTA ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: startOTA ()
+void WiFiConnectionManager :: startOTA ()
 {
 	Logln(F("Start OTA.."));
 	ArduinoOTA.begin();
@@ -137,7 +140,7 @@ void WiFiLinksManager :: startOTA ()
 //========================================================================================================================
 //
 //========================================================================================================================
-bool WiFiLinksManager :: startWiFiManager ()
+bool WiFiConnectionManager :: startWiFiManager ()
 {
 	Logln(F("Starting WiFiManager.."));
 
@@ -177,7 +180,7 @@ bool WiFiLinksManager :: startWiFiManager ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: startWifi ()
+void WiFiConnectionManager :: startWifi ()
 {
 	EspBoard::blinkOn();
 
@@ -267,7 +270,7 @@ static void logWiFiEvent(WiFiEvent_t event)
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: setupWifi ()
+void WiFiConnectionManager :: setupWifi ()
 {
 
 #ifdef ARDUINO_ESP8266_WIO_NODE
@@ -355,7 +358,7 @@ void WiFiLinksManager :: setupWifi ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: setupLinks ()
+void WiFiConnectionManager :: setupWifiConnections ()
 {
 	setupOTA();
 
@@ -363,13 +366,13 @@ void WiFiLinksManager :: setupLinks ()
 	I(TelnetServerLogger).setup ();
 #endif
 	I(UdpDeviceDetectorServer).setup ();
-	setupCustomLinks ();
+	notifySetupWifiConnections ();
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: connectLinks ()
+void WiFiConnectionManager :: connectWifiConnections ()
 {
 	Logln(F("Starting Wifi servers :"));
 
@@ -391,8 +394,8 @@ void WiFiLinksManager :: connectLinks ()
 
 	// Start other servers here ...
 	Logln(F("Starting custom servers.."));
-	for (IWiFiLink * customLink : _customLinks) {
-		customLink->connect ();
+	for (IWiFiConnection * wifiConnection : _wifiConnections) {
+		wifiConnection->connect ();
 	}
 
 	Logln(F("Starting DNS.."));
@@ -404,13 +407,13 @@ void WiFiLinksManager :: connectLinks ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: disconnectLinks ()
+void WiFiConnectionManager :: disconnectWifiConnections ()
 {
 	Logln(F("Stopping Wifi servers"));
 
 	// Stop other servers...
-	for (IWiFiLink * customLink : _customLinks) {
-		customLink->disconnect ();
+	for (IWiFiConnection * wifiConnection : _wifiConnections) {
+		wifiConnection->disconnect ();
 	}
 
 #ifdef DEBUG
@@ -423,26 +426,26 @@ void WiFiLinksManager :: disconnectLinks ()
 //========================================================================================================================
 //
 //========================================================================================================================
-std::list <IModule *> WiFiLinksManager :: getModules ()
+std::list <IModule *> WiFiConnectionManager :: getModules ()
 {
 	std::list <IModule *> modules;
 
 	modules.push_back(this);
 
-	for (IWiFiLink * customLink : _customLinks) {
+	for (IWiFiConnection * wifiConnection : _wifiConnections) {
 
 		// Arduino doesn’t have dynamic cast because Real Time Type Info (RTTI) is disabled by the compiler to save memory.
-		// IModule * module = dynamic_cast<IModule *>(customLink);
+		// IModule * module = dynamic_cast<IModule *>(wifiConnection);
 		// if (module) {
 		// 	modules.push_back(module);
 		// }
 
-		if (customLink->isModule ()) {
-			modules.push_back((IModule *) customLink);
+		if (wifiConnection->isModule ()) {
+			modules.push_back((IModule *) wifiConnection);
 		}
 	}
 
-	Logln(F("Nb custom wiFiLinks : ") << _customLinks.size());
+	Logln(F("Nb wifi connections : ") << _wifiConnections.size());
 	Logln(F("Nb modules : ") << modules.size() );
 
 	return modules;
@@ -451,33 +454,35 @@ std::list <IModule *> WiFiLinksManager :: getModules ()
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: setup (bool forceAccessPoint /*= false */)
+void WiFiConnectionManager :: setup (const std::vector <IWiFiConnection *> & wifiConnections, bool forceAccessPoint /*= false */)
 {
 	_forceAccessPoint = forceAccessPoint;
 
+	addWifiConnections (wifiConnections);
+
 	setupWifi ();
-	setupLinks ();
+	setupWifiConnections ();
 
 	// In station mode only
 	notifyConnectedToWiFi += [this] (const IPAddress &) {
-		connectLinks ();
+		connectWifiConnections ();
 	};
 	// notifyDisconnectedFromWiFi += [this] () {
-	// 	disconnectLinks ();
+	// 	disconnectWifiConnections ();
 	// };
 
 	startWifi ();
 
 	// In Access point mode only
 	if (WiFiHelper::isAccessPointMode ()) {
-		connectLinks ();
+		connectWifiConnections ();
 	}
 }
 
 //========================================================================================================================
 //
 //========================================================================================================================
-void WiFiLinksManager :: loop ()
+void WiFiConnectionManager :: loop ()
 {
 	if (WiFiHelper::isWifiAvailable()) {
 

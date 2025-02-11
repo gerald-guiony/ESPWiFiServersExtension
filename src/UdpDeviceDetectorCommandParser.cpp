@@ -55,11 +55,11 @@ bool UdpDeviceDetectorCommandParser :: parse (Stream & stream, Print & printer) 
 			break;
 
 		case 1:
+			// echo -n ">> [1]" | socat -t60 - udp-datagram:192.168.1.255:555,broadcast
 			Logln(F("=> NAME, CATEGORY, IP AND MAC ADDRESS"));
 
 			printer << PRINT_RESP (commandId,
 				EspBoard::getDeviceName()											<< F(MSG_SEPARATOR_PARAM) <<
-				F("IOT Remote Control")												<< F(MSG_SEPARATOR_PARAM) <<
 				WiFi.localIP()														<< F(MSG_SEPARATOR_PARAM) <<
 				WiFi.macAddress()
 				) << LN;

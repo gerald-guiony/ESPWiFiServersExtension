@@ -11,7 +11,7 @@
 #include <Common.h>
 #include <Module/AsyncModule.h>
 
-#include "IWiFiLink.h"
+#include "IWiFiConnection.h"
 #include "MqttHandler.h"
 
 
@@ -20,7 +20,7 @@ namespace wifix {
 //------------------------------------------------------------------------------
 //
 class MqttClientAsync : public AsyncModule <const char *, int, const std::vector <AsyncMqttHandler *> &>,
-						public IWiFiLink
+						public IWiFiConnection
 {
 protected:
 
@@ -38,7 +38,7 @@ public:
 	Signal <char*, char*,
 			AsyncMqttClientMessageProperties,
 			size_t, size_t, size_t> 				notifyMessageReceived;
-	Signal <> 										notifyValidMessageReceived;
+	Signal <> 										notifyValidTopicReceived;
 	Signal <uint16_t>								notifyPublishSent;
 
 protected:

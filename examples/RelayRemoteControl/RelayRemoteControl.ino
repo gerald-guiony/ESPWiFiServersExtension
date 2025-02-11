@@ -5,23 +5,31 @@
 //************************************************************************************************************************
 
 #include <Common.h>
-#include <HttpServer.h>
-#include <MqttDomoticzClient.h>
-#include <MqttAWSIoTCoreClient.h>
 #include <Switches/BasicRelay.h>
 
-#include "Settings.h"
-#include "WiFiLinksManagerCustom.h"
+#include <HttpServer.h>
+#include <HttpAdminCommandRequestHandler.h>
+#include <MqttDomoticzClient.h>
+#include <MqttAWSIoTCoreClient.h>
+#include <WiFiConnectionManager.h>
 
+#include "secrets.h"
+#include "Settings.h"
+#include "HttpRelayCommandRequestHandlerWiFi.h"
 #ifdef ARDUINO_WT32_ETH01
 #	include "HttpRelayCommandRequestHandlerEth.h"
+#endif
+#include "MqttRelayDomoticzHandler.h"
+
+
+#ifdef USING_AWS_MQTT
+#	warning -- USING_AWS_MQTT defined --
 #endif
 
 using namespace corex;
 
 
-std::vector <BasicRelay> relays = { BasicRelay (RELAY_PIN) };
-
+BasicRelay basicRelay (RELAY_PIN);
 
 
 //========================================================================================================================
@@ -33,28 +41,49 @@ void startWifiAndEth () {
 void startWifi () {
 #endif
 
-	// ------------- setup
+	// ------------- Connect signals
+
+	I(wifix::HttpServer).notifyRequestReceived	+= std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
+	I(wifix::MqttDomoticzClient).notifyValidTopicReceived += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
+#ifdef USING_AWS_MQTT
+	I(wifix::MqttAWSIoTCoreClient).notifyValidTopicReceived += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
+#endif
+
+	// ------------- Module sequencer
+
+	I(ModuleSequencer).enterDeepSleepWhenWifiOff ();
+
+	// ------------- Setup
 
 	// If WakeUpFromDeepSleep => No WifiManager & No Ap Mode
-	I(wifix::WiFiLinksManagerCustom).setWifiManagerEnabled (!EspBoard::isWakeUpFromDeepSleep());
-	I(wifix::WiFiLinksManagerCustom).setup();
+	I(wifix::WiFiConnectionManager).setWifiManagerEnabled (!EspBoard::isWakeUpFromDeepSleep());
+	I(wifix::WiFiConnectionManager).notifySetupWifiConnections += []() {
+
+		I(wifix::HttpServer).setup ({ 	&I(wifix::HttpAdminCommandRequestHandler),
+										&I(wifix::HttpRelayCommandRequestHandler) });
+
+		I(wifix::MqttDomoticzClient).setup (MQTT_DOMOTICZ_ENDPOINT, MQTT_DOMOTICZ_PORT, {	&I(wifix::MqttDomoticzLogPublisher),
+																							&I(wifix::MqttRelayDomoticzPublisher),
+																							&I(wifix::MqttRelayDomoticzSubscriber) });
+
+#ifdef USING_AWS_MQTT
+		// Setup AWS Iot Core MQTT client
+		I(wifix::MqttAWSIoTCoreClient).setup (	AWS_IOT_ENDPOINT, AWS_IOT_PORT, THINGNAME,
+												AWS_CERT_CA, AWS_CERT_CRT, AWS_CERT_PRIVATE, {});
+#endif
+	};
+	I(wifix::WiFiConnectionManager).setup ({	&I(wifix::HttpServer),
+								 				&I(wifix::MqttDomoticzClient),
+#ifdef USING_AWS_MQTT
+												&I(wifix::MqttAWSIoTCoreClient)
+#endif
+										  });
 
 #ifdef ARDUINO_WT32_ETH01
 	I(eth::HttpRelayCommandRequestHandler).setup();
 #endif
 
-	// ------------- Connect signals
-
-	I(wifix::HttpServer).notifyRequestReceived	+= std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
-#ifdef USING_DOMOTICZ_MQTT
-	I(wifix::MqttDomoticzClient).notifyValidMessageReceived += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
-#endif
-#ifdef USING_AWS_MQTT
-	I(wifix::MqttAWSIoTCoreClient).notifyValidMessageReceived += std::bind (&ModuleSequencer::requestWakeUp, &I(ModuleSequencer));
-#endif
-
-	I(ModuleSequencer).enterDeepSleepWhenWifiOff ();
-	I(ModuleSequencer).setup (I(wifix::WiFiLinksManagerCustom).getModules ());
+	I(ModuleSequencer).setup (I(wifix::WiFiConnectionManager).getModules ());
 }
 
 //========================================================================================================================

@@ -41,11 +41,15 @@ To use this library, you must have:
 This library allows you to perform remote debugging via Telnet in a basic terminal:
 > telnet [IP address of your Esp]
 
-![Settings in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/debug.png)
+![Debugging via Telnet](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/debug.png)
 
 Debugging commands are also available; type 'h' to display the list of commands:
 
-![Settings in Domoticz](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/debugCommand.png)
+![Telnet commands](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/debugCommand.png)
+
+## Find your devices thanks to an UDP broadcast command
+
+![Udp broadcast command](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/udpBroadcastCommand.png)
 
 ## Administrative JSON requests
 

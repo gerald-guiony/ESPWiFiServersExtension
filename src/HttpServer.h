@@ -8,7 +8,7 @@
 
 #include <Common.h>
 
-#include "IWiFiLink.h"
+#include "IWiFiConnection.h"
 #include "HttpRequestHandler.h"
 
 
@@ -24,7 +24,7 @@ namespace wifix {
 //------------------------------------------------------------------------------
 // Singleton
 class HttpServer : public AsyncModule <const std::vector <HttpRequestHandler *> &>,
-				   public IWiFiLink
+				   public IWiFiConnection
 {
 	SINGLETON_CLASS(HttpServer)
 

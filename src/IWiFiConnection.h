@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// IWiFiLink.h
+// IWiFiConnection.h
 // Version 1.0 jan, 2025
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -8,10 +8,10 @@
 
 namespace wifix {
 
-class IWiFiLink
+class IWiFiConnection
 {
 public:
-    virtual ~IWiFiLink() = default;
+    virtual ~IWiFiConnection() = default;
 
 	virtual	void connect	() = 0;
 	virtual void disconnect () = 0;

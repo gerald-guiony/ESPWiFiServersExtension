@@ -1,5 +1,5 @@
 //************************************************************************************************************************
-// WiFiLinksManager.h
+// WiFiConnectionManager.h
 // Version 1.0 June, 2017
 // Author Gerald Guiony
 //************************************************************************************************************************
@@ -27,18 +27,22 @@ using namespace corex;
 namespace wifix {
 
 //------------------------------------------------------------------------------
-// WARNING : SINGLETON !!!!
-class WiFiLinksManager : public Module <bool>
+//
+class WiFiConnectionManager : public Module <const std::vector <IWiFiConnection *> &, bool>
 {
+	SINGLETON_CLASS(WiFiConnectionManager)
+
 protected:
 
 	bool _isWifiManagerEnabled					= true;				// By default ...
 	bool _accessPointIfNoWifi					= false;
 	bool _forceAccessPoint						= false;
 
-	std::vector <IWiFiLink *> 					_customLinks;
+	std::vector <IWiFiConnection *> 			_wifiConnections;
 
 public:
+
+	Signal <>									notifySetupWifiConnections;
 
 	Signal <>									notifyArduinoOTAStart;
 	Signal <unsigned int, unsigned int>			notifyArduinoOTAProgress;
@@ -51,7 +55,7 @@ public:
 
 protected:
 
-	void addCustomLinks							(const std::vector <IWiFiLink *> & customLinks);
+	void addWifiConnections						(const std::vector <IWiFiConnection *> & wifiConnections);
 
 	void setupWifi								();
 	void setupOTA								();
@@ -60,11 +64,9 @@ protected:
 	void startWifi 								();
 	void startOTA 								();
 
-	void setupLinks 							();
-	void connectLinks							();
-	void disconnectLinks						();
-
-	virtual void setupCustomLinks				() = 0;
+	void setupWifiConnections 					();
+	void connectWifiConnections					();
+	void disconnectWifiConnections				();
 
 public:
 
@@ -72,7 +74,7 @@ public:
 
 	std::list <IModule *> getModules 			();
 
-	virtual void setup							(bool forceAccessPoint = false) override;
+	virtual void setup							(const std::vector <IWiFiConnection *> & wifiConnections, bool forceAccessPoint = false) override;
 	virtual void loop							() override;
 };
 

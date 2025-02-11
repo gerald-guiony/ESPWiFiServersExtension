@@ -12,7 +12,7 @@
 #include <Stream/StreamParser.h>
 #include <Tools/Signal.h>
 
-#include "IWiFiLink.h"
+#include "IWiFiConnection.h"
 
 using namespace corex;
 
@@ -23,7 +23,7 @@ namespace wifix {
 
 //------------------------------------------------------------------------------
 //
-class UdpServer : public Module <uint16_t>, public IWiFiLink
+class UdpServer : public Module <uint16_t>, public IWiFiConnection
 {
 protected:
 	uint16_t 	_port;

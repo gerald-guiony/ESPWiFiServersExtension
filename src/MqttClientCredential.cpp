@@ -35,7 +35,7 @@ void MqttClientCredential :: connect ()
 
 		if (!_mqttClient.connected()) {
 
-			Logln(F("ESP connecting to AWS IOT"));
+			Logln(F("Connecting MQTT Credential"));
 
 			while (!_mqttClient.connect(_thingName)) {
 				Log(F("."));
@@ -44,14 +44,14 @@ void MqttClientCredential :: connect ()
 			Logln(F(""));
 
 			if (!_mqttClient.connected()) {
-				Logln(F("ESP - AWS IoT Timeout!"));
+				Logln(F("MQTT Credential Timeout!"));
 				return;
 			}
 
 			// Subscribe to a topic, the incoming messages are processed by messageHandler() function
 //			_mqttClient.subscribe(AWS_IOT_SUBSCRIBE_TOPIC);
 
-			Logln(F("ESP - AWS IoT Connected!"));
+			Logln(F("MQTT Credential Connected!"));
 		}
 	}
 }

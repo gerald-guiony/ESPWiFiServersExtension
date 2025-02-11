@@ -4,17 +4,15 @@
 // Author Gerald Guiony
 //************************************************************************************************************************
 
-#include <Stream.h>
-#include <StreamString.h>
 
 #include <Switches/BasicRelay.h>
 
+#include "Settings.h"
 #include "MqttRelayDomoticzHandler.h"
 
-#include "Settings.h"
 
 
-extern std::vector <BasicRelay> relays;
+extern BasicRelay basicRelay;
 
 
 namespace wifix {
@@ -55,7 +53,7 @@ void MqttRelayDomoticzSubscriber :: setup (AsyncMqttClient * asyncMqttClient) {
 //========================================================================================================================
 //
 //========================================================================================================================
-bool MqttRelayDomoticzSubscriber :: onMqttMsgReceivedIdx (const JsonObject& jsonArg) {
+bool MqttRelayDomoticzSubscriber :: onTopicIdxReceived (const JsonObject& jsonArg) {
 
 	// domoticz/out {
 		// "Battery" : 255,
@@ -80,9 +78,9 @@ bool MqttRelayDomoticzSubscriber :: onMqttMsgReceivedIdx (const JsonObject& json
 		bool close = (jsonArg [PAYLOAD_NVALUE] == 1);
 
 		if (close)
-			relays[0].close();
+			basicRelay.close();
 		else
-			relays[0].open();
+			basicRelay.open();
 
 		// Response
 		I(MqttRelayDomoticzPublisher).publishStatutMessage (close ? "Relay closed":"Relay opened");

@@ -4,9 +4,6 @@
 // Author Gerald Guiony
 //************************************************************************************************************************
 
-#include <Stream.h>
-#include <StreamString.h>
-
 #include "MqttDeviceONDomoticzHandler.h"
 
 #include "Settings.h"
@@ -47,7 +44,7 @@ void MqttDeviceONDomoticzSubscriber :: setup (AsyncMqttClient * asyncMqttClient)
 //========================================================================================================================
 //
 //========================================================================================================================
-bool MqttDeviceONDomoticzSubscriber :: onMqttMsgReceivedIdx	(const JsonObject& jsonArg) {
+bool MqttDeviceONDomoticzSubscriber :: onTopicIdxReceived	(const JsonObject& jsonArg) {
 
 	// décode le message - decode payload message
 	// Here we know that the _idx member value matches the idx of the domoticz device

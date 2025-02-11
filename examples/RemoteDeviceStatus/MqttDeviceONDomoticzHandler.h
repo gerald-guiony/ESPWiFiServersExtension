@@ -29,8 +29,8 @@ class MqttDeviceONDomoticzSubscriber : public MqttDomoticzSubscriberIdx
 	SINGLETON_CLASS(MqttDeviceONDomoticzSubscriber)
 
 public:
-	virtual void setup 					(AsyncMqttClient * asyncMqttClient) override;
-	virtual bool onMqttMsgReceivedIdx	(const JsonObject& jsonObj) override;
+	virtual void setup 				(AsyncMqttClient * asyncMqttClient) override;
+	virtual bool onTopicIdxReceived	(const JsonObject& jsonObj) override;
 };
 
 }
