@@ -70,3 +70,4 @@ In this library, you can access JSON administrative requests for your ESP. Refer
 1. Remotely control an electrical relay: [RelayRemoteControl](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RelayRemoteControl)
 2. Device waking up from standby mode: [RemoteDeviceStatus](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/examples/RemoteDeviceStatus)
 3. Universal InfraRed remote control: [IrRemoteControl](https://github.com/gerald-guiony/ESPInfraredTransceiver/blob/master/examples/IrRemoteControl)
+4. Replacing a Delta Dore thermostat with a smart thermostat: [Smart thermostat](https://github.com/gerald-guiony/ESPRadioCC1101Transceiver/blob/master/examples/ThermostatRemoteControl)
