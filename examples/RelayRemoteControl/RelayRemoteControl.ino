@@ -6,6 +6,7 @@
 
 #include <Common.h>
 #include <Switches/BasicRelay.h>
+#include <Switches/Jumper.h>
 
 #include <HttpServer.h>
 #include <HttpAdminCommandRequestHandler.h>
@@ -30,7 +31,6 @@ using namespace corex;
 
 
 BasicRelay basicRelay (RELAY_PIN);
-
 
 //========================================================================================================================
 //
@@ -93,19 +93,19 @@ void setup() {
 
 	// ------------ Global Init
 
-	EspBoard::init (true);
+	EspBoard::init ();
 
 #ifdef ARDUINO_WT32_ETH01
 
-	pinMode(WIFI_PIN, INPUT);
+	Jumper jumper (JUMPER_PIN);
 
-	// If no Jumper between WIFI_PIN and Ground
-	if (analogRead (WIFI_PIN) > 10) {
-		startWifiAndEth ();
-	}
-	else {
+	// If Jumper between WIFI_PIN and Ground
+	if (jumper.isConnectedToGround()) {
 		I(eth::HttpRelayCommandRequestHandler).setup();
 		I(ModuleSequencer).setup ({});
+	}
+	else {
+		startWifiAndEth ();
 	}
 
 	EspBoard::enablePowerSavingMode ();

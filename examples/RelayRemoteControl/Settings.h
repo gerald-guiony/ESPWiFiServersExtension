@@ -23,7 +23,7 @@
 #	define RELAY_PIN			D1
 #elif defined(ARDUINO_WT32_ETH01)
 #	define RELAY_PIN			IO33
-#	define WIFI_PIN				IO32
+#	define JUMPER_PIN			IO32
 #endif
 
 //------------------------------------------------------------------------------

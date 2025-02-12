@@ -6,7 +6,7 @@
 
 #pragma once
 
-#define TIME_WITHOUT_DEEPSLEEP_ms				300000				// 300s == 5 minutes
+#define TIME_WITHOUT_DEEPSLEEP_ms				240000				// 240s == 4 minutes
 #define DEVICE_ON_STATE_PUBLISH_PERIOD_ms		300000				// every 300s == 5 minutes
 
 

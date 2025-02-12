@@ -24,6 +24,7 @@ SINGLETON_IMPL (MqttDeviceONDomoticzPublisher)
 //========================================================================================================================
 size_t MqttDeviceONDomoticzPublisher :: publishDeviceONState () {
 
+	_isDeviceOnPublished = true;
 	return publishSwitchStatus (MQTT_DOMOTICZ_FREEBOX_PLAYER_SWITCH_IDX, true);
 }
 
