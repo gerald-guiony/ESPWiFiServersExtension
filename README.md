@@ -47,7 +47,7 @@ Debugging commands are also available; type 'h' to display the list of commands:
 
 ![Telnet commands](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/debugCommand.png)
 
-## Find your devices thanks to an UDP broadcast command
+## Find your devices on your local network thanks to an UDP broadcast command
 
 ![Udp broadcast command](https://github.com/gerald-guiony/ESPWiFiServersExtension/blob/master/doc/udpBroadcastCommand.png)
 
